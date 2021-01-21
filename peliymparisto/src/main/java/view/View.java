@@ -1,7 +1,5 @@
 package view;
 
-import java.text.DecimalFormat;
-
 import controller.*;
 import javafx.application.Application;
 import javafx.application.Platform;
