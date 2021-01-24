@@ -4,12 +4,16 @@ import controller.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import model.Statistics;
 
 public class View extends Application implements ViewIF {
 	
@@ -113,7 +117,7 @@ public class View extends Application implements ViewIF {
 	 */
 	private BorderPane settingsBuilder() {
 		BorderPane settingsView = new BorderPane();
-		settingsView.setPrefSize(400, 400);
+		//settingsView.setPrefSize(400, 400);
 		backToMainMenu2 = new Button("Takaisin");
 		settingsView.setTop(backToMainMenu2);
 		return settingsView;
@@ -125,9 +129,14 @@ public class View extends Application implements ViewIF {
 	 */
 	private BorderPane statsBuilder() {
 		BorderPane statsView = new BorderPane();
-		statsView.setPrefSize(400, 400);
+		
+		Statistics stats = new Statistics();
+		LineChart<Number, Number> lineChart = stats.getLineChart();
+		
+		statsView.setPrefSize(500, 500);
 		backToMainMenu3 = new Button("Takaisin");
 		statsView.setTop(backToMainMenu3);
+		statsView.setCenter(lineChart);
 		return statsView;
 	}
 
