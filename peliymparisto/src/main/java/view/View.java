@@ -26,6 +26,10 @@ public class View extends Application implements ViewIF {
 	private Button backToMainMenu1;
 	/** Button to return to the mainMenu view from settings */
 	private Button backToMainMenu2;
+	/** Button to return to the mainMenu view from stats */
+	private Button backToMainMenu3;
+	/** Button to enter the stats view */
+	private Button enterStats;
 	/** Button to close the program */
 	private Button exitProgram;
 
@@ -57,12 +61,14 @@ public class View extends Application implements ViewIF {
 			BorderPane mainMenu = mainMenuBuilder();
 			BorderPane pokerGame = pokerGameBuilder();
 			BorderPane settings = settingsBuilder();
+			BorderPane stats = statsBuilder();
 			
 	        Scene mainMenuScene = new Scene(mainMenu);
 	        Scene pokerGameScene = new Scene(pokerGame);
 	        Scene settingsScene = new Scene(settings);
+	        Scene statsScene = new Scene(stats);
 	        
-	        createGUITransitions(primaryStage, mainMenuScene, pokerGameScene, settingsScene);
+	        createGUITransitions(primaryStage, mainMenuScene, pokerGameScene, settingsScene, statsScene);
 	        
 	        primaryStage.setScene(mainMenuScene);
 	        primaryStage.show();
@@ -81,9 +87,10 @@ public class View extends Application implements ViewIF {
 		mainMenuView.setPrefSize(400, 400);
 		enterPokerGame = new Button("Pokeri");
 		enterSettings = new Button("Asetukset");
+		enterStats = new Button("Tilastot");
 		exitProgram = new Button("Lopeta");
 		VBox napit = new VBox();
-		napit.getChildren().addAll(enterPokerGame, enterSettings, exitProgram);
+		napit.getChildren().addAll(enterPokerGame, enterSettings, enterStats, exitProgram);
 		mainMenuView.setCenter(napit);
 		return mainMenuView;
 	}
@@ -111,6 +118,18 @@ public class View extends Application implements ViewIF {
 		settingsView.setTop(backToMainMenu2);
 		return settingsView;
 	}
+	
+	/**
+	 * Contains the GUI for stats
+	 * @return BorderPane type layout for the stats
+	 */
+	private BorderPane statsBuilder() {
+		BorderPane statsView = new BorderPane();
+		statsView.setPrefSize(400, 400);
+		backToMainMenu3 = new Button("Takaisin");
+		statsView.setTop(backToMainMenu3);
+		return statsView;
+	}
 
 	/**
 	 * This function will create the transitions between different views and also the exit button functionality
@@ -118,18 +137,25 @@ public class View extends Application implements ViewIF {
 	 * @param mainMenuScene Main menu view
 	 * @param pokerGameScene Poker game view
 	 * @param settingsScene Settings view
+	 * @param statsScene Stats view
 	 */
-	private void createGUITransitions(Stage primaryStage, Scene mainMenuScene, Scene pokerGameScene, Scene settingsScene) {
+	private void createGUITransitions(Stage primaryStage, Scene mainMenuScene, Scene pokerGameScene, Scene settingsScene, Scene statsScene) {
 		enterPokerGame.setOnAction(e -> {
 			primaryStage.setScene(pokerGameScene);
 		});
 		enterSettings.setOnAction(e -> {
 			primaryStage.setScene(settingsScene);
 		});
+		enterStats.setOnAction(e -> {
+			primaryStage.setScene(statsScene);
+		});
 		backToMainMenu1.setOnAction(e -> {
 			primaryStage.setScene(mainMenuScene);
 		});
 		backToMainMenu2.setOnAction(e -> {
+			primaryStage.setScene(mainMenuScene);
+		});
+		backToMainMenu3.setOnAction(e -> {
 			primaryStage.setScene(mainMenuScene);
 		});
 		exitProgram.setOnAction(e -> Platform.exit());
