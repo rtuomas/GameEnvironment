@@ -4,11 +4,16 @@ import controller.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -63,7 +68,7 @@ public class View extends Application implements ViewIF {
 			primaryStage.setTitle("GameEnvironment");
 			
 			BorderPane mainMenu = mainMenuBuilder();
-			BorderPane pokerGame = pokerGameBuilder();
+			AnchorPane pokerGame = pokerGameBuilder();
 			BorderPane settings = settingsBuilder();
 			BorderPane stats = statsBuilder();
 			
@@ -101,13 +106,106 @@ public class View extends Application implements ViewIF {
 	
 	/**
 	 * Contains the GUI for poker game
-	 * @return BorderPane type layout for the poker game
+	 * @return AnchorPane type layout for the poker game
 	 */
-	private BorderPane pokerGameBuilder() {
-		BorderPane pokerGameView = new BorderPane();
-		pokerGameView.setPrefSize(400, 400);
+	private AnchorPane pokerGameBuilder() {
 		backToMainMenu1 = new Button("Takaisin");
-		pokerGameView.setTop(backToMainMenu1);
+		AnchorPane.setLeftAnchor(backToMainMenu1, 5.0);
+		AnchorPane.setTopAnchor(backToMainMenu1, 5.0);
+		
+		Button gamble = new Button ("Tuplaa");
+		gamble.setLayoutX(367.0);
+		gamble.setLayoutY(330.0);
+		gamble.setPrefHeight(58.0);
+		gamble.setPrefWidth(98.0);
+		AnchorPane.setBottomAnchor(gamble, 11.39);
+		
+		Button play = new Button("Pelaa");
+		play.setLayoutX(487.0);
+		play.setLayoutY(331.0);
+		play.setPrefHeight(58.0);
+		play.setPrefWidth(98.0);
+		AnchorPane.setBottomAnchor(play, 11.39);
+		AnchorPane.setRightAnchor(play, 14.59);
+		
+		Button plus = new Button("+");
+		plus.setLayoutX(324.0);
+		plus.setLayoutY(350.0);
+		AnchorPane.setBottomAnchor(plus, 24.4);
+		
+		Button minus = new Button("-");
+		minus.setLayoutX(219.0);
+		minus.setLayoutY(349.0);
+		AnchorPane.setBottomAnchor(minus, 24.4);
+		
+		Text credits = new Text("Saldo: 100");
+		credits.setLayoutX(36.0);
+		credits.setLayoutY(364.0);
+		Text bet = new Text("Panos: 1,20");
+		bet.setLayoutX(248.0);
+		bet.setLayoutY(367);
+		
+		GridPane wintable = new GridPane();
+		wintable.setGridLinesVisible(true);
+		wintable.setLayoutX(367.0);
+		wintable.setLayoutY(20.0);
+		wintable.setPrefHeight(128.0);
+		wintable.setPrefWidth(222.0);
+		AnchorPane.setTopAnchor(wintable, 20.0);
+		AnchorPane.setRightAnchor(wintable, 10.59);
+		
+		for(int i = 0; i < 3; i++) {
+			RowConstraints row = new RowConstraints(30);
+			wintable.getRowConstraints().add(row);
+		}
+		
+		for(int i = 0; i < 2; i++) {
+			ColumnConstraints column = new ColumnConstraints();
+			column.setPrefWidth(100.0);
+			wintable.getColumnConstraints().add(column);
+		}
+		
+		Text pair = new Text("Kaksi paria:");
+		Text threeofkind = new Text("Kolmoset:");
+		Text straight = new Text("Suora:");
+		Text flush = new Text("Väri:");
+		Text fullhouse = new Text("Täyskäsi:");
+		Text fourofkind = new Text("Neloset:");
+		Text straightflush = new Text("Värisuora:");
+		Text fiveofkind = new Text ("Vitoset:");
+		
+		wintable.add(pair, 0, 3);
+		wintable.add(threeofkind, 0, 2);
+		wintable.add(straight, 0, 1);
+		wintable.add(flush, 0, 0);
+		wintable.add(fullhouse, 1, 3);
+		wintable.add(fourofkind, 1, 2);
+		wintable.add(straightflush, 1, 1);
+		wintable.add(fiveofkind, 1, 0);
+		
+		GridPane cardPane = new GridPane ();
+		cardPane.setGridLinesVisible(true);
+		cardPane.setLayoutX(5.0);
+		cardPane.setLayoutY(155.0);
+		cardPane.setPrefHeight(167.0);
+		cardPane.setPrefWidth(594.0);
+		AnchorPane.setTopAnchor(cardPane, 155.0);
+		AnchorPane.setRightAnchor(cardPane, 2.6);
+		
+		RowConstraints cardRow = new RowConstraints(125);
+		RowConstraints chosenRow = new RowConstraints(41);
+		cardPane.getRowConstraints().add(cardRow);
+		cardPane.getRowConstraints().add(chosenRow);
+		
+		for(int i = 0; i < 5; i++) {
+			ColumnConstraints column = new ColumnConstraints();
+			column.setPrefWidth(118.0);
+			cardPane.getColumnConstraints().add(column);
+		}
+		
+		AnchorPane pokerGameView = new AnchorPane(backToMainMenu1, play, gamble, plus, minus, credits, bet, wintable, cardPane);
+		pokerGameView.setPrefSize(600, 400);
+		
 		return pokerGameView;
 	}
 	
