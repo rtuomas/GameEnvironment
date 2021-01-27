@@ -14,11 +14,11 @@ public class Card {
     	this.value = value;
     }
     
-    public int getMaa () {
+    public int getSuit () {
     	return suit;
     }
     
-    public int getArvo () {
+    public int getValue () {
     	return value;
     }
 
