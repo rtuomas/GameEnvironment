@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Arrays;
+
 import controller.ControllerIF;
 
 /**
@@ -13,6 +15,10 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	private ControllerIF controller;
 	/** Interface with a connection to DAO */
 	private DAOIF dao;
+	//List taken from Veikkaus JokeriPokeri game
+	private Double[] betTable = {0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
+	//Players bet (starting with 1.00)
+	private double bet;
 	
 	/**
 	 * Constructor for the poker game engine.
@@ -29,6 +35,26 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	 */
 	public void run() {
 		//game functionality when running through GUI (not CLI)
+	}
+	
+	
+	
+	/**
+	 * Increases the bet by certain ammount
+	 */
+	public void increaseBet() {
+		if(this.bet!=10.0) {
+			this.bet = betTable[Arrays.asList(betTable).indexOf(this.bet)+1];
+		}
+	}
+	
+	/**
+	 * Decreases the bet by certain ammount
+	 */
+	public void decreaseBet() {
+		if(this.bet!=0.1) {
+			this.bet = betTable[Arrays.asList(betTable).indexOf(this.bet)-1];
+		}
 	}
 	
 }

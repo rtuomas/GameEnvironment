@@ -1,62 +1,71 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * The player class of the game. Player has many options to choose from. It controls what to do.
+ * This Singleton class consists the player with name and cash. Only one is made in the beginning.
  * @author Tuomas Rajala
- * @version 1.0 26.01.2021
+ * @version 2.2 28.01.2021
  */
 public class Player {
+	
+	// static variable player of type Singleton 
+    private static Player player = null; 
+    
 	//Players name
 	private String name;
 	//Players cash
 	private int cash;
-	//Players bet (starting with 1.00)
-	private double bet;
 	
-	//List taken from Veikkaus JokeriPokeri game
-	private Double[] betTable = {0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
-	
-	public Player(String name, int cash) {
+	/**
+	 * Constructor when player is registered
+	 * @param name Players name
+	 * @param cash Players cash
+	 */
+	private Player(String name, int cash) {
 		this.name = name;
 		this.cash = cash;
-		this.bet = betTable[6]; //Default for 1.0 € bet
-	}
-	
-	public void play() {
-		
 	}
 	
 	/**
-	 * Increases the bet by certain ammount
+	 * This static method creates the singleton class only once.
+	 * @param name Players name
+	 * @param cash Players class
+	 * @return Player class
 	 */
-	public void increaseBet() {
-		if(this.bet!=10.0) {
-			this.bet = betTable[Arrays.asList(betTable).indexOf(this.bet)+1];
-		}
-	}
+	public static Player getInstance(String name, int cash) { 
+        if (player == null) 
+        	player = new Player(name, cash); 
+  
+        return player; 
+    }
 	
 	/**
-	 * Decreases the bet by certain ammount
+	 * Constructor when player is not registered.
+	 * @param name Players name
 	 */
-	public void decreaseBet() {
-		if(this.bet!=0.1) {
-			this.bet = betTable[Arrays.asList(betTable).indexOf(this.bet)-1];
-		}
+	public Player(String name) {
+		this.name = name;
+		this.cash = 100;
 	}
 	
-	
-	public void holdCards() {
-		
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getCash() {
+		return cash;
+	}
+
+	public void setCash(int cash) {
+		this.cash = cash;
 	}
 	
-	public void doubleWin() {
-		
-	}
-	
-	public void collectWin() {
-		
+	public String toString() {
+		return this.name + ", " + getCash() + " points.";
 	}
 }
