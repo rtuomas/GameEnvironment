@@ -8,7 +8,7 @@ public class Deck {
   /* ============================= Variables ================================ */
   private int    size         = 52;
   private int    jokers       = 0;
-  private Card[] deck         = new Card[size+1];
+  private Card[] deck         = new Card[size];
   private int    nextIndex    = 0;
   private int    shuffleSwaps = 10000;
   
@@ -31,16 +31,16 @@ public class Deck {
   /* ========================== Private methods ============================= */
   private void fillDeckWithCards(){
     for(int i=0;i<size;i++){
-      deck[i+1] = new Card(i/13%4,i%13+1);
+      deck[i] = new Card(i/13%4,i%13+1);
     }
   }
 
   private int getNextIndex(){
-    return nextIndex++%size+1; // Overflow on index (2^32 / 2 + 1)...
+    return nextIndex++%size; // Overflow on index (2^32 / 2 + 1)...
   }
 
   private void swapTwoCards(){
-    int[]  indexes   = getTwoUniqueRandomNumbers(1, size);
+    int[]  indexes   = getTwoUniqueRandomNumbers(0, size - 1);
     Card temporary   = deck[indexes[0]];
     deck[indexes[0]] = deck[indexes[1]];
     deck[indexes[1]] = temporary;

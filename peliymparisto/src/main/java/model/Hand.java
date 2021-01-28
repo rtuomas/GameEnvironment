@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Hand {
 	final static int HANDSIZE = 5;
-	private Card[] hand;
+	private Card[] hand = new Card [HANDSIZE];
 	private Deck currentDeck;
 	
 	public Hand (Deck deck){
