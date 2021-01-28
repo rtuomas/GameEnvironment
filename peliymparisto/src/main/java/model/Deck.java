@@ -6,10 +6,11 @@ package model;
 
 public class Deck {
   /* ============================= Variables ================================ */
-  final static int    SIZE         = 52;
-  private      Card[] deck         = new Card[SIZE+1];
-  private      int    nextIndex    = 0;
-  private      int    shuffleSwaps = 10000;
+  private int    size         = 52;
+  private int    jokers       = 0;
+  private Card[] deck         = new Card[size+1];
+  private int    nextIndex    = 0;
+  private int    shuffleSwaps = 10000;
   
   /* ============================ Constructors ============================== */
   public Deck(){
@@ -17,7 +18,7 @@ public class Deck {
   }
   
   /* =========================== Public methods ============================= */
-  public Card giveCard(){
+  public Card nextCard(){
     return deck[getNextIndex()];
   }
   
@@ -29,17 +30,17 @@ public class Deck {
   
   /* ========================== Private methods ============================= */
   private void fillDeckWithCards(){
-    for(int i=0;i<SIZE;i++){
+    for(int i=0;i<size;i++){
       deck[i+1] = new Card(i/13%4,i%13+1);
     }
   }
 
   private int getNextIndex(){
-    return nextIndex++%SIZE+1; // Overflow on index (2^32 / 2 + 1)...
+    return nextIndex++%size+1; // Overflow on index (2^32 / 2 + 1)...
   }
 
   private void swapTwoCards(){
-    int[]  indexes   = getTwoUniqueRandomNumbers(1, SIZE);
+    int[]  indexes   = getTwoUniqueRandomNumbers(1, size);
     Card temporary   = deck[indexes[0]];
     deck[indexes[0]] = deck[indexes[1]];
     deck[indexes[1]] = temporary;
