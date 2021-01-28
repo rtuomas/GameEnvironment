@@ -1,5 +1,5 @@
 /** =============================== Javadoc ====================================
-* @author Jere Lampola 2020-08-31
+* @author Jere Lampola
 */
 
 package model;
