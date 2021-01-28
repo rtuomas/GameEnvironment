@@ -1,6 +1,7 @@
 package view;
 
-import controller.*;
+import controller.Controller;
+import controller.ControllerIF;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -22,6 +23,11 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.Statistics;
 
+/**
+ * The Graphical User Interface built with JavaFX
+ * @author ---
+ * @version 1.0 26.01.2021
+ */
 public class View extends Application implements ViewIF {
 	
 	//Normal variables here -->
@@ -48,10 +54,13 @@ public class View extends Application implements ViewIF {
 		launch(args);
 	}
 	
-	//setting starting values
+	/**
+	 * Setting starting values
+	 */
 	@Override
 	public void init(){
-		controller = new Controller(); //add parameter later
+		//setting the chosen controller
+		controller = new Controller(this);
 	}	
 
 	@Override
