@@ -6,8 +6,8 @@ public class Card {
     final static String[] SUITS = {"Heart", "Diamond", "Club", "Spade"};
     final static int HEART = 0, DIAMOND = 1, CLUB = 2, SPADE = 3;
     
-     private int value;            			
-     private int suit;
+    private int value;            			
+    private int suit;
 
     public Card (int suit, int value) {
     	this.suit = suit;
