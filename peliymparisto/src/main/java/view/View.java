@@ -5,10 +5,12 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
@@ -213,11 +215,31 @@ public class View extends Application implements ViewIF {
 	 * Contains the GUI for settings
 	 * @return BorderPane type layout for the settings
 	 */
+	// Work in progress - Ville Riepponen
 	private BorderPane settingsBuilder() {
 		BorderPane settingsView = new BorderPane();
-		//settingsView.setPrefSize(400, 400);
+		settingsView.setPrefSize(400, 400);
+		
+		Slider volumeControl = new Slider(0, 1, 0.5);
+		volumeControl.setShowTickMarks(true);
+		volumeControl.setShowTickLabels(true);
+		volumeControl.setMajorTickUnit(0.25f);
+		volumeControl.setBlockIncrement(0.1f);
+		volumeControl.setMaxWidth(200);
+		BorderPane.setAlignment(volumeControl, Pos.CENTER);
+		BorderPane.setMargin(volumeControl, new Insets(50, 50, 50, 50));
+		
+		Button save = new Button("Tallenna");
+		
+		BorderPane.setAlignment(save, Pos.CENTER);
+		BorderPane.setMargin(save, new Insets(50, 50, 50, 50));
+		
 		backToMainMenu2 = new Button("Takaisin");
+		
+		settingsView.setCenter(save);
 		settingsView.setTop(backToMainMenu2);
+		settingsView.setCenter(volumeControl);
+		
 		return settingsView;
 	}
 	
