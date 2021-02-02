@@ -1,5 +1,8 @@
 package controller;
 
+import java.util.ArrayList;
+
+import model.Card;
 import model.ModelIF;
 import model.PokerGameEngine;
 import view.ViewIF;
@@ -27,6 +30,17 @@ public class Controller implements ControllerIF {
 	public void startPokerGame() {
 		model = new PokerGameEngine(this);
 		((Thread)model).start();
+	}
+	
+	@Override
+	public ArrayList<String> dealCards () {
+		Card cards [] = model.dealCards();
+		ArrayList<String> imgpaths = new ArrayList<String>();
+		for(Card i : cards) {
+			imgpaths.add(i.toString());
+		}
+		
+		return imgpaths;
 	}
 	
 }

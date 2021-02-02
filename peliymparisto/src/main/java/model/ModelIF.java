@@ -8,5 +8,9 @@ package model;
 public interface ModelIF {
 	
 	//The common methods for all game engines -->
-
+	/**
+	 * Deals cards and shuffles deck
+	 * @return Card [] dealed card objects
+	 */
+	public Card [] dealCards();
 }

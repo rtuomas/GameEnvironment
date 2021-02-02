@@ -1,5 +1,7 @@
 package view;
 
+import java.util.ArrayList;
+
 import controller.Controller;
 import controller.ControllerIF;
 import javafx.application.Application;
@@ -12,6 +14,8 @@ import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
@@ -120,10 +124,13 @@ public class View extends Application implements ViewIF {
 	 * @return AnchorPane type layout for the poker game
 	 */
 	private AnchorPane pokerGameBuilder() {
+		
+		// mainmenu button
 		backToMainMenu1 = new Button("Takaisin");
 		AnchorPane.setLeftAnchor(backToMainMenu1, 5.0);
 		AnchorPane.setTopAnchor(backToMainMenu1, 5.0);
 		
+		// gamble button placement
 		Button gamble = new Button ("Tuplaa");
 		gamble.setLayoutX(367.0);
 		gamble.setLayoutY(330.0);
@@ -131,6 +138,7 @@ public class View extends Application implements ViewIF {
 		gamble.setPrefWidth(98.0);
 		AnchorPane.setBottomAnchor(gamble, 11.39);
 		
+		// play button placement
 		Button play = new Button("Pelaa");
 		play.setLayoutX(487.0);
 		play.setLayoutY(331.0);
@@ -139,16 +147,19 @@ public class View extends Application implements ViewIF {
 		AnchorPane.setBottomAnchor(play, 11.39);
 		AnchorPane.setRightAnchor(play, 14.59);
 		
+		// bet increment button placement
 		Button plus = new Button("+");
 		plus.setLayoutX(324.0);
 		plus.setLayoutY(350.0);
 		AnchorPane.setBottomAnchor(plus, 24.4);
 		
+		// bet decrement button placement
 		Button minus = new Button("-");
 		minus.setLayoutX(219.0);
 		minus.setLayoutY(349.0);
 		AnchorPane.setBottomAnchor(minus, 24.4);
 		
+		// credits & bet placements
 		Text credits = new Text("Saldo: 100");
 		credits.setLayoutX(36.0);
 		credits.setLayoutY(364.0);
@@ -156,6 +167,7 @@ public class View extends Application implements ViewIF {
 		bet.setLayoutX(248.0);
 		bet.setLayoutY(367);
 		
+		// Gridpane for wintable
 		GridPane wintable = new GridPane();
 		wintable.setGridLinesVisible(true);
 		wintable.setLayoutX(367.0);
@@ -194,6 +206,7 @@ public class View extends Application implements ViewIF {
 		wintable.add(straightflush, 1, 1);
 		wintable.add(fiveofkind, 1, 0);
 		
+		// Gridpane for card images. Below space for ''locked''. Will remove gridlines when finished.
 		GridPane cardPane = new GridPane ();
 		cardPane.setGridLinesVisible(true);
 		cardPane.setLayoutX(5.0);
@@ -214,8 +227,25 @@ public class View extends Application implements ViewIF {
 			cardPane.getColumnConstraints().add(column);
 		}
 		
+		// Initial card images
+		Image startcard = new Image("/images/green_back.png", 120, 128, false, false);
+		for(int i = 0; i < 5 ; i++) {
+			cardPane.add(new ImageView(startcard), i, 0);
+		}
+		
+		//Sets the whole AnchorPane with elements
 		AnchorPane pokerGameView = new AnchorPane(backToMainMenu1, play, gamble, plus, minus, credits, bet, wintable, cardPane);
 		pokerGameView.setPrefSize(600, 400);
+		
+		// On action for play button
+		play.setOnAction(e -> {
+			ArrayList<String> cards = controller.dealCards();
+			
+			for(int i = 0; i < cards.size(); i++) {
+				Image newCard = new Image("/images/" + cards.get(i) + ".png", 120, 128, false, false);
+				cardPane.add(new ImageView(newCard), i, 0);
+			}
+		});
 		
 		return pokerGameView;
 	}
@@ -279,6 +309,8 @@ public class View extends Application implements ViewIF {
 	 */
 	private void createGUITransitions(Stage primaryStage, Scene mainMenuScene, Scene pokerGameScene, Scene settingsScene, Scene statsScene) {
 		enterPokerGame.setOnAction(e -> {
+			// not sure if starting pokergame thread is good here?
+			controller.startPokerGame();
 			primaryStage.setScene(pokerGameScene);
 		});
 		enterSettings.setOnAction(e -> {
@@ -298,5 +330,4 @@ public class View extends Application implements ViewIF {
 		});
 		exitProgram.setOnAction(e -> Platform.exit());
 	}
-
 }

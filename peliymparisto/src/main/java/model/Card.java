@@ -1,9 +1,8 @@
 package model;
 
-
 public class Card {
 	
-    final static String[] SUITS = {"Heart", "Diamond", "Club", "Spade"};
+    final static String[] SUITS = {"H", "D", "C", "S"};
     final static int HEART = 0, DIAMOND = 1, CLUB = 2, SPADE = 3;
     
     private int value;            			
@@ -23,6 +22,6 @@ public class Card {
     }
 
     public String toString () {
-    	return (SUITS[suit] + " " + value);
+    	return (value + SUITS[suit]);
     }
 }

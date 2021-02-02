@@ -19,6 +19,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	private Double[] betTable = {0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
 	//Players bet (starting with 1.00)
 	private double bet;
+	private Deck deck;
 	
 	/**
 	 * Constructor for the poker game engine.
@@ -35,6 +36,8 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	 */
 	public void run() {
 		//game functionality when running through GUI (not CLI)
+		deck = new Deck ();
+		deck.shuffle();
 	}
 	
 	
@@ -57,4 +60,10 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		}
 	}
 	
+	@Override
+	public Card [] dealCards () {
+		Hand hand = new Hand(deck);
+		deck.shuffle();
+		return hand.getHand();
+	}
 }
