@@ -40,4 +40,17 @@ public class Hand {
 		}
 		return sentHand;
 	}
+	
+	public String toString() {
+		String tempString = "";
+		for(int i = 0; i < HANDSIZE; i++) {
+			if(i != 4) {
+				tempString += hand[i].toString() + ", ";
+			} else {
+				tempString += hand[i].toString();
+			}
+			
+		}
+		return tempString;
+	}
 }

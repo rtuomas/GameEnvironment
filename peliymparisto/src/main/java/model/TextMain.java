@@ -12,8 +12,6 @@ public class TextMain {
 		
 		
 		Card cards [] = hand.getHand();
-		for(Card i : cards) {
-			System.out.println(i.toString());
-		}
+		System.out.println(hand.toString());
 	}
 }
