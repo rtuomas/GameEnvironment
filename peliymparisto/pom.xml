@@ -36,6 +36,12 @@
 		<version>5.7.0</version>
 		<scope>test</scope>
 	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+	<dependency>
+	    <groupId>org.hibernate</groupId>
+	    <artifactId>hibernate-core</artifactId>
+	    <version>5.4.27.Final</version>
+	</dependency>
 </dependencies>
 
 <build> <!-- Koonnissa ja raporttien tuottamisessa tarvittavia lisäosia -->
