@@ -17,6 +17,11 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+/**
+ * The Data Access Object to handle database connections, uses hibernate
+ * @author Aki Koppinen
+ * @version 1.0 06.02.2021
+ */
 public class DAO implements DAOIF {
 	
 	/**

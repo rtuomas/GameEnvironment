@@ -17,7 +17,7 @@
 		<!-- kun true, kaiuta kaikki SQL-lauseet stdout:iin -->
 		<property name="show_sql">false</property>
 
-		<!-- Mallitason DTO-oliot, pakkausnimet mukaan -->
+		<!-- Mallitason DTO -oliot, pakkausnimet mukaan -->
 		<mapping class="model.Player"/>
 		<mapping class="model.PlayedGame"/>
 	</session-factory>

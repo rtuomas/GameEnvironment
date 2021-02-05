@@ -1,5 +1,10 @@
 package model;
 
+/**
+ * Testing class
+ * @author ----
+ * @version 6.9 06.02.2021
+ */
 public class TextMain {
 
 	public static void main(String[] args) {

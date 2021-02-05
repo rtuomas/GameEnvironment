@@ -4,6 +4,11 @@ import java.util.Date;
 import javax.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+/**
+ * The Object which holds information about a played game, has JPA annotations for hibernate to use
+ * @author Aki Koppinen
+ * @version 1.0 06.02.2021
+ */
 @Entity
 @Table(name="played_game")
 public class PlayedGame {

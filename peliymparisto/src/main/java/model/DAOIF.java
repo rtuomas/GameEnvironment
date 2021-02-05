@@ -5,7 +5,7 @@ package model;
  * The game-engine connects to the database through this interface.
  * 
  * @author Aki Koppinen
- * @version 1.0 (05.02.2021)
+ * @version 2.0 (06.02.2021)
  */
 public interface DAOIF {
 	

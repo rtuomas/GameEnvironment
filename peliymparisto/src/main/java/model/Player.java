@@ -4,6 +4,11 @@ import java.util.Date;
 import javax.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+/**
+ * The Object which holds information about the player, has JPA annotations for hibernate to use
+ * @author Aki Koppinen, Tuomas Rajala
+ * @version 2.3 06.02.2021
+ */
 @Entity
 @Table(name="player")
 public class Player {
