@@ -47,7 +47,7 @@
 			<release>11</release>
 			</configuration>
 		</plugin>
-		<!-- JUnit testien ajo Maven-ajoympäristossa (kun ei IDE:n kautta) -->
+		<!-- JUnit testien ajo Maven-ajoymparistossa (kun ei IDE:n kautta) -->
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-surefire-plugin</artifactId>

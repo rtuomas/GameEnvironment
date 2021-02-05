@@ -3,7 +3,7 @@ package model;
 /**
  * Testing class
  * @author ----
- * @version 6.9 06.02.2021
+ * @version 7.0 06.02.2021
  */
 public class TextMain {
 
