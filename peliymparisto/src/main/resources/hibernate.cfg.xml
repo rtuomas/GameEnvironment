@@ -1,0 +1,24 @@
+<hibernate-configuration>
+	<session-factory>
+		<!-- Käytä MySQL-tietokantaa -->
+		<property name="hibernate.dialect"> org.hibernate.dialect.MySQL5Dialect</property>
+
+		<!-- Yhteyden perustiedot: ajuri, palvelin käyttäjätunnus/salasana -->
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:2206/game_database</property>
+		<property name="hibernate.connection.username">akikoppinen</property>
+		<property name="hibernate.connection.password">rootpassword</property>
+
+		<!-- create , create-drop, update tai validate -->
+		<!-- Älä käytä tuotantoversioissa, ts, älä anna Hibernaten enää muuttaa taulurakennetta  -->
+		<!-- Ekalla kerralla create, kun kanta olemassa validate -->
+		<property name="hbm2ddl.auto">validate</property>
+
+		<!-- kun true, kaiuta kaikki SQL-lauseet stdout:iin -->
+		<property name="show_sql">false</property>
+
+		<!-- Mallitason DTO-oliot, pakkausnimet mukaan -->
+		<mapping class="model.Player"/>
+		<mapping class="model.PlayedGame"/>
+	</session-factory>
+</hibernate-configuration>

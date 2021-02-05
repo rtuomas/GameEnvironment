@@ -1,12 +1,128 @@
 package model;
 
+import java.util.Date;
+import javax.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+@Entity
+@Table(name="player")
+public class Player {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="id")
+	private int id;
+	@Column
+	private String firstName;
+	@Column
+	private String lastName;
+	@Column
+	private int credits;
+	@Column
+	private String profileName;
+	@Column
+	private String email;
+	@Column
+	private String password;
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdOn;
+	
+	public Player() {
+		super();
+	}
+	
+	public Player(String fn, String ln, String email, String pw) {
+		super();
+		this.firstName = fn;
+		this.lastName = ln;
+		this.email = email;
+		this.password = pw;
+		this.credits = 100;
+		this.profileName = "Player";
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public int getCredits() {
+		return credits;
+	}
+
+	public void setCredits(int credits) {
+		this.credits = credits;
+	}
+
+	public String getProfileName() {
+		return profileName;
+	}
+
+	public void setProfileName(String profileName) {
+		this.profileName = profileName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Date getCreatedOn() {
+		return createdOn;
+	}
+
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
+	}
+	
+	public String toString() {
+		return this.firstName + " " + this.lastName + " " + this.credits + " " + this.profileName + " " + this.email + " " + this.password + " " + this.createdOn;
+	}
+	
+}
+
+/*
+
+package model;
+
 import java.util.Arrays;
 
-/**
+
  * This Singleton class consists the player with name and cash. Only one is made in the beginning.
  * @author Tuomas Rajala
  * @version 2.2 28.01.2021
- */
+
 public class Player {
 	
 	// static variable player of type Singleton 
@@ -17,22 +133,22 @@ public class Player {
 	//Players cash
 	private int cash;
 	
-	/**
+
 	 * Constructor when player is registered
 	 * @param name Players name
 	 * @param cash Players cash
-	 */
+
 	private Player(String name, int cash) {
 		this.name = name;
 		this.cash = cash;
 	}
 	
-	/**
+
 	 * This static method creates the singleton class only once.
 	 * @param name Players name
 	 * @param cash Players class
 	 * @return Player class
-	 */
+
 	public static Player getInstance(String name, int cash) { 
         if (player == null) 
         	player = new Player(name, cash); 
@@ -40,10 +156,10 @@ public class Player {
         return player; 
     }
 	
-	/**
+
 	 * Constructor when player is not registered.
 	 * @param name Players name
-	 */
+
 	public Player(String name) {
 		this.name = name;
 		this.cash = 100;
@@ -69,3 +185,5 @@ public class Player {
 		return this.name + ", " + getCash() + " points.";
 	}
 }
+
+*/

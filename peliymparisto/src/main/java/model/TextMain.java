@@ -13,5 +13,36 @@ public class TextMain {
 		
 		Card cards [] = hand.getHand();
 		System.out.println(hand.toString());
+		
+		DAOIF dao = new DAO();
+		System.out.println("-----------Players------------");
+		Player[] players1 = dao.readPlayers();
+		for (Player player: players1) {
+			System.out.println(player);
+		}
+		System.out.println("-----------Played Games-------------");
+		PlayedGame[] playedGames1 = dao.readPlayedGames();
+		for (PlayedGame playedGame: playedGames1) {
+			System.out.println(playedGame);
+		}
+		
+		System.out.println("--------Trying to add a Player----------");
+		Player veli = new Player("Jari", "Aarnio", "krpboss@poliisi.fi", "salasana123");
+		//dao.createPlayer(veli); //kommentoitu pois ettei testiajoissa tulisi liikaa lisayksia tietokantaan
+		System.out.println("-----------Players------------");
+		Player[] players2 = dao.readPlayers();
+		for (Player player: players2) {
+			System.out.println(player);
+		}
+		
+		System.out.println("--------Trying to add a played game----------");
+		PlayedGame veliVastaanVeli = new PlayedGame(1001, 1002, "pokeri", 1002, 30);
+		//dao.createPlayedGame(veliVastaanVeli); //kommentoitu pois ettei testiajoissa tulisi liikaa lisayksia tietokantaan
+		System.out.println("-----------Played Games-------------");
+		PlayedGame[] playedGames2 = dao.readPlayedGames();
+		for (PlayedGame playedGame: playedGames2) {
+			System.out.println(playedGame);
+		}
+
 	}
 }
