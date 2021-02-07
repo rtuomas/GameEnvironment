@@ -13,7 +13,12 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -292,10 +297,29 @@ public class View extends Application implements ViewIF {
 		Statistics stats = new Statistics();
 		LineChart<Number, Number> lineChart = stats.getLineChart();
 		
+		ListView listView = new ListView();
+		String[] ranks = stats.getRanking();
+		for(int i = 0;i<ranks.length;i++) {
+			listView.getItems().add(ranks[i]);
+		}
+		
+		TabPane tabPane = new TabPane();
+		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+		Tab creditDevelopment = new Tab("Credits", new Label("This pane shows your credit development from the beginning"));
+		ImageView growth = new ImageView(new Image("/images/growthtab.png", 25, 22, false, false));
+		creditDevelopment.setGraphic(growth);
+        Tab ranking = new Tab("Ranking"  , new Label("Can you beat the best players?"));
+        ImageView rank = new ImageView(new Image("/images/rankingtab.png", 25, 22, false, false));
+        ranking.setGraphic(rank);
+        creditDevelopment.setContent(lineChart);
+        ranking.setContent(listView);
+        tabPane.getTabs().add(creditDevelopment);
+        tabPane.getTabs().add(ranking);
+        
 		statsView.setPrefSize(500, 500);
 		backToMainMenu3 = new Button("Takaisin");
 		statsView.setTop(backToMainMenu3);
-		statsView.setCenter(lineChart);
+		statsView.setCenter(tabPane);
 		return statsView;
 	}
 

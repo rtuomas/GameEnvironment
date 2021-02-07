@@ -7,12 +7,14 @@ import javafx.scene.chart.XYChart;
 public class Statistics {
 	private int[] dates = {1,2,3,4,5,6,7};
 	private int[] values = {100,120,115,90,100,80,55};
+	private String[] ranks = {"1350, Pena Aarnio", "999, AI", "-5000, Jari Aarnio"};
 	
 	public Statistics() {
 		
 	}
 	
 	public LineChart<Number, Number> getLineChart() {
+		
 		final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
         xAxis.setLabel("Date");
@@ -34,4 +36,8 @@ public class Statistics {
         
 	}
 	
+	public String[] getRanking() {
+		
+		return ranks;
+	}
 }
