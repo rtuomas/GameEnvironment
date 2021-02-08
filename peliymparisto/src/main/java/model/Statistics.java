@@ -1,19 +1,32 @@
 package model;
 
+import java.util.ArrayList;
+
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 
 public class Statistics {
-	private int[] dates = {1,2,3,4,5,6,7};
-	private int[] values = {100,120,115,90,100,80,55};
-	private String[] ranks = {"1350, Pena Aarnio", "999, AI", "-5000, Jari Aarnio"};
+	private int[] dates = {0,1,2,3};
+	//private int[] values = {100,120,115,90,100,80,55};
+	//private String[] ranks = {"1350, Pena Aarnio", "999, AI", "-5000, Jari Aarnio"};
 	
 	public Statistics() {
 		
 	}
 	
 	public LineChart<Number, Number> getLineChart() {
+		
+		DAOIF dao = new DAO();
+		ArrayList<Integer> creditsList = new ArrayList<>();
+		creditsList = dao.readCredits(1001);
+		ArrayList<Integer> myCredits = new ArrayList<>();
+		int temp = 0;
+		for(Integer i : creditsList) {
+			temp += i;
+			myCredits.add(temp);
+		}
+		
 		
 		final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
@@ -27,17 +40,30 @@ public class Statistics {
         XYChart.Series series = new XYChart.Series();
         //series.setName("My portfolio");
         
+        for(int i=0;i<4;i++) {
+        	series.getData().add(new XYChart.Data(dates[i], myCredits.get(i)));
+        }
+        
+        /*
         //Populating the chart
         for(int i=0;i<dates.length;i++) {
         	series.getData().add(new XYChart.Data(dates[i], values[i]));
         }
+        */
         lineChart.getData().add(series);
         return lineChart;
         
 	}
 	
+	/**
+	 * TESTI!! JATKOSSA KONTROLLERIN KAUTTA
+	 * @return
+	 */
 	public String[] getRanking() {
-		
-		return ranks;
+		DAOIF dao = new DAO();
+		ArrayList<String> rankingList = new ArrayList<>();
+		rankingList = dao.readRankings();
+		String[] rankings = rankingList.toArray(new String[0]);
+		return rankings;
 	}
 }

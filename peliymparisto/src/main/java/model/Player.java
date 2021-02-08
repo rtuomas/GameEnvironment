@@ -11,7 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
  */
 @Entity
 @Table(name="player")
-public class Player {
+public class Player implements Comparable<Player>{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +45,13 @@ public class Player {
 		this.password = pw;
 		this.credits = 100;
 		this.profileName = "Player";
+	}
+	
+	public Player(String fn, String ln, int credits) {
+		super();
+		this.firstName = fn;
+		this.lastName = ln;
+		this.credits = credits;
 	}
 
 	public int getId() {
@@ -113,6 +120,13 @@ public class Player {
 	
 	public String toString() {
 		return this.firstName + " " + this.lastName + " " + this.credits + " " + this.profileName + " " + this.email + " " + this.password + " " + this.createdOn;
+	}
+
+	@Override
+	public int compareTo(Player p) {
+		if(credits==p.credits) return 0;
+		if(credits>p.credits) return -1;
+		return 1;
 	}
 	
 }

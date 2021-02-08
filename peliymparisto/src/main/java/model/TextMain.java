@@ -32,8 +32,8 @@ public class TextMain {
 		}
 		
 		System.out.println("--------Trying to add a Player----------");
-		Player veli = new Player("Jari", "Aarnio", "krpboss@poliisi.fi", "salasana123");
-		//dao.createPlayer(veli); //kommentoitu pois ettei testiajoissa tulisi liikaa lisayksia tietokantaan
+		Player veli = new Player("Jari2", "Aarnio", "krpboss@poliisi.fi", "salasana123");
+		dao.createPlayer(veli); //kommentoitu pois ettei testiajoissa tulisi liikaa lisayksia tietokantaan
 		System.out.println("-----------Players------------");
 		Player[] players2 = dao.readPlayers();
 		for (Player player: players2) {

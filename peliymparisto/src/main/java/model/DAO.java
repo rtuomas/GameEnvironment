@@ -8,7 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 */
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -16,6 +18,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
+
+import com.mysql.jdbc.Field;
 
 /**
  * The Data Access Object to handle database connections, uses hibernate
@@ -138,6 +142,56 @@ public class DAO implements DAOIF {
 		Player[] playersArray = new Player[playersList.size()];
 		
 		return (Player[])playersList.toArray(playersArray);
+	}
+	
+	public ArrayList<String> readRankings() {
+		ArrayList<String> statsList = new ArrayList<>();
+		try (Session session = sFactory.openSession()) {
+			
+			String hql = "from Player";
+			
+			@SuppressWarnings("rawtypes")
+			Query query = session.createQuery(hql);
+			@SuppressWarnings("unchecked")
+			List<Player> result = query.list();
+			Collections.sort(result);
+			for (Player a: result) {
+				statsList.add(a.getCredits() + ", " + a.getFirstName() + " " + a.getLastName());
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return statsList;
+	}
+	
+	public ArrayList<Integer> readCredits(int id) {
+		
+		ArrayList<Integer> creditsList = new ArrayList<>();
+		ArrayList<Date> datesList = new ArrayList<>();
+		
+		try (Session session = sFactory.openSession()) {
+			
+			String hql = "from PlayedGame where player1 = :id";
+			
+			@SuppressWarnings("rawtypes")
+			Query query = session.createQuery(hql).setParameter("id", id);
+			@SuppressWarnings("unchecked")
+			List<PlayedGame> result = query.list();
+			
+			creditsList.add(100);
+			for (PlayedGame a: result) {
+				//datesList.add((a.getPlayedOn());
+				creditsList.add(a.getCreditChange());
+			}
+			System.out.println(datesList);
+			System.out.println(creditsList);
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return creditsList;
 	}
 
 	/**	{@inheritDoc} */

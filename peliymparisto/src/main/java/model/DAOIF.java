@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 /**
  * DAOIF gives interface for DAO class.
  * The game-engine connects to the database through this interface.
@@ -61,5 +63,12 @@ public interface DAOIF {
 	 * @return success info
 	 */
 	public boolean deletePlayedGame(PlayedGame playedGame);
+	
+	
+	
+	
+	
+	public ArrayList<String> readRankings();
+	public ArrayList<Integer> readCredits(int id);
 
 }
