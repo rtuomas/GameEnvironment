@@ -129,4 +129,63 @@ public class Hand{
 		
 		return isTwoPairs;
 	}
+	
+  public boolean isStraightFlush(){
+    return isStraight() && isFlush();
+  }
+  
+  public boolean isStraight(){
+    return allCardsAreConsecutiveIn(valueSortedHand());
+  }
+  
+  public boolean isFlush(){
+    return firstAndLastCardAreSameSuitIn(suitSortedHand());
+  }
+  
+  private Card[] valueSortedHand(){
+    sortedHand = hand.clone();
+    Arrays.sort(sortedHand,Comparator.comparing(Card::getValue));
+    return sortedHand;
+  }
+  
+  private Card[] suitSortedHand(){
+    sortedHand = hand.clone();
+    Arrays.sort(sortedHand,Comparator.comparing(Card::getSuit));
+    return sortedHand;
+  }
+  
+  private boolean allCardsAreConsecutiveIn(Card[] hand){
+    boolean straight = true;
+    int start = 1;
+    if(possiblyAceHighStraight()){
+      start = 2;
+    }
+    for(int i=start;i<hand.length;i++){
+      if(cardsAreNotConsecutive(hand[i],hand[i-1])){
+        straight = false;
+        break;
+      }
+    }
+    return straight;
+  }
+  
+  private boolean possiblyAceHighStraight(){
+    return hasAce() && secondValueIs10();
+  }
+  
+  private boolean hasAce(){
+    return sortedHand[0].getValue() == 1;
+  }
+  
+  private boolean secondValueIs10(){
+    return sortedHand[1].getValue() == 10;
+  }
+  
+  private boolean cardsAreNotConsecutive(Card first, Card second){
+    return first.getValue() - second.getValue() != 1;
+  }
+  
+  private boolean firstAndLastCardAreSameSuitIn(Card[] hand){
+    return hand[0].getSuit() == hand[hand.length-1].getSuit();
+  }
 }
