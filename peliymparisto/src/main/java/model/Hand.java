@@ -16,7 +16,7 @@ public class Hand{
 	private Card[] hand = new Card [HANDSIZE];
 	private Card[] sortedHand = new Card [HANDSIZE];
 	private Deck currentDeck;
-	
+
 	public Hand (Deck deck){
 		this.currentDeck = deck;
 		fillHandWithCards();
@@ -24,14 +24,39 @@ public class Hand{
 		sortSortedHand();
 	}
 	
+	// for testinks
+	public Hand (Card [] h) {
+		this.hand = h;
+		this.sortedHand = this.hand;
+		sortSortedHand();
+	}
+
+	public HandValue getScore () {
+		if(isStraightFlush())
+			return HandValue.STRAIGHT_FLUSH;
+		else if(is4s())
+			return HandValue.FOUR_OF_A_KIND;
+		else if(isFullHouse())
+			return HandValue.FULL_HOUSE;
+		else if(isFlush())
+			return HandValue.FLUSH;
+		else if(isStraight())
+			return HandValue.STRAIGHT;
+		else if(isSet())
+			return HandValue.THREE_OF_A_KIND;
+		else if(isTwoPairs())
+			return HandValue.TWO_PAIRS;
+		else if (isAcePair())
+			return HandValue.ACE_PAIR;
+		else return null;
+	}
+
 	private void fillHandWithCards(){
 		for (int i = 0; i < HANDSIZE; i++) {
 			hand[i] = currentDeck.nextCard();
 		}
 	}
-	
-	
-	
+
 	private void sortSortedHand() {
 		Arrays.sort(sortedHand, new Comparator<Card>() {
 			@Override
@@ -41,42 +66,27 @@ public class Hand{
 		});
 	}
 	
+	//meibi change checkers private?
 	
-	
-	public Card[] getHand() {
-		return this.hand;
+	public boolean isAcePair() {	
+		return(sortedHand[0].getValue() == 1 && sortedHand[1].getValue() == 1 && sortedHand[2].getValue() != 1 && sortedHand[3].getValue() != 1 && sortedHand[4].getValue() != 1);	
 	}
-	
-	public Card[] getSortedHand() {
-		return this.sortedHand;
-	}
-	
-	//The player can choose which cards they want to swap to new ones once per round.
-	//Selected cards would be discarded from the hand and the rest sent to swapCards().
-	//swapCards() then adds the remaining cards from the deck to fill the hand again,
-	//returning the old hand with the new cards.
-	
-	public void swapCards(Card[] sentHand) {
-		for (int i = 0; i < HANDSIZE; i++) {
-			if(hand[i] == null) {
-				hand[i] = currentDeck.nextCard();
-			}
+
+	public boolean isTwoPairs() {
+		boolean isTwoPairs = false;
+		if(hand[0].getValue() == hand[1].getValue() && hand[2].getValue() == hand[3].getValue()) {
+			isTwoPairs = true;
+		} else if(hand[0].getValue() == hand[1].getValue() && hand[3].getValue() == hand[4].getValue()) {
+			isTwoPairs = true;
+		} else if(hand[1].getValue() == hand[2].getValue() && hand[3].getValue() == hand[4].getValue()) {
+			isTwoPairs = true;
+		} else {
+			isTwoPairs = false;
 		}
+
+		return isTwoPairs;
 	}
-	
-	public String toString() {
-		String tempString = "";
-		for(int i = 0; i < HANDSIZE; i++) {
-			if(i != 4) {
-				tempString += hand[i].toString() + ", ";
-			} else {
-				tempString += hand[i].toString();
-			}
-			
-		}
-		return tempString;
-	}
-	
+
 	public boolean isSet() {
 		boolean isSet = false;
 		int c1 = sortedHand[0].getValue(), 
@@ -93,10 +103,18 @@ public class Hand{
 		} else {
 			isSet = false;
 		}
-		
+
 		return isSet;
 	}
-	
+
+	public boolean isStraight(){
+		return allCardsAreConsecutiveIn(valueSortedHand());
+	}
+
+	public boolean isFlush(){
+		return firstAndLastCardAreSameSuitIn(suitSortedHand());
+	}
+
 	public boolean isFullHouse() {
 		boolean isFullHouse = false;
 		int c1 = sortedHand[0].getValue(), 
@@ -111,81 +129,109 @@ public class Hand{
 		} else {
 			isFullHouse = false;
 		}
-		
+
 		return isFullHouse;
 	}
-	
-	public boolean isTwoPairs() {
-		boolean isTwoPairs = false;
-		if(hand[0].getValue() == hand[1].getValue() && hand[2].getValue() == hand[3].getValue()) {
-			isTwoPairs = true;
-		} else if(hand[0].getValue() == hand[1].getValue() && hand[3].getValue() == hand[4].getValue()) {
-			isTwoPairs = true;
-		} else if(hand[1].getValue() == hand[2].getValue() && hand[3].getValue() == hand[4].getValue()) {
-			isTwoPairs = true;
-		} else {
-			isTwoPairs = false;
-		}
-		
-		return isTwoPairs;
+
+	public boolean is4s() {
+
+		boolean a1, a2;
+
+		a1 = sortedHand[0].getValue() == sortedHand[1].getValue() &&
+				sortedHand[1].getValue() == sortedHand[2].getValue() &&
+				sortedHand[2].getValue() == sortedHand[3].getValue();
+
+		a2 = sortedHand[1].getValue() == sortedHand[2].getValue() &&
+				sortedHand[2].getValue() == sortedHand[3].getValue() &&
+				sortedHand[3].getValue() == sortedHand[4].getValue();
+
+		return( a1 || a2 );
 	}
 	
-  public boolean isStraightFlush(){
-    return isStraight() && isFlush();
-  }
-  
-  public boolean isStraight(){
-    return allCardsAreConsecutiveIn(valueSortedHand());
-  }
-  
-  public boolean isFlush(){
-    return firstAndLastCardAreSameSuitIn(suitSortedHand());
-  }
-  
-  private Card[] valueSortedHand(){
-    sortedHand = hand.clone();
-    Arrays.sort(sortedHand,Comparator.comparing(Card::getValue));
-    return sortedHand;
-  }
-  
-  private Card[] suitSortedHand(){
-    sortedHand = hand.clone();
-    Arrays.sort(sortedHand,Comparator.comparing(Card::getSuit));
-    return sortedHand;
-  }
-  
-  private boolean allCardsAreConsecutiveIn(Card[] hand){
-    boolean straight = true;
-    int start = 1;
-    if(possiblyAceHighStraight()){
-      start = 2;
-    }
-    for(int i=start;i<hand.length;i++){
-      if(cardsAreNotConsecutive(hand[i],hand[i-1])){
-        straight = false;
-        break;
-      }
-    }
-    return straight;
-  }
-  
-  private boolean possiblyAceHighStraight(){
-    return hasAce() && secondValueIs10();
-  }
-  
-  private boolean hasAce(){
-    return sortedHand[0].getValue() == 1;
-  }
-  
-  private boolean secondValueIs10(){
-    return sortedHand[1].getValue() == 10;
-  }
-  
-  private boolean cardsAreNotConsecutive(Card first, Card second){
-    return first.getValue() - second.getValue() != 1;
-  }
-  
-  private boolean firstAndLastCardAreSameSuitIn(Card[] hand){
-    return hand[0].getSuit() == hand[hand.length-1].getSuit();
-  }
+	public boolean isStraightFlush(){
+		return isStraight() && isFlush();
+	}
+
+
+
+	public Card[] getHand() {
+		return this.hand;
+	}
+
+	public Card[] getSortedHand() {
+		return this.sortedHand;
+	}
+
+	//The player can choose which cards they want to swap to new ones once per round.
+	//Selected cards would be discarded from the hand and the rest sent to swapCards().
+	//swapCards() then adds the remaining cards from the deck to fill the hand again,
+	//returning the old hand with the new cards.
+
+	public void swapCards(Card[] sentHand) {
+		for(int i = 0; i < HANDSIZE; i++) {
+			if(hand[i] == null) {
+				hand[i] = currentDeck.nextCard();
+			}
+		}
+	}
+
+	public String toString() {
+		String tempString = "";
+		for(int i = 0; i < HANDSIZE; i++) {
+			if(i != 4) {
+				tempString += hand[i].toString() + ", ";
+			} else {
+				tempString += hand[i].toString();
+			}	
+		}
+		return tempString;
+	}
+
+
+	private Card[] valueSortedHand(){
+		sortedHand = hand.clone();
+		Arrays.sort(sortedHand,Comparator.comparing(Card::getValue));
+		return sortedHand;
+	}
+
+	private Card[] suitSortedHand(){
+		sortedHand = hand.clone();
+		Arrays.sort(sortedHand,Comparator.comparing(Card::getSuit));
+		return sortedHand;
+	}
+
+	private boolean allCardsAreConsecutiveIn(Card[] hand){
+		boolean straight = true;
+		int start = 1;
+		if(possiblyAceHighStraight()){
+			start = 2;
+		}
+		for(int i=start;i<hand.length;i++){
+			if(cardsAreNotConsecutive(hand[i],hand[i-1])){
+				straight = false;
+				break;
+			}
+		}
+		return straight;
+	}
+
+	private boolean possiblyAceHighStraight(){
+		return hasAce() && secondValueIs10();
+	}
+
+	private boolean hasAce(){
+		return sortedHand[0].getValue() == 1;
+	}
+
+	private boolean secondValueIs10(){
+		return sortedHand[1].getValue() == 10;
+	}
+
+	private boolean cardsAreNotConsecutive(Card first, Card second){
+		return first.getValue() - second.getValue() != 1;
+	}
+
+	private boolean firstAndLastCardAreSameSuitIn(Card[] hand){
+		return hand[0].getSuit() == hand[hand.length-1].getSuit();
+	}
 }
