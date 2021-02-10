@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * The game-engine connects to the database through this interface.
  * 
  * @author Aki Koppinen
- * @version 2.1 (06.02.2021)
+ * @version 2.2 (10.02.2021)
  */
 public interface DAOIF {
 	
@@ -57,12 +57,12 @@ public interface DAOIF {
 	 * Deletes all players from database
 	 * @return success info
 	 */
-	public boolean deletePlayer(Player player);
+	public boolean deletePlayer(int playerID);
 	/**
 	 * Delete all played games from database
 	 * @return success info
 	 */
-	public boolean deletePlayedGame(PlayedGame playedGame);
+	public boolean deletePlayedGame(int playedGameID);
 	
 	
 	

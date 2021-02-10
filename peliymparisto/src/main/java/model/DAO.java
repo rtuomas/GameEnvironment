@@ -24,7 +24,7 @@ import com.mysql.jdbc.Field;
 /**
  * The Data Access Object to handle database connections, uses hibernate
  * @author Aki Koppinen
- * @version 1.1 06.02.2021
+ * @version 1.2 10.02.2021
  */
 public class DAO implements DAOIF {
 	
@@ -39,11 +39,12 @@ public class DAO implements DAOIF {
 	 */
 	public DAO() {
 		try {
+			System.out.println("Connecting to database...");
 			sFactory = new Configuration().configure().buildSessionFactory();
-			System.out.println("Kaikki OK");
+			System.out.println("Connection OK");
 		} catch (Exception e) {
 			System.err.println("Creating the session factory failed: " + e.getMessage());
-			System.exit(-1); //delete this for testing
+			System.exit(-1);
 		}
 	}
 	
@@ -224,16 +225,40 @@ public class DAO implements DAOIF {
 
 	/**	{@inheritDoc} */
 	@Override
-	public boolean deletePlayer(Player player) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean deletePlayer(int playerID) {
+		Transaction transact = null;
+		try (Session session = sFactory.openSession()) {
+			transact = session.beginTransaction();
+			String hql = "delete from Player where id = :ID";
+			session.createQuery(hql).setParameter("ID", playerID).executeUpdate();
+			transact.commit();
+		} catch(Exception e) {
+			if (transact != null) {
+				transact.rollback();
+			}
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 	/**	{@inheritDoc} */
 	@Override
-	public boolean deletePlayedGame(PlayedGame playedGame) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean deletePlayedGame(int playedGameID) {
+		Transaction transact = null;
+		try (Session session = sFactory.openSession()) {
+			transact = session.beginTransaction();
+			String hql = "delete from PlayedGame where id = :ID";
+			session.createQuery(hql).setParameter("ID", playedGameID).executeUpdate();
+			transact.commit();
+		} catch(Exception e) {
+			if (transact != null) {
+				transact.rollback();
+			}
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 }

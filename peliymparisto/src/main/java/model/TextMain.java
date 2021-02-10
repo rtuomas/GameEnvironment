@@ -49,25 +49,27 @@ public class TextMain {
 		System.out.println(hacep.getScore());
 		System.out.println(hstr.getScore());
 		
+		//Tietokanta testailua
 		DAOIF dao = new DAO();
-		
 		printPlayers(dao);
 		printPlayedGames(dao);
+		//addJari(dao);
+		//addAarnioGame(dao);
+		//removeAarnioGame(dao);
+		//removeJari(dao);
 		
-		System.out.println("--------Trying to add a Player----------");
-		Player veli = new Player("Jari", "Aarnio", "krpboss@poliisi.fi", "salasana123");
-		//dao.createPlayer(veli); //kommentoitu pois ettei testiajoissa tulisi liikaa lisayksia tietokantaan
-		printPlayers(dao);
-		
-		System.out.println("--------Trying to add a played game----------");
-		PlayedGame veliVastaanVeli = new PlayedGame(1001, 1002, "pokeri", 1002, 30, 60, 130);
-		//dao.createPlayedGame(veliVastaanVeli); //kommentoitu pois ettei testiajoissa tulisi liikaa lisayksia tietokantaan
-		printPlayedGames(dao);
-
+	}
+	
+	private static void testIfTrue(boolean value) {
+		if (value) {
+			System.out.println("Success");
+		} else {
+			System.out.println("Error");
+		}
 	}
 	
 	private static void printPlayers(DAOIF dao) {
-		System.out.println("-----------Players------------");
+		System.out.println("-----------Showing Players------------");
 		Player[] players1 = dao.readPlayers();
 		for (Player player: players1) {
 			System.out.println(player);
@@ -75,11 +77,38 @@ public class TextMain {
 	}
 	
 	private static void printPlayedGames(DAOIF dao) {
-		System.out.println("-----------Played Games-------------");
+		System.out.println("-----------Showing Played Games-------------");
 		PlayedGame[] playedGames1 = dao.readPlayedGames();
 		for (PlayedGame playedGame: playedGames1) {
 			System.out.println(playedGame);
 		}
-
 	}
+	
+	private static void addJari(DAOIF dao) {
+		System.out.println("--------Trying to add a Player----------");
+		Player veli = new Player("Jari", "Aarnio", "krpboss@poliisi.fi", "salasana123");
+		boolean test = dao.createPlayer(veli);
+		testIfTrue(test);
+	}
+	
+	private static void addAarnioGame(DAOIF dao) {
+		System.out.println("--------Trying to add a Played game----------");
+		PlayedGame veliVastaanVeli = new PlayedGame(1001, 1002, "pokeri", 1002, 30, 60, 130);
+		boolean test = dao.createPlayedGame(veliVastaanVeli);
+		testIfTrue(test);
+	}
+	
+	private static void removeAarnioGame(DAOIF dao) {
+		System.out.println("--------Trying to remove a Played game----------");
+		boolean test = dao.deletePlayedGame(2);
+		testIfTrue(test);
+	}
+	
+	private static void removeJari(DAOIF dao) {
+		System.out.println("--------Trying to remove a Player----------");
+		boolean test = dao.deletePlayer(1002);
+		testIfTrue(test);
+	}
+	
+	
 }

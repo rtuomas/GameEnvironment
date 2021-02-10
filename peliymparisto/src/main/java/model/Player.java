@@ -119,7 +119,7 @@ public class Player implements Comparable<Player>{
 	}
 	
 	public String toString() {
-		return this.firstName + " " + this.lastName + " " + this.credits + " " + this.profileName + " " + this.email + " " + this.password + " " + this.createdOn;
+		return this.id + " " + this.firstName + " " + this.lastName + " " + this.credits + " " + this.profileName + " " + this.email + " " + this.password + " " + this.createdOn;
 	}
 
 	@Override
