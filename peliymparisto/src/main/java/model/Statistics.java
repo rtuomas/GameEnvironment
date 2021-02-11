@@ -40,7 +40,7 @@ public class Statistics {
         XYChart.Series series = new XYChart.Series();
         //series.setName("My portfolio");
         
-        for(int i=0;i<4;i++) {
+        for(int i=0;i<myCredits.size();i++) {
         	series.getData().add(new XYChart.Data(dates[i], myCredits.get(i)));
         }
         
