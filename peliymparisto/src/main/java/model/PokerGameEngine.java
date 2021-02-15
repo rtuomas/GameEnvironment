@@ -1,8 +1,10 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import controller.ControllerIF;
+import javafx.scene.chart.LineChart;
 
 /**
  * The game engine for the poker game. It connects all the different classes needed to run the poker game.
@@ -20,6 +22,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	//Players bet (starting with 1.00)
 	private double bet;
 	private Deck deck;
+	private Statistics stats;
 	
 	/**
 	 * Constructor for the poker game engine.
@@ -29,6 +32,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	public PokerGameEngine(ControllerIF controller) {
 		this.controller = controller;
 		this.dao = new DAO();
+		this.stats = new Statistics();
 	}
 	
 	/**
@@ -65,5 +69,19 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		Hand hand = new Hand(deck);
 		deck.shuffle();
 		return hand.getHand();
+	}
+	
+	@Override
+	public LineChart<Number, Number> getLineChart() {
+		//Statistics stats = new Statistics();
+		LineChart<Number, Number> lineChart = stats.getLineChart();
+		
+		return lineChart;
+	}
+	
+	@Override
+	public String[] getRanking(){
+		//Statistics stats = new Statistics();
+		return stats.getRanking();
 	}
 }
