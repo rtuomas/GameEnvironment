@@ -10,7 +10,7 @@ import view.ViewIF;
 /**
  * The Controller which connects the GUI and chosen game engine together using MVC model.
  * @author ---
- * @version 1.0 26.01.2021
+ * @version 1.1 15.02.2021
  */
 public class Controller implements ControllerIF {
 	
@@ -29,6 +29,8 @@ public class Controller implements ControllerIF {
 	@Override
 	public void startPokerGame() {
 		model = new PokerGameEngine(this);
+		//model.setPlayer1(view.getPlayerInfo()); //not implemented yet
+		//model.setUpSinglePlayerGame(); //needs previous function to work
 		((Thread)model).start();
 	}
 	

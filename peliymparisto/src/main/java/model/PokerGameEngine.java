@@ -7,7 +7,7 @@ import controller.ControllerIF;
 /**
  * The game engine for the poker game. It connects all the different classes needed to run the poker game.
  * @author ---
- * @version 1.0 26.01.2021
+ * @version 1.1 15.02.2021
  */
 public class PokerGameEngine extends Thread implements ModelIF {
 	
@@ -20,6 +20,12 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	//Players bet (starting with 1.00)
 	private double bet;
 	private Deck deck;
+	//Player variables
+	private Player player1;
+	private Player player2;
+	//Game variables
+	private int winner;
+	private int creditChange;
 	
 	/**
 	 * Constructor for the poker game engine.
@@ -35,12 +41,43 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	 * This method uses Threads to run multiple events in the GUI simultaneously
 	 */
 	public void run() {
-		//game functionality when running through GUI (not CLI)
+		//game functionality
 		deck = new Deck ();
 		deck.shuffle();
+		//endGame() //called when the game ends
 	}
 	
+	/**
+	 * Controller calls this method before starting the game
+	 */
+	public void setUpSinglePlayerGame() {
+		this.player2 = dao.getPlayer(1000);
+	}
 	
+	/**
+	 * This method is ran at the end of the game to save the played game into database and update credit amounts to players.
+	 */
+	public void endGame() {
+		//specify who is winner before this method
+		int crForP1;
+		int crForP2;
+		int p1ID = this.player1.getId();
+		int p2ID = this.player2.getId();
+		int cr = this.creditChange; //this could be same as bet but has to be int... fix later
+		if (this.winner == this.player1.getId()) {
+			crForP1 = this.player1.getCredits() + cr;
+			crForP2 = this.player2.getCredits() - cr;
+		} else {
+			crForP1 = this.player1.getCredits() - cr;
+			crForP2 = this.player2.getCredits() + cr;
+		}
+		PlayedGame currentGame = new PlayedGame(p1ID, p2ID, "poker", this.winner, cr, crForP1, crForP2);
+		dao.createPlayedGame(currentGame);
+		this.player1.setCredits(crForP1);
+		this.player2.setCredits(crForP2);
+		dao.updatePlayer(player1);
+		dao.updatePlayer(player2);
+	}
 	
 	/**
 	 * Increases the bet by certain ammount

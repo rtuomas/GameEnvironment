@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * The game-engine connects to the database through this interface.
  * 
  * @author Aki Koppinen
- * @version 2.2 (10.02.2021)
+ * @version 2.3 (15.02.2021)
  */
 public interface DAOIF {
 	
@@ -63,10 +63,16 @@ public interface DAOIF {
 	 * @return success info
 	 */
 	public boolean deletePlayedGame(int playedGameID);
-	
-	
-	
-	
+	/**
+	 * get a specific Player info from database
+	 * @return the Player class
+	 */
+	public Player getPlayer(int playerID);
+	/**
+	 * get a specific PlayedGame info from database
+	 * @return the PlayedGame class
+	 */
+	public PlayedGame getPlayedGame(int playedGameID);
 	
 	public ArrayList<String> readRankings();
 	public ArrayList<Integer> readCredits(int id);
