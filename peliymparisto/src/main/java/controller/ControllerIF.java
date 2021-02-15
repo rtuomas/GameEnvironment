@@ -2,6 +2,7 @@ package controller;
 
 import java.util.ArrayList;
 
+import javafx.scene.chart.LineChart;
 import model.Card;
 
 /**
@@ -27,6 +28,10 @@ public interface ControllerIF {
 	 * @return ArrayList<String> dealed cards
 	 */
 	public ArrayList<String> dealCards();
+
+	LineChart<Number, Number> getLineChart();
+
+	String[] getRanking();
 	
 
 }

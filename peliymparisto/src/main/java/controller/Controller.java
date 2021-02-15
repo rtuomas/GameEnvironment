@@ -2,6 +2,7 @@ package controller;
 
 import java.util.ArrayList;
 
+import javafx.scene.chart.LineChart;
 import model.Card;
 import model.ModelIF;
 import model.PokerGameEngine;
@@ -45,4 +46,25 @@ public class Controller implements ControllerIF {
 		return imgpaths;
 	}
 	
+	@Override
+	public LineChart<Number, Number> getLineChart() {
+		try {
+			return model.getLineChart();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return null;
+		
+	}
+	
+	@Override
+	public String[] getRanking() {
+		try {
+			return model.getRanking();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return null;
+		
+	}
 }

@@ -58,6 +58,7 @@ public class View extends Application implements ViewIF {
 	private Button enterStats;
 	/** Button to close the program */
 	private Button exitProgram;
+	private Tab ranking, creditDevelopment;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -294,6 +295,7 @@ public class View extends Application implements ViewIF {
 	private BorderPane statsBuilder() {
 		BorderPane statsView = new BorderPane();
 		
+		/*
 		Statistics stats = new Statistics();
 		LineChart<Number, Number> lineChart = stats.getLineChart();
 		
@@ -302,17 +304,18 @@ public class View extends Application implements ViewIF {
 		for(int i = 0;i<ranks.length;i++) {
 			listView.getItems().add(ranks[i]);
 		}
+		*/
 		
 		TabPane tabPane = new TabPane();
 		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-		Tab creditDevelopment = new Tab("Credits", new Label("This pane shows your credit development from the beginning"));
+		creditDevelopment = new Tab("Credits", new Label("This pane shows your credit development from the beginning"));
 		ImageView growth = new ImageView(new Image("/images/growthtab.png", 25, 22, false, false));
 		creditDevelopment.setGraphic(growth);
-        Tab ranking = new Tab("Ranking"  , new Label("Can you beat the best players?"));
+        ranking = new Tab("Ranking"  , new Label("Can you beat the best players?"));
         ImageView rank = new ImageView(new Image("/images/rankingtab.png", 25, 22, false, false));
         ranking.setGraphic(rank);
-        creditDevelopment.setContent(lineChart);
-        ranking.setContent(listView);
+        //creditDevelopment.setContent(lineChart);
+        //ranking.setContent(listView);
         tabPane.getTabs().add(creditDevelopment);
         tabPane.getTabs().add(ranking);
         
@@ -342,6 +345,8 @@ public class View extends Application implements ViewIF {
 		});
 		enterStats.setOnAction(e -> {
 			primaryStage.setScene(statsScene);
+			System.out.println("STATS");
+			fillStatistics();
 		});
 		backToMainMenu1.setOnAction(e -> {
 			primaryStage.setScene(mainMenuScene);
@@ -353,5 +358,20 @@ public class View extends Application implements ViewIF {
 			primaryStage.setScene(mainMenuScene);
 		});
 		exitProgram.setOnAction(e -> Platform.exit());
+	}
+
+	private void fillStatistics() {
+		
+		LineChart<Number, Number> lineChart = controller.getLineChart();
+		
+		ListView listView = new ListView();
+		String[] ranks = controller.getRanking();
+		for(int i = 0;i<ranks.length;i++) {
+			listView.getItems().add(ranks[i]);
+		}
+		
+		creditDevelopment.setContent(lineChart);
+        ranking.setContent(listView);
+		
 	}
 }
