@@ -2,6 +2,7 @@ package controller;
 
 import java.util.ArrayList;
 
+import javafx.scene.chart.LineChart;
 import model.Card;
 import model.HandValue;
 
@@ -44,4 +45,7 @@ public interface ControllerIF {
 	
 	//hybrid methods -->
 	
+	LineChart<Number, Number> getLineChart();
+
+	String[] getRanking();	
 }

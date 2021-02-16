@@ -24,7 +24,7 @@ import com.mysql.jdbc.Field;
 /**
  * The Data Access Object to handle database connections, uses hibernate
  * @author Aki Koppinen
- * @version 1.2 10.02.2021
+ * @version 1.3 15.02.2021
  */
 public class DAO implements DAOIF {
 	
@@ -145,6 +145,32 @@ public class DAO implements DAOIF {
 		return (Player[])playersList.toArray(playersArray);
 	}
 	
+	/**	{@inheritDoc} */
+	public Player getPlayer(int playerID) {
+		Player player = new Player();
+		try (Session session = sFactory.openSession()) {
+			session.beginTransaction();
+			player = (Player) session.get(Player.class, playerID);
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return player;
+	}
+	
+	/**	{@inheritDoc} */
+	public PlayedGame getPlayedGame(int playedGameID) {
+		PlayedGame playedGame = new PlayedGame();
+		try (Session session = sFactory.openSession()) {
+			session.beginTransaction();
+			playedGame = (PlayedGame) session.get(PlayedGame.class, playedGameID);
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return playedGame;
+	}
+	
 	public ArrayList<String> readRankings() {
 		ArrayList<String> statsList = new ArrayList<>();
 		try (Session session = sFactory.openSession()) {
@@ -198,15 +224,37 @@ public class DAO implements DAOIF {
 	/**	{@inheritDoc} */
 	@Override
 	public boolean updatePlayer(Player player) {
-		// TODO Auto-generated method stub
-		return false;
+		Transaction transact = null;
+		try (Session session = sFactory.openSession()) {
+			transact = session.beginTransaction();
+			session.update(player);
+			transact.commit();
+		} catch(Exception e) {
+			if (transact != null) {
+				transact.rollback();
+			}
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 	/**	{@inheritDoc} */
 	@Override
 	public boolean updatePlayedGame(PlayedGame playedGame) {
-		// TODO Auto-generated method stub
-		return false;
+		Transaction transact = null;
+		try (Session session = sFactory.openSession()) {
+			transact = session.beginTransaction();
+			session.update(playedGame);
+			transact.commit();
+		} catch(Exception e) {
+			if (transact != null) {
+				transact.rollback();
+			}
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 	/**	{@inheritDoc} */

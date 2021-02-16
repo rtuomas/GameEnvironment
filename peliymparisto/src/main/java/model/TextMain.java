@@ -3,7 +3,7 @@ package model;
 /**
  * Testing class
  * @author ----
- * @version 7.0 06.02.2021
+ * @version 7.1 15.02.2021
  */
 public class TextMain {
 
@@ -53,6 +53,10 @@ public class TextMain {
 		DAOIF dao = new DAO();
 		printPlayers(dao);
 		printPlayedGames(dao);
+		//Player jari = dao.getPlayer(1003);
+		//jari.setFirstName("Kari");
+		//dao.updatePlayer(jari);
+		printPlayers(dao);
 		//addJari(dao);
 		//addAarnioGame(dao);
 		//removeAarnioGame(dao);
