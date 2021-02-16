@@ -15,11 +15,11 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	private ControllerIF controller;
 	/** Interface with a connection to DAO */
 	private DAOIF dao;
-	//List taken from Veikkaus JokeriPokeri game
-	private Double[] betTable = {0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
 	//Players bet (starting with 1.00)
 	private double bet;
 	private Deck deck;
+	private Hand hand;
+	private Player player;
 	
 	/**
 	 * Constructor for the poker game engine.
@@ -38,32 +38,57 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		//game functionality when running through GUI (not CLI)
 		deck = new Deck ();
 		deck.shuffle();
-	}
-	
-	
-	
-	/**
-	 * Increases the bet by certain ammount
-	 */
-	public void increaseBet() {
-		if(this.bet!=10.0) {
-			this.bet = betTable[Arrays.asList(betTable).indexOf(this.bet)+1];
-		}
-	}
-	
-	/**
-	 * Decreases the bet by certain ammount
-	 */
-	public void decreaseBet() {
-		if(this.bet!=0.1) {
-			this.bet = betTable[Arrays.asList(betTable).indexOf(this.bet)-1];
-		}
+				// dealHand -> hand to controller -> hand to view
+				// update credits -> controller -> view
+				// get score -> controller -> view
+				// database stuff
+				// thread ends
+		dealCards();
+		updateCredits();
+		setScore();
 	}
 	
 	@Override
-	public Card [] dealCards () {
-		Hand hand = new Hand(deck);
-		deck.shuffle();
-		return hand.getHand();
+	public void dealCards () {
+		this.hand = new Hand(deck);
+		controller.showCards(this.hand.getHand());
+	}
+	
+	@Override
+	public void setBet(double bet) {
+		this.bet = bet;
+	}
+	
+	@Override
+	public void setScore () {
+		controller.setScore(this.hand.getScore().name());
+	}
+	
+	@Override
+	public void setPlayer (String name) {
+		Player [] players = this.dao.readPlayers();
+		String [] names = name.split(" ");
+		for(Player p : players) {
+			if(p.getFirstName().equals(names[0]) && p.getLastName().equals(names[1])) {
+				this.player = p;
+			}
+		}
+	}
+	
+	
+	@Override
+	public double getCredits () {
+		return (double)this.player.getCredits();
+	}
+	
+	@Override
+	public void updateCredits () {
+		if(this.hand.getScore() != HandValue.NO_WIN) {
+			double win = this.hand.getScore().getMultiplier() * this.bet;
+			this.player.setCredits(this.player.getCredits() + (int)win);
+			controller.setCredits();
+		}
+		this.player.setCredits(this.player.getCredits() - (int)this.bet);
+		controller.setCredits();
 	}
 }

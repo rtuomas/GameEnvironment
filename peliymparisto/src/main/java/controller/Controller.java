@@ -29,18 +29,33 @@ public class Controller implements ControllerIF {
 	@Override
 	public void startPokerGame() {
 		model = new PokerGameEngine(this);
+		model.setBet(view.getBet());
+		model.setPlayer(view.getPlayer());
 		((Thread)model).start();
 	}
 	
+	
 	@Override
-	public ArrayList<String> dealCards () {
-		Card cards [] = model.dealCards();
+	public void setScore(String score) {
+		view.setScore(score);
+	}
+	
+	@Override
+	public void setCredits () {
+		view.setCredits(model.getCredits());
+	}
+	
+	@Override
+	public void updateCredits() {
+		model.updateCredits();
+	}
+	
+	@Override
+	public void showCards(Card[] cards) {
 		ArrayList<String> imgpaths = new ArrayList<String>();
 		for(Card i : cards) {
 			imgpaths.add(i.toString());
 		}
-		
-		return imgpaths;
+		view.setCards(imgpaths);
 	}
-	
 }

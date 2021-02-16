@@ -1,4 +1,9 @@
 package model;
+/**
+ * Card class for card games.
+ * @author Tatu Nordström
+ *
+ */
 
 public class Card {
 	

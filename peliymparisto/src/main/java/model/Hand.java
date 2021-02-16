@@ -48,7 +48,7 @@ public class Hand{
 			return HandValue.TWO_PAIRS;
 		else if (isAcePair())
 			return HandValue.ACE_PAIR;
-		else return null;
+		else return HandValue.NO_WIN;
 	}
 
 	private void fillHandWithCards(){

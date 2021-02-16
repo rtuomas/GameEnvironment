@@ -8,9 +8,33 @@ package model;
 public interface ModelIF {
 	
 	//The common methods for all game engines -->
+	
 	/**
-	 * Deals cards and shuffles deck
-	 * @return Card [] dealed card objects
+	 * Deals cards in model.
 	 */
-	public Card [] dealCards();
+	public void dealCards();
+
+	/**
+	 * Sets model bet.
+	 * @param bet double bet size
+	 */
+	public void setBet(double bet);
+	/**
+	 * Sends game score to controller after game.
+	 */
+	public void setScore();
+	/**
+	 * Sets the player of the game.
+	 * @param name string player name
+	 */
+	public void setPlayer(String name);
+	/**
+	 * Returns credits after game.
+	 * @return double credit amount
+	 */
+	public double getCredits();
+	/**
+	 * Updates credits after game.
+	 */
+	public void updateCredits();
 }

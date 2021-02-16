@@ -30,6 +30,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import model.Card;
 import model.Statistics;
 
 /**
@@ -242,14 +243,14 @@ public class View extends Application implements ViewIF {
 		AnchorPane pokerGameView = new AnchorPane(backToMainMenu1, play, gamble, plus, minus, credits, bet, wintable, cardPane);
 		pokerGameView.setPrefSize(600, 400);
 		
-		// On action for play button
+		// On action for play button, should be refactored
 		play.setOnAction(e -> {
-			ArrayList<String> cards = controller.dealCards();
-			
-			for(int i = 0; i < cards.size(); i++) {
-				Image newCard = new Image("/images/" + cards.get(i) + ".png", 120, 128, false, false);
-				cardPane.add(new ImageView(newCard), i, 0);
-			}
+//				ArrayList<String> cards = controller.dealCards();
+//			
+//			for(int i = 0; i < cards.size(); i++) {
+//				Image newCard = new Image("/images/" + cards.get(i) + ".png", 120, 128, false, false);
+//				cardPane.add(new ImageView(newCard), i, 0);
+//			}
 		});
 		
 		return pokerGameView;
@@ -333,8 +334,6 @@ public class View extends Application implements ViewIF {
 	 */
 	private void createGUITransitions(Stage primaryStage, Scene mainMenuScene, Scene pokerGameScene, Scene settingsScene, Scene statsScene) {
 		enterPokerGame.setOnAction(e -> {
-			// not sure if starting pokergame thread is good here?
-			controller.startPokerGame();
 			primaryStage.setScene(pokerGameScene);
 		});
 		enterSettings.setOnAction(e -> {
@@ -353,5 +352,35 @@ public class View extends Application implements ViewIF {
 			primaryStage.setScene(mainMenuScene);
 		});
 		exitProgram.setOnAction(e -> Platform.exit());
+	}
+
+	@Override
+	public double getBet() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String getPlayer() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setCards(ArrayList<String> cards) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setScore(String score) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setCredits(double credits) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -1,5 +1,9 @@
 package model;
-
+/**
+ * Enum to determine hand values.
+ * @author Tatu Nordström
+ *
+ */
 public enum HandValue {
 	ACE_PAIR(1),
 	TWO_PAIRS(2.0),
@@ -8,15 +12,22 @@ public enum HandValue {
 	FLUSH(3.5),
 	FULL_HOUSE(5.0),
 	FOUR_OF_A_KIND(7.0),
-	STRAIGHT_FLUSH(10.0);
+	STRAIGHT_FLUSH(10.0),
+	NO_WIN(0);
 
 
 	private double multiplier;
-	
+	/**
+	 * Getter for hand multiplier.
+	 * @return double multiplier amount.
+	 */
 	public double getMultiplier () {
 		return this.multiplier;
 	}
-
+	/**
+	 * Constructor. 
+	 * @param multiplier determines how valuable hand is.
+	 */
 	private HandValue (double multiplier) {
 		this.multiplier = multiplier;
 	}
