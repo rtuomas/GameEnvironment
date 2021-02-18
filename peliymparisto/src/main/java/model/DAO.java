@@ -24,7 +24,7 @@ import com.mysql.jdbc.Field;
 /**
  * The Data Access Object to handle database connections, uses hibernate
  * @author Aki Koppinen
- * @version 1.3 15.02.2021
+ * @version 1.4 18.02.2021
  */
 public class DAO implements DAOIF {
 	

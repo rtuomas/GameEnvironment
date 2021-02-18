@@ -9,7 +9,7 @@ import javafx.scene.chart.LineChart;
 /**
  * The game engine for the poker game. It connects all the different classes needed to run the poker game.
  * @author ---
- * @version 1.1 15.02.2021
+ * @version 1.2 18.02.2021
  */
 public class PokerGameEngine extends Thread implements ModelIF {
 	

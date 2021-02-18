@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * The game-engine connects to the database through this interface.
  * 
  * @author Aki Koppinen
- * @version 2.3 (15.02.2021)
+ * @version 2.4 (18.02.2021)
  */
 public interface DAOIF {
 	

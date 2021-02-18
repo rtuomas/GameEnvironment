@@ -7,7 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 /**
  * The Object which holds information about the player, has JPA annotations for hibernate to use
  * @author Aki Koppinen, Tuomas Rajala
- * @version 2.5 09.02.2021
+ * @version 2.6 18.02.2021
  */
 @Entity
 @Table(name="player")
