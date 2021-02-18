@@ -56,7 +56,7 @@ public class TextMain {
 		//Player jari = dao.getPlayer(1003);
 		//jari.setFirstName("Kari");
 		//dao.updatePlayer(jari);
-		printPlayers(dao);
+		//printPlayers(dao);
 		//addJari(dao);
 		//addAarnioGame(dao);
 		//removeAarnioGame(dao);
@@ -97,7 +97,7 @@ public class TextMain {
 	
 	private static void addAarnioGame(DAOIF dao) {
 		System.out.println("--------Trying to add a Played game----------");
-		PlayedGame veliVastaanVeli = new PlayedGame(1001, 1002, "pokeri", 1002, 30, 60, 130);
+		PlayedGame veliVastaanVeli = new PlayedGame(1002, 1003, "poker", 1003, 30, 60, 130);
 		boolean test = dao.createPlayedGame(veliVastaanVeli);
 		testIfTrue(test);
 	}
@@ -110,7 +110,7 @@ public class TextMain {
 	
 	private static void removeJari(DAOIF dao) {
 		System.out.println("--------Trying to remove a Player----------");
-		boolean test = dao.deletePlayer(1002);
+		boolean test = dao.deletePlayer(1003);
 		testIfTrue(test);
 	}
 	

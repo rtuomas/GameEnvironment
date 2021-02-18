@@ -18,11 +18,11 @@ public class Statistics {
 	public LineChart<Number, Number> getLineChart() {
 		
 		DAOIF dao = new DAO();
-		ArrayList<Integer> creditsList = new ArrayList<>();
+		ArrayList<Double> creditsList = new ArrayList<>();
 		creditsList = dao.readCredits(1001);
-		ArrayList<Integer> myCredits = new ArrayList<>();
-		int temp = 0;
-		for(Integer i : creditsList) {
+		ArrayList<Double> myCredits = new ArrayList<>();
+		double temp = 0.0;
+		for(Double i : creditsList) {
 			temp += i;
 			myCredits.add(temp);
 		}

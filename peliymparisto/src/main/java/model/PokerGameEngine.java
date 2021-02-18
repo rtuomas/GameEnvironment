@@ -29,7 +29,6 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	private Player player2;
 	//Game variables
 	private int winner;
-	private int creditChange;
 	//Statistics
 	private Statistics stats;
 	
@@ -74,19 +73,18 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	 */
 	public void endGame() {
 		//specify who is winner before this method
-		int crForP1;
-		int crForP2;
+		double crForP1;
+		double crForP2;
 		int p1ID = this.player1.getId();
 		int p2ID = this.player2.getId();
-		int cr = this.creditChange; //this could be same as bet but has to be int... fix later
 		if (this.winner == this.player1.getId()) {
-			crForP1 = this.player1.getCredits() + cr;
-			crForP2 = this.player2.getCredits() - cr;
+			crForP1 = this.player1.getCredits() + this.bet;
+			crForP2 = this.player2.getCredits() - this.bet;
 		} else {
-			crForP1 = this.player1.getCredits() - cr;
-			crForP2 = this.player2.getCredits() + cr;
+			crForP1 = this.player1.getCredits() - this.bet;
+			crForP2 = this.player2.getCredits() + this.bet;
 		}
-		PlayedGame currentGame = new PlayedGame(p1ID, p2ID, "poker", this.winner, cr, crForP1, crForP2);
+		PlayedGame currentGame = new PlayedGame(p1ID, p2ID, "poker", this.winner, this.bet, crForP1, crForP2);
 		dao.createPlayedGame(currentGame);
 		this.player1.setCredits(crForP1);
 		this.player2.setCredits(crForP2);

@@ -192,9 +192,9 @@ public class DAO implements DAOIF {
 		return statsList;
 	}
 	
-	public ArrayList<Integer> readCredits(int id) {
+	public ArrayList<Double> readCredits(int id) {
 		
-		ArrayList<Integer> creditsList = new ArrayList<>();
+		ArrayList<Double> creditsList = new ArrayList<>();
 		ArrayList<Date> datesList = new ArrayList<>();
 		
 		try (Session session = sFactory.openSession()) {
@@ -206,7 +206,7 @@ public class DAO implements DAOIF {
 			@SuppressWarnings("unchecked")
 			List<PlayedGame> result = query.list();
 			
-			creditsList.add(100);
+			creditsList.add(100.0);
 			for (PlayedGame a: result) {
 				//datesList.add((a.getPlayedOn());
 				creditsList.add(a.getCreditChange());

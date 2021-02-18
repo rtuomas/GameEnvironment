@@ -22,7 +22,7 @@ public class Player implements Comparable<Player>{
 	@Column
 	private String lastName;
 	@Column
-	private int credits;
+	private double credits;
 	@Column
 	private String profileName;
 	@Column (unique = true)
@@ -43,7 +43,7 @@ public class Player implements Comparable<Player>{
 		this.lastName = ln;
 		this.email = email;
 		this.password = pw;
-		this.credits = 100;
+		this.credits = 100.0;
 		this.profileName = "Player";
 	}
 	
@@ -78,11 +78,11 @@ public class Player implements Comparable<Player>{
 		this.lastName = lastName;
 	}
 
-	public int getCredits() {
+	public double getCredits() {
 		return credits;
 	}
 
-	public void setCredits(int credits) {
+	public void setCredits(double credits) {
 		this.credits = credits;
 	}
 

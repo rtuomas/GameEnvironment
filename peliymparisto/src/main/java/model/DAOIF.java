@@ -75,6 +75,6 @@ public interface DAOIF {
 	public PlayedGame getPlayedGame(int playedGameID);
 	
 	public ArrayList<String> readRankings();
-	public ArrayList<Integer> readCredits(int id);
+	public ArrayList<Double> readCredits(int id);
 
 }

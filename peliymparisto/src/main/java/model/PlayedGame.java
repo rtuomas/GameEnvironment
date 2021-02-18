@@ -26,11 +26,11 @@ public class PlayedGame {
 	@Column
 	private int winner;
 	@Column
-	private int creditChange;
+	private double creditChange;
 	@Column
-	private int creditAfterPlayer1;
+	private double creditAfterPlayer1;
 	@Column
-	private int creditAfterPlayer2;
+	private double creditAfterPlayer2;
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date playedOn;
@@ -39,7 +39,7 @@ public class PlayedGame {
 		super();
 	}
 	
-	public PlayedGame(int p1, int p2, String gt, int pw, int cc, int cap1, int cap2) {
+	public PlayedGame(int p1, int p2, String gt, int pw, double cc, double cap1, double cap2) {
 		super();
 		this.player1 = p1;
 		this.player2 = p2;
@@ -90,11 +90,11 @@ public class PlayedGame {
 		this.winner = winner;
 	}
 
-	public int getCreditChange() {
+	public double getCreditChange() {
 		return creditChange;
 	}
 
-	public void setCreditChange(int creditChange) {
+	public void setCreditChange(double creditChange) {
 		this.creditChange = creditChange;
 	}
 
@@ -104,6 +104,22 @@ public class PlayedGame {
 
 	public void setPlayedOn(Date playedOn) {
 		this.playedOn = playedOn;
+	}
+
+	public double getCreditAfterPlayer1() {
+		return creditAfterPlayer1;
+	}
+
+	public void setCreditAfterPlayer1(double creditAfterPlayer1) {
+		this.creditAfterPlayer1 = creditAfterPlayer1;
+	}
+
+	public double getCreditAfterPlayer2() {
+		return creditAfterPlayer2;
+	}
+
+	public void setCreditAfterPlayer2(double creditAfterPlayer2) {
+		this.creditAfterPlayer2 = creditAfterPlayer2;
 	}
 
 	public String toString() {
