@@ -113,6 +113,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		Player [] players = this.dao.readPlayers();
 		String [] names = name.split(" ");
 		for(Player p : players) {
+			System.out.println(p);
 			if(p.getFirstName().equals(names[0]) && p.getLastName().equals(names[1])) {
 				this.player = p;
 			}
@@ -122,17 +123,17 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	
 	@Override
 	public double getCredits () {
-		return (double)this.player.getCredits();
+		return this.player.getCredits();
 	}
 	
 	@Override
 	public void updateCredits () {
 		if(this.hand.getScore() != HandValue.NO_WIN) {
 			double win = this.hand.getScore().getMultiplier() * this.bet;
-			this.player.setCredits(this.player.getCredits() + (int)win);
+			this.player.setCredits(this.player.getCredits() + win);
 			controller.setCredits();
 		}
-		this.player.setCredits(this.player.getCredits() - (int)this.bet);
+		this.player.setCredits(this.player.getCredits() - this.bet);
 		controller.setCredits();
 	}
 	

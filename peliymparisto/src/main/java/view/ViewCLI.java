@@ -70,7 +70,7 @@ public class ViewCLI implements ViewIF {
 	private static boolean gameOver = false;
 	private Double[] betTable = {0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
 	private double bet = betTable[6];
-	private String player = "Kari Aarnio";
+	private String player = "Pena Aarnio";
 	private double credits;
 	private Controller controller;
 	
