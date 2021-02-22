@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -167,12 +168,19 @@ public class Hand{
 	//swapCards() then adds the remaining cards from the deck to fill the hand again,
 	//returning the old hand with the new cards.
 
-	public void swapCards(Card[] sentHand) {
-		for(int i = 0; i < HANDSIZE; i++) {
-			if(hand[i] == null) {
-				hand[i] = currentDeck.nextCard();
-			}
+//	public void swapCards(Card[] sentHand) {
+//		for(int i = 0; i < HANDSIZE; i++) {
+//			if(hand[i] == null) {
+//				hand[i] = currentDeck.nextCard();
+//			}
+//		}
+//	}
+	
+	public Card[] swapCards (ArrayList<Integer> indexes) {
+		for(int i : indexes) {
+			this.hand[i - 1] = currentDeck.nextCard();
 		}
+		return this.hand;
 	}
 
 	public String toString() {

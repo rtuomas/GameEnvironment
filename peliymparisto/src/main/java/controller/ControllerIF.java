@@ -41,6 +41,7 @@ public interface ControllerIF {
 	 * Sends credits to view.
 	 */
 	public void setCredits();
+	public void setSwappedCardIndexes (ArrayList<Integer> indexes);
 	
 	
 	//hybrid methods -->

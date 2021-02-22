@@ -35,5 +35,6 @@ public interface ViewIF {
 	 * @param credits double credit amount.
 	 */
 	public void setCredits(double credits);
+	public void setSwappedCards();
 	
 }

@@ -61,6 +61,11 @@ public class Controller implements ControllerIF {
 		}
 		view.setCards(imgpaths);
 	}
+	
+	@Override
+	public void setSwappedCardIndexes (ArrayList<Integer> indexes) {
+		model.setCardsToSwapIndexes(indexes);
+	}
 
 	@Override
 	public LineChart<Number, Number> getLineChart() {

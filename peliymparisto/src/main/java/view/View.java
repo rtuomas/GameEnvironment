@@ -401,4 +401,10 @@ public class View extends Application implements ViewIF {
 		creditDevelopment.setContent(lineChart);
         ranking.setContent(listView);		
 	}
+
+	@Override
+	public void setSwappedCards() {
+		// TODO Auto-generated method stub
+		
+	}
 }

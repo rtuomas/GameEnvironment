@@ -23,6 +23,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 
 	private Hand hand;
 	private Player player;
+	private ArrayList<Integer> indexes;
 
 	//Player variables
 	private Player player1;
@@ -56,6 +57,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 				// database stuff
 				// thread ends
 		dealCards();
+		swapCards();
 		updateCredits();
 		setScore();
 		//endGame() //called when the game ends
@@ -113,11 +115,29 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		Player [] players = this.dao.readPlayers();
 		String [] names = name.split(" ");
 		for(Player p : players) {
-			System.out.println(p);
+			//System.out.println(p);
 			if(p.getFirstName().equals(names[0]) && p.getLastName().equals(names[1])) {
 				this.player = p;
 			}
 		}
+	}
+	
+	public synchronized void swapCards () {
+		while(indexes == null) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		controller.showCards(hand.swapCards(indexes));
+		notifyAll();
+	}
+	
+	public synchronized void setCardsToSwapIndexes(ArrayList<Integer> indexes) {
+		this.indexes = indexes;
+		notifyAll();
 	}
 	
 	

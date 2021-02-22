@@ -45,4 +45,6 @@ public interface ModelIF {
 	LineChart<Number, Number> getLineChart();
 
 	String[] getRanking();
+
+	public void setCardsToSwapIndexes(ArrayList<Integer> indexes);
 }

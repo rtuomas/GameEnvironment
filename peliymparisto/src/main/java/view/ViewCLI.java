@@ -67,18 +67,32 @@ public class ViewCLI implements ViewIF {
 		System.out.println("1 = nosta panosta, 2 = vähennä panosta 3 = pelaa 4 = poistu");
 	}
 	
+	@Override
+	public void setSwappedCards () {
+		System.out.println("Valitse kortit jotka haluat vaihtaa (1-5) lopeta 0:lla");
+		int s = 15;
+		ArrayList<Integer> indexes = new ArrayList<Integer>();
+		while(s != 0) {
+			s = scanner.nextInt();
+			if(s != 0) {
+			indexes.add(s);
+			}
+		}
+		controller.setSwappedCardIndexes(indexes);
+	}
+	
 	private static boolean gameOver = false;
 	private Double[] betTable = {0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
 	private double bet = betTable[6];
 	private String player = "Pena Aarnio";
 	private double credits;
 	private Controller controller;
+	private static Scanner scanner = new Scanner(System.in);
 	
 	public static void main(String[] args) {
 		ViewCLI cli = new ViewCLI ();
 		Controller clr = cli.init();
 		
-		Scanner scanner = new Scanner(System.in);
 		
 		cli.interActions();
 		while(!gameOver) {
@@ -92,6 +106,7 @@ public class ViewCLI implements ViewIF {
 				break;
 			case 3:
 				clr.startPokerGame();
+				cli.setSwappedCards();
 				break;
 			case 4:
 				System.out.println("Heippa");

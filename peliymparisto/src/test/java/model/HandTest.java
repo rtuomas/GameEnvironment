@@ -51,7 +51,7 @@ class HandTest {
 		Card[] handToSwap = hand.getHand();
 		handToSwap[0] = null;
 		handToSwap[3] = null;
-		hand.swapCards(handToSwap);
+		//hand.swapCards(handToSwap);
 		System.out.println("Swap cards tested");
 		System.out.println(hand.toString());
 		assertEquals("6H, 2H, 3H, 7H, 5H", hand.getHand());
