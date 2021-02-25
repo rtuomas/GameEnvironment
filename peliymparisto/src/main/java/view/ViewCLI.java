@@ -20,7 +20,7 @@ public class ViewCLI implements ViewIF {
 	}
 	
 	
-	// bet stuff
+	// bet stuffff
 	public void setBetIncrement() {
 		this.bet = controller.getBetIncrement();
 		interActions();
