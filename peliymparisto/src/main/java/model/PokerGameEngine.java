@@ -17,13 +17,15 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	private ControllerIF controller;
 	/** Interface with a connection to DAO */
 	private DAOIF dao;
-	//Players bet (starting with 1.00)
-	private double bet;
+	
 	private Deck deck;
 
 	private Hand hand;
 	private Player player;
 	private ArrayList<Integer> indexes;
+	private static Double[] betTable = {0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
+	//Players bet (starting with 1.00)
+	private static double bet = betTable[6];
 
 	//Player variables
 	private Player player1;
@@ -100,9 +102,24 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		controller.showCards(this.hand.getHand());
 	}
 	
-	@Override
-	public void setBet(double bet) {
-		this.bet = bet;
+	public static double getBet() {
+		return bet;
+	}
+	
+	
+	public static double increaseBet() {
+		if(bet!=10.0) {
+			bet = betTable[Arrays.asList(betTable).indexOf(bet)+1];
+		}
+		return getBet();
+	}
+	
+	
+	public static double decreaseBet() {
+		if(bet!=0.1) {
+			bet = betTable[Arrays.asList(betTable).indexOf(bet)-1];
+		}
+		return getBet();
 	}
 	
 	@Override

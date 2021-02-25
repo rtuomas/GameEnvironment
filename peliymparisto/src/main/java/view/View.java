@@ -361,12 +361,6 @@ public class View extends Application implements ViewIF {
 
 
 	@Override
-	public double getBet() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public String getPlayer() {
 		// TODO Auto-generated method stub
 		return null;

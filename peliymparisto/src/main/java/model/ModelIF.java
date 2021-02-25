@@ -19,10 +19,12 @@ public interface ModelIF {
 	public void dealCards();
 
 	/**
-	 * Sets model bet.
+	 * Gets model bet.
 	 * @param bet double bet size
 	 */
-	public void setBet(double bet);
+	public static double getBet() {
+		return 0;
+	}
 	/**
 	 * Sends game score to controller after game.
 	 */
@@ -41,6 +43,8 @@ public interface ModelIF {
 	 * Updates credits after game.
 	 */
 	public void updateCredits();
+	//public double decreaseBet();
+	//public double increaseBet();
 
 	LineChart<Number, Number> getLineChart();
 

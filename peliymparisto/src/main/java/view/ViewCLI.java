@@ -20,23 +20,20 @@ public class ViewCLI implements ViewIF {
 	}
 	
 	
-	public void increaseBet() {
-		if(this.bet!=10.0) {
-			this.bet = betTable[Arrays.asList(betTable).indexOf(this.bet)+1];
-		}
+	// bet stuff
+	public void setBetIncrement() {
+		this.bet = controller.getBetIncrement();
 		interActions();
 	}
 	
-	public void decreaseBet() {
-		if(this.bet!=0.1) {
-			this.bet = betTable[Arrays.asList(betTable).indexOf(this.bet)-1];
-		}
+	public void setBetDecrement() {
+		this.bet = controller.getBetDecrement();
 		interActions();
 	}
 	
-	@Override
-	public double getBet() {
-		return this.bet;
+	public void setBet() {
+		this.bet = controller.getBet();
+		interActions();
 	}
 	
 	@Override
@@ -82,10 +79,9 @@ public class ViewCLI implements ViewIF {
 	}
 	
 	private static boolean gameOver = false;
-	private Double[] betTable = {0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
-	private double bet = betTable[6];
 	private String player = "Pena Aarnio";
 	private double credits;
+	private double bet;
 	private Controller controller;
 	private static Scanner scanner = new Scanner(System.in);
 	
@@ -93,16 +89,15 @@ public class ViewCLI implements ViewIF {
 		ViewCLI cli = new ViewCLI ();
 		Controller clr = cli.init();
 		
-		
-		cli.interActions();
+		cli.setBet();
 		while(!gameOver) {
 			int selection = scanner.nextInt();
 			switch(selection) {
 			case 1:
-				cli.increaseBet();
+				cli.setBetIncrement();
 				break;
 			case 2:
-				cli.decreaseBet();
+				cli.setBetDecrement();
 				break;
 			case 3:
 				clr.startPokerGame();

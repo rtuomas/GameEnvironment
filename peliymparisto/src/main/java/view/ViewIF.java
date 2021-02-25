@@ -10,11 +10,7 @@ import java.util.ArrayList;
 public interface ViewIF {
 	
 	//getters and setters for transporting requests and responses between GUI and game engines
-	/**
-	 * Sends bet size through controller to model.
-	 * @return double bet size.
-	 */
-	public double getBet();
+	
 	/**
 	 * Sends player name through controller to model.
 	 * @return string player name.

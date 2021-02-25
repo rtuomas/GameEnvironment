@@ -30,13 +30,24 @@ public class Controller implements ControllerIF {
 	@Override
 	public void startPokerGame() {
 		model = new PokerGameEngine(this);
-		model.setBet(view.getBet());
+		//model.setBet(view.getBet());
 		model.setPlayer(view.getPlayer());
 		//model.setPlayer1(view.getPlayerInfo()); //not implemented yet
 		//model.setUpSinglePlayerGame(); //needs previous function to work
 		((Thread)model).start();
 	}
 	
+	public double getBetIncrement() {
+		return PokerGameEngine.increaseBet();
+	}
+	
+	public double getBetDecrement() {
+		return PokerGameEngine.decreaseBet();
+	}
+	
+	public double getBet() {
+		return PokerGameEngine.getBet();
+	}
 	
 	@Override
 	public void setScore(String score) {
