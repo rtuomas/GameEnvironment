@@ -185,6 +185,7 @@ public class DAO implements DAOIF {
 			for (Player a: result) {
 				statsList.add(a.getCredits() + ", " + a.getFirstName() + " " + a.getLastName());
 			}
+			System.out.println("readrankings" + statsList);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -209,10 +210,10 @@ public class DAO implements DAOIF {
 			creditsList.add(100.0);
 			for (PlayedGame a: result) {
 				//datesList.add((a.getPlayedOn());
-				creditsList.add(a.getCreditChange());
+				creditsList.add(a.getCreditAfterPlayer1());
 			}
-			System.out.println(datesList);
-			System.out.println(creditsList);
+			System.out.println("readcredits, dates" + datesList);
+			System.out.println("readcredits, credits" + creditsList);
 			
 			
 		} catch (Exception e) {
