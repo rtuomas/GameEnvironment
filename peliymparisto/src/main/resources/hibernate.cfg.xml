@@ -6,7 +6,7 @@
 		<!-- Yhteyden perustiedot: ajuri, palvelin käyttäjätunnus/salasana -->
 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
 		<property name="hibernate.connection.url">jdbc:mysql://localhost:2206/gamedatabase</property>
-		<property name="hibernate.connection.username">tatunordstrom</property>
+		<property name="hibernate.connection.username">akikoppinen</property>
 		<property name="hibernate.connection.password">rootpassword</property>
 
 		<!-- create , create-drop, update tai validate -->
