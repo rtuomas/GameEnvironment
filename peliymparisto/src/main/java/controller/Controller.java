@@ -6,6 +6,7 @@ import javafx.scene.chart.LineChart;
 import model.Card;
 import model.ModelIF;
 import model.PokerGameEngine;
+import model.Statistics;
 import view.ViewIF;
 
 /**
@@ -70,7 +71,9 @@ public class Controller implements ControllerIF {
 	@Override
 	public LineChart<Number, Number> getLineChart() {
 		try {
-			return model.getLineChart();
+			Statistics stats = new Statistics();
+			return stats.getLineChart();
+			//return model.getLineChart();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -81,7 +84,8 @@ public class Controller implements ControllerIF {
 	@Override
 	public String[] getRanking() {
 		try {
-			return model.getRanking();
+			Statistics stats = new Statistics();
+			return stats.getRanking();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
