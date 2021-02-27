@@ -19,8 +19,6 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
-import com.mysql.jdbc.Field;
-
 /**
  * The Data Access Object to handle database connections, uses hibernate
  * @author Aki Koppinen
@@ -260,16 +258,31 @@ public class DAO implements DAOIF {
 
 	/**	{@inheritDoc} */
 	@Override
-	public boolean deletePlayers() {
+	public boolean deleteAllPlayers() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	/**	{@inheritDoc} */
 	@Override
-	public boolean deletePlayedGames() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean deleteAllPlayedGames() {
+		Transaction transact = null;
+		try (Session session = sFactory.openSession()) {
+			transact = session.beginTransaction();
+			String hql = "delete from PlayedGame";
+			@SuppressWarnings("rawtypes")
+			Query query = session.createQuery(hql);
+			int rows = query.executeUpdate();
+			System.out.println("Delete successful, " + rows + " rows were deleted");
+			transact.commit();
+		} catch (Exception e) {
+			if (transact != null) {
+				transact.rollback();
+			}
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
 	/**	{@inheritDoc} */

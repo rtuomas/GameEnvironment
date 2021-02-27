@@ -47,12 +47,12 @@ public interface DAOIF {
 	 * Deletes all players from database
 	 * @return success info
 	 */
-	public boolean deletePlayers();
+	public boolean deleteAllPlayers();
 	/**
 	 * Delete all played games from database
 	 * @return success info
 	 */
-	public boolean deletePlayedGames();
+	public boolean deleteAllPlayedGames();
 	/**
 	 * Deletes all players from database
 	 * @return success info

@@ -1,3 +1,5 @@
+/*
+
 package view;
 
 import java.util.ArrayList;
@@ -6,25 +8,83 @@ import java.util.Scanner;
 
 import controller.Controller;
 import model.Card;
-import model.Player;
-/**
- * CLI of the pokergame
- * @author Tatu Nordström, Aki Koppinen
- * @version 2.0 27.02.2021
- */
 
-public class ViewCLI implements ViewIF {
+
+public class ViewCLIOld implements ViewIF {
 	
+	public Controller init () {
+		controller = new Controller(this);
+		return controller;
+	}
+	
+	
+	// bet stuffff
+	public void setBetIncrement() {
+		this.bet = controller.getBetIncrement();
+		interActions();
+	}
+	
+	public void setBetDecrement() {
+		this.bet = controller.getBetDecrement();
+		interActions();
+	}
+	
+	public void setBet() {
+		this.bet = controller.getBet();
+		interActions();
+	}
+	
+	@Override
+	public String getPlayer() {
+		return this.player;
+	}
+	
+	@Override
+	public void setCards(ArrayList<String> cards) {
+		for(String c : cards) {
+			System.out.println(c.toString());
+		}
+	}
+	
+	@Override
+	public void setScore(String score) {
+		System.out.println(score);
+		interActions();
+	}
+	
+	@Override
+	public void setCredits(double credits) {
+		this.credits = credits;
+	}
+	
+	public void interActions () {
+		System.out.println("Tämän hetkinen saldo: " + this.credits + " panos: " + this.bet);
+		System.out.println("1 = nosta panosta, 2 = vähennä panosta 3 = pelaa 4 = poistu");
+	}
+	
+	@Override
+	public void setSwappedCards () {
+		System.out.println("Valitse kortit jotka haluat vaihtaa (1-5) lopeta 0:lla");
+		int s = 15;
+		ArrayList<Integer> indexes = new ArrayList<Integer>();
+		while(s != 0) {
+			s = scanner.nextInt();
+			if(s != 0) {
+			indexes.add(s);
+			}
+		}
+		controller.setSwappedCardIndexes(indexes);
+	}
 	
 	private static boolean gameOver = false;
+	private String player = "Pena Aarnio";
+	private double credits;
 	private double bet;
 	private Controller controller;
 	private static Scanner scanner = new Scanner(System.in);
 	
-	private Player player;
-	
 	public static void main(String[] args) {
-		ViewCLI cli = new ViewCLI ();
+		ViewCLIOld cli = new ViewCLIOld ();
 		Controller clr = cli.init();
 		
 		cli.setBet();
@@ -48,69 +108,6 @@ public class ViewCLI implements ViewIF {
 			}
 		}
 	}
-	
-	public Controller init () {
-		controller = new Controller(this);
-		controller.getDefaultPlayer();
-		return controller;
-	}
-	
-	// bet stuffff
-	public void setBetIncrement() {
-		this.bet = controller.getBetIncrement();
-		interActions();
-	}
-	
-	public void setBetDecrement() {
-		this.bet = controller.getBetDecrement();
-		interActions();
-	}
-	
-	public void setBet() {
-		this.bet = controller.getBet();
-		interActions();
-	}
-	
-	@Override
-	public Player getPlayer() {
-		return this.player;
-	}
-	
-	@Override
-	public void setCards(ArrayList<String> cards) {
-		for(String c : cards) {
-			System.out.println(c.toString());
-		}
-	}
-	
-	@Override
-	public void setScore(String score) {
-		System.out.println(score); //NO_WIN ETC
-		interActions();
-	}
-	
-	@Override
-	public void setCurrentPlayer(Player currentPlayer) {
-		this.player = currentPlayer;
-	}
-	
-	public void interActions () {
-		System.out.println("Tämän hetkinen saldo: " + this.player.getCredits() + " panos: " + this.bet);
-		System.out.println("1 = nosta panosta, 2 = vähennä panosta 3 = pelaa 4 = poistu");
-	}
-	
-	@Override
-	public void setSwappedCards () {
-		System.out.println("Valitse kortit jotka haluat vaihtaa (1-5) lopeta 0:lla");
-		int s = 15;
-		ArrayList<Integer> indexes = new ArrayList<Integer>();
-		while(s != 0) {
-			s = scanner.nextInt();
-			if(s != 0) {
-			indexes.add(s);
-			}
-		}
-		controller.setSwappedCardIndexes(indexes);
-	}
-	
 }
+
+*/

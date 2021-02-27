@@ -17,11 +17,8 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	private ControllerIF controller;
 	/** Interface with a connection to DAO */
 	private DAOIF dao;
-	
 	private Deck deck;
-
 	private Hand hand;
-	private Player player;
 	private ArrayList<Integer> indexes;
 	private static Double[] betTable = {0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
 	//Players bet (starting with 1.00)
@@ -42,7 +39,6 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	 */
 	public PokerGameEngine(ControllerIF controller) {
 		this.controller = controller;
-		this.dao = new DAO();
 		this.stats = new Statistics();
 	}
 	
@@ -60,16 +56,22 @@ public class PokerGameEngine extends Thread implements ModelIF {
 				// thread ends
 		dealCards();
 		swapCards();
-		updateCredits();
-		setScore();
-		//endGame() //called when the game ends
+		endGame(); //called when the game ends
+		setScore(); //shows the result in View
 	}
 	
 	/**
 	 * Controller calls this method before starting the game
 	 */
-	public void setUpSinglePlayerGame() {
+	public void setUpSinglePlayerGame(Player player) {
+		this.player1 = player;
 		this.player2 = dao.getPlayer(1000);
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void setDatabaseConnection(DAOIF dao) {
+		this.dao = dao;
 	}
 	
 	/**
@@ -77,23 +79,28 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	 */
 	public void endGame() {
 		//specify who is winner before this method
-		double crForP1;
-		double crForP2;
+		PlayedGame currentGame;
 		int p1ID = this.player1.getId();
 		int p2ID = this.player2.getId();
-		if (this.winner == this.player1.getId()) {
-			crForP1 = this.player1.getCredits() + this.bet;
-			crForP2 = this.player2.getCredits() - this.bet;
+		
+		double win = this.hand.getScore().getMultiplier() * bet;
+		
+		if(this.hand.getScore() != HandValue.NO_WIN) {
+			this.winner = p1ID;
+			this.player1.setCredits(player1.getCredits() + win);
+			this.player2.setCredits(player2.getCredits() - win);
+			currentGame = new PlayedGame(p1ID, p2ID, "poker", this.winner, win, player1.getCredits(), player2.getCredits());
 		} else {
-			crForP1 = this.player1.getCredits() - this.bet;
-			crForP2 = this.player2.getCredits() + this.bet;
+			this.winner = p2ID;
+			this.player1.setCredits(player1.getCredits() - bet);
+			this.player2.setCredits(player2.getCredits() + bet); //in two player game this would be win instead of bet
+			currentGame = new PlayedGame(p1ID, p2ID, "poker", this.winner, bet, player1.getCredits(), player2.getCredits());
 		}
-		PlayedGame currentGame = new PlayedGame(p1ID, p2ID, "poker", this.winner, this.bet, crForP1, crForP2);
+
 		dao.createPlayedGame(currentGame);
-		this.player1.setCredits(crForP1);
-		this.player2.setCredits(crForP2);
 		dao.updatePlayer(player1);
 		dao.updatePlayer(player2);
+		controller.setCurrentPlayer();
 	}
 	
 	@Override
@@ -105,7 +112,6 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	public static double getBet() {
 		return bet;
 	}
-	
 	
 	public static double increaseBet() {
 		if(bet!=10.0) {
@@ -127,18 +133,6 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		controller.setScore(this.hand.getScore().name());
 	}
 	
-	@Override
-	public void setPlayer (String name) {
-		Player [] players = this.dao.readPlayers();
-		String [] names = name.split(" ");
-		for(Player p : players) {
-			//System.out.println(p);
-			if(p.getFirstName().equals(names[0]) && p.getLastName().equals(names[1])) {
-				this.player = p;
-			}
-		}
-	}
-	
 	public synchronized void swapCards () {
 		while(indexes == null) {
 			try {
@@ -157,21 +151,8 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		notifyAll();
 	}
 	
-	
-	@Override
-	public double getCredits () {
-		return this.player.getCredits();
-	}
-	
-	@Override
-	public void updateCredits () {
-		if(this.hand.getScore() != HandValue.NO_WIN) {
-			double win = this.hand.getScore().getMultiplier() * this.bet;
-			this.player.setCredits(this.player.getCredits() + win);
-			controller.setCredits();
-		}
-		this.player.setCredits(this.player.getCredits() - this.bet);
-		controller.setCredits();
+	public Player getCurrentPlayer() {
+		return this.player1;
 	}
 	
 	@Override

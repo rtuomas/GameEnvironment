@@ -53,6 +53,7 @@ public class TextMain {
 		DAOIF dao = new DAO();
 		printPlayers(dao);
 		printPlayedGames(dao);
+		//dao.deleteAllPlayedGames();
 		//Player jari = dao.getPlayer(1003);
 		//jari.setFirstName("Kari");
 		//dao.updatePlayer(jari);

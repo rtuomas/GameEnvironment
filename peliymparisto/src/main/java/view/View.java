@@ -31,6 +31,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.Card;
+import model.Player;
 import model.Statistics;
 
 /**
@@ -43,6 +44,7 @@ public class View extends Application implements ViewIF {
 	//Normal variables here -->
 	/** Controller which transfers info per mvc structure */
 	private ControllerIF controller;
+	private Player player;
 	
 	//GUI components here -->
 	/** Button to enter the poker game view */
@@ -72,7 +74,19 @@ public class View extends Application implements ViewIF {
 	public void init(){
 		//setting the chosen controller
 		controller = new Controller(this);
-	}	
+		//setting a default player (Tester)
+		controller.getDefaultPlayer();
+	}
+	
+	@Override
+	public Player getPlayer() {
+		return this.player;
+	}
+
+	@Override
+	public void setCurrentPlayer(Player currentPlayer) {
+		this.player = currentPlayer;
+	}
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -359,13 +373,6 @@ public class View extends Application implements ViewIF {
 		exitProgram.setOnAction(e -> Platform.exit());
 	}
 
-
-	@Override
-	public String getPlayer() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	public void setCards(ArrayList<String> cards) {
 		// TODO Auto-generated method stub
@@ -378,10 +385,6 @@ public class View extends Application implements ViewIF {
 		
 	}
 
-	@Override
-	public void setCredits(double credits) {
-		// TODO Auto-generated method stub
-	}
 	private void fillStatistics() {
 		
 		LineChart<Number, Number> lineChart = controller.getLineChart();
@@ -401,4 +404,5 @@ public class View extends Application implements ViewIF {
 		// TODO Auto-generated method stub
 		
 	}
+
 }

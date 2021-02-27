@@ -2,6 +2,8 @@ package view;
 
 import java.util.ArrayList;
 
+import model.Player;
+
 /**
  * The interface for the GUI. The Controller handles GUI related traffic through this interface.
  * @author ---
@@ -12,10 +14,10 @@ public interface ViewIF {
 	//getters and setters for transporting requests and responses between GUI and game engines
 	
 	/**
-	 * Sends player name through controller to model.
-	 * @return string player name.
+	 * Sends player through controller to model.
+	 * @return player
 	 */
-	public String getPlayer();
+	public Player getPlayer();
 	/**
 	 * Shows the cards in view.
 	 * @param cards ArrayList<String> dealed cards.
@@ -26,11 +28,11 @@ public interface ViewIF {
 	 * @param score string game score.
 	 */
 	public void setScore(String score);
-	/**
-	 * Sets credits in view after game.
-	 * @param credits double credit amount.
-	 */
-	public void setCredits(double credits);
 	public void setSwappedCards();
+	/**
+	 * Updates the current Player variable in View
+	 * @param currentPlayer
+	 */
+	public void setCurrentPlayer(Player currentPlayer);
 	
 }

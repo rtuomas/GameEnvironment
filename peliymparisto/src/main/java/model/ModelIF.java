@@ -29,20 +29,7 @@ public interface ModelIF {
 	 * Sends game score to controller after game.
 	 */
 	public void setScore();
-	/**
-	 * Sets the player of the game.
-	 * @param name string player name
-	 */
-	public void setPlayer(String name);
-	/**
-	 * Returns credits after game.
-	 * @return double credit amount
-	 */
-	public double getCredits();
-	/**
-	 * Updates credits after game.
-	 */
-	public void updateCredits();
+	
 	//public double decreaseBet();
 	//public double increaseBet();
 
@@ -51,4 +38,14 @@ public interface ModelIF {
 	String[] getRanking();
 
 	public void setCardsToSwapIndexes(ArrayList<Integer> indexes);
+	
+	public void setUpSinglePlayerGame(Player player); //make non interface
+
+	/**
+	 * Sets connection to database in controller so it can be passed down to model
+	 * @param dao
+	 */
+	public void setDatabaseConnection(DAOIF dao);
+
+	public Player getCurrentPlayer(); //make non interface
 }

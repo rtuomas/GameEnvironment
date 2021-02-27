@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javafx.scene.chart.LineChart;
 import model.Card;
 import model.HandValue;
+import model.Player;
 
 /**
  * The interface for the Controller. All necessary methods for the functionality of the MVC model are found here.
@@ -14,10 +15,6 @@ import model.HandValue;
 public interface ControllerIF {
 	
 	//methods that transmit info from View to Model -->
-	/**
-	 * updates player credits in model after game
-	 */
-	public void updateCredits();
 	
 	/**
 	 * Method that starts running the poker game through input from GUI
@@ -40,13 +37,22 @@ public interface ControllerIF {
 	/**
 	 * Sends credits to view.
 	 */
-	public void setCredits();
+	//public void setCredits();
 	public void setSwappedCardIndexes (ArrayList<Integer> indexes);
-	
 	
 	//hybrid methods -->
 	
 	LineChart<Number, Number> getLineChart();
 
-	String[] getRanking();	
+	String[] getRanking();
+	/**
+	 * Sets the default player as Tester when program starts
+	 */
+	public void getDefaultPlayer();
+	/**
+	 * Updates the Player variable in View
+	 */
+	public void setCurrentPlayer();
+	
+	
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javafx.scene.chart.LineChart;
 import model.Card;
+import model.DAO;
+import model.DAOIF;
 import model.ModelIF;
 import model.PokerGameEngine;
 import model.Statistics;
@@ -18,6 +20,7 @@ public class Controller implements ControllerIF {
 	
 	private ModelIF model;
 	private ViewIF view;
+	private DAOIF dao;
 	
 	/**
 	 * The constructor of the Controller class
@@ -25,17 +28,29 @@ public class Controller implements ControllerIF {
 	 */
 	public Controller(ViewIF view) {
 		this.view = view;
+		this.dao = new DAO();
 	}
 	
 	/**	{@inheritDoc} */ //this line copies the JavaDoc from interface
 	@Override
 	public void startPokerGame() {
 		model = new PokerGameEngine(this);
+		model.setDatabaseConnection(this.dao);
 		//model.setBet(view.getBet());
-		model.setPlayer(view.getPlayer());
-		//model.setPlayer1(view.getPlayerInfo()); //not implemented yet
-		//model.setUpSinglePlayerGame(); //needs previous function to work
+		model.setUpSinglePlayerGame(view.getPlayer());
 		((Thread)model).start();
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void getDefaultPlayer() {
+		view.setCurrentPlayer(dao.getPlayer(1001));
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void setCurrentPlayer() {
+		view.setCurrentPlayer(model.getCurrentPlayer());
 	}
 	
 	public double getBetIncrement() {
@@ -54,17 +69,7 @@ public class Controller implements ControllerIF {
 	public void setScore(String score) {
 		view.setScore(score);
 	}
-	
-	@Override
-	public void setCredits () {
-		view.setCredits(model.getCredits());
-	}
-	
-	@Override
-	public void updateCredits() {
-		model.updateCredits();
-	}
-	
+
 	@Override
 	public void showCards(Card[] cards) {
 		ArrayList<String> imgpaths = new ArrayList<String>();
