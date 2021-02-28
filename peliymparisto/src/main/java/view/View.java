@@ -15,16 +15,22 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -62,6 +68,27 @@ public class View extends Application implements ViewIF {
 	/** Button to close the program */
 	private Button exitProgram;
 	private Tab ranking, creditDevelopment;
+	//navBar components
+	/** Button to go to main menu*/
+	private Button homeButton;
+	/** Button to open the register pop-up*/
+	private Button registerButton;
+	/** Input field for the user's email*/
+	private TextField emailInput;
+	/** Input field for the user's password*/
+	private TextField passwordInput;
+	/** Button to try signing in*/
+	private Button signInButton;
+	/**Text telling the amount of user's credits*/
+	private Label creditView;
+	/** Button to show users information*/
+	private MenuItem playerInfoMI;
+	/** Button for the user to log out*/
+	private MenuItem logOutMI;
+	/** Button to show information about the program*/
+	private MenuItem infoMI;
+	/** Button to exit the program*/
+	private MenuItem exitMI;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -102,20 +129,20 @@ public class View extends Application implements ViewIF {
 			});
 			
 			primaryStage.setTitle("GameEnvironment");
-			
+
 			BorderPane mainMenu = mainMenuBuilder();
 			AnchorPane pokerGame = pokerGameBuilder();
 			BorderPane settings = settingsBuilder();
 			BorderPane stats = statsBuilder();
+			HBox navBar = navBarBuilder();
 			
-	        Scene mainMenuScene = new Scene(mainMenu);
-	        Scene pokerGameScene = new Scene(pokerGame);
-	        Scene settingsScene = new Scene(settings);
-	        Scene statsScene = new Scene(stats);
-	        
-	        createGUITransitions(primaryStage, mainMenuScene, pokerGameScene, settingsScene, statsScene);
-	        
-	        primaryStage.setScene(mainMenuScene);
+			BorderPane mainView = new BorderPane();
+			mainView.setTop(navBar);
+			mainView.setCenter(mainMenu);
+			Scene mainScene = new Scene(mainView);
+			createGUITransitions(mainView, mainMenu, pokerGame, settings, stats);
+
+			primaryStage.setScene(mainScene);
 	        primaryStage.show();
 			
 		} catch (Exception e) {
@@ -138,6 +165,56 @@ public class View extends Application implements ViewIF {
 		napit.getChildren().addAll(enterPokerGame, enterSettings, enterStats, exitProgram);
 		mainMenuView.setCenter(napit);
 		return mainMenuView;
+	}
+	
+	/**
+	 * Contains the navigation toolbar in the top of the program view
+	 * @return HBox type assortment of buttons and labels for the toolbar
+	 */
+	private HBox navBarBuilder() {
+		Image user = new Image("/images/user.png", 20, 20, false, false);
+		Image settings = new Image("/images/settings.png", 20, 20, false, false);
+		Image home = new Image("/images/home.png", 20, 20, false, false);
+		
+		HBox navBar = new HBox();
+		
+		homeButton = new Button();
+		homeButton.setGraphic(new ImageView(home));
+		
+		registerButton = new Button("Rekisteröidy");
+		Label signInLabel = new Label("tai kirjaudu: ");
+		
+		emailInput = new TextField();
+		emailInput.setPromptText("Syötä sähköposti");
+		passwordInput = new TextField();
+		passwordInput.setPromptText("Syötä salasana");
+		signInButton = new Button("Kirjaudu");
+		
+		Label creditLabel = new Label("Saldo: ");
+		creditView = new Label("100.00");
+		creditView.setStyle("-fx-font-weight: bold; -fx-border-color: black; -fx-background-color: #c4d8de;");
+		creditView.setPadding(new Insets(4, 4, 4, 4));
+
+		MenuButton menu1 = new MenuButton("Testaaja");
+		menu1.setGraphic(new ImageView(user));
+		playerInfoMI = new MenuItem("Näytä tiedot");
+		logOutMI = new MenuItem("Kirjaudu ulos");
+		menu1.getItems().addAll(playerInfoMI, logOutMI);
+		MenuButton menu2 = new MenuButton();
+		menu2.setGraphic(new ImageView(settings));
+		infoMI = new MenuItem("Lisätietoja");
+		exitMI = new MenuItem("Lopeta ohjelma");
+		menu2.getItems().addAll(infoMI, exitMI);
+		
+		navBar.getChildren().addAll(homeButton, registerButton, signInLabel, emailInput, passwordInput, signInButton, 
+				creditLabel, creditView, menu1, menu2);
+		navBar.setAlignment(Pos.CENTER);
+		navBar.setPadding(new Insets(5, 5, 5, 5));
+		HBox.setMargin(registerButton, new Insets(0, 10, 0, 10));
+		HBox.setMargin(signInLabel, new Insets(0, 10, 0, 0));
+		HBox.setMargin(signInButton, new Insets(0, 10, 0, 0));
+		HBox.setMargin(menu1, new Insets(0, 10, 0, 10));
+		return navBar;
 	}
 	
 	/**
@@ -349,26 +426,26 @@ public class View extends Application implements ViewIF {
 	 * @param settingsScene Settings view
 	 * @param statsScene Stats view
 	 */
-	private void createGUITransitions(Stage primaryStage, Scene mainMenuScene, Scene pokerGameScene, Scene settingsScene, Scene statsScene) {
+	private void createGUITransitions(BorderPane mainView, BorderPane mainMenu, AnchorPane pokerGame, BorderPane settings, BorderPane stats) {
 		enterPokerGame.setOnAction(e -> {
-			primaryStage.setScene(pokerGameScene);
+			mainView.setCenter(pokerGame);
 		});
 		enterSettings.setOnAction(e -> {
-			primaryStage.setScene(settingsScene);
+			mainView.setCenter(settings);
 		});
 		enterStats.setOnAction(e -> {
-			primaryStage.setScene(statsScene);
+			mainView.setCenter(stats);
 			System.out.println("STATS");
 			fillStatistics();
 		});
 		backToMainMenu1.setOnAction(e -> {
-			primaryStage.setScene(mainMenuScene);
+			mainView.setCenter(mainMenu);
 		});
 		backToMainMenu2.setOnAction(e -> {
-			primaryStage.setScene(mainMenuScene);
+			mainView.setCenter(mainMenu);
 		});
 		backToMainMenu3.setOnAction(e -> {
-			primaryStage.setScene(mainMenuScene);
+			mainView.setCenter(mainMenu);
 		});
 		exitProgram.setOnAction(e -> Platform.exit());
 	}
