@@ -155,14 +155,26 @@ public class View extends Application implements ViewIF {
 	 * @return BorderPane type layout for the main menu
 	 */
 	private BorderPane mainMenuBuilder() {
+		Image aceCards = new Image("/images/aces.png", 500, 300, false, false);
+		ImageView aceView = new ImageView(aceCards);
+		
 		BorderPane mainMenuView = new BorderPane();
-		mainMenuView.setPrefSize(400, 400);
-		enterPokerGame = new Button("Pokeri");
-		enterSettings = new Button("Asetukset");
-		enterStats = new Button("Tilastot");
-		exitProgram = new Button("Lopeta");
+		//mainMenuView.setPrefSize(400, 400);
 		VBox napit = new VBox();
-		napit.getChildren().addAll(enterPokerGame, enterSettings, enterStats, exitProgram);
+		napit.setAlignment(Pos.CENTER);
+		napit.setPadding(new Insets(10, 10, 10, 10));
+		napit.setSpacing(10);
+		napit.setPrefWidth(100);
+		enterPokerGame = new Button("Pokeri");
+		enterPokerGame.setMinWidth(napit.getPrefWidth());
+		enterSettings = new Button("Asetukset");
+		enterSettings.setMinWidth(napit.getPrefWidth());
+		enterStats = new Button("Tilastot");
+		enterStats.setMinWidth(napit.getPrefWidth());
+		exitProgram = new Button("Lopeta");
+		exitProgram.setMinWidth(napit.getPrefWidth());
+		napit.getChildren().addAll(aceView, enterPokerGame, enterSettings, enterStats, exitProgram);
+		
 		mainMenuView.setCenter(napit);
 		return mainMenuView;
 	}
