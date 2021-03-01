@@ -13,6 +13,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -20,11 +21,13 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -44,7 +47,7 @@ import model.Statistics;
 /**
  * The Graphical User Interface built with JavaFX
  * @author ---
- * @version 1.0 26.01.2021
+ * @version 1.1 01.03.2021
  */
 public class View extends Application implements ViewIF {
 	
@@ -58,12 +61,6 @@ public class View extends Application implements ViewIF {
 	private Button enterPokerGame;
 	/** Button to enter the settings view */
 	private Button enterSettings;
-	/** Button to return to the mainMenu view from poker game*/
-	private Button backToMainMenu1;
-	/** Button to return to the mainMenu view from settings */
-	private Button backToMainMenu2;
-	/** Button to return to the mainMenu view from stats */
-	private Button backToMainMenu3;
 	/** Button to enter the stats view */
 	private Button enterStats;
 	/** Button to close the program */
@@ -87,11 +84,12 @@ public class View extends Application implements ViewIF {
 	/** Input field for the user's email*/
 	private TextField emailInput;
 	/** Input field for the user's password*/
-	private TextField passwordInput;
+	private PasswordField passwordInput;
 	/** Button to try signing in*/
 	private Button signInButton;
 	/**Text telling the amount of user's credits*/
 	private Label creditView;
+	private MenuButton playerMenu;
 	/** Button to show users information*/
 	private MenuItem playerInfoMI;
 	/** Button for the user to log out*/
@@ -115,16 +113,6 @@ public class View extends Application implements ViewIF {
 		controller = new Controller(this);
 		//setting a default player (Tester)
 		controller.getDefaultPlayer();
-	}
-	
-	@Override
-	public Player getPlayer() {
-		return this.player;
-	}
-
-	@Override
-	public void setCurrentPlayer(Player currentPlayer) {
-		this.player = currentPlayer;
 	}
 
 	@Override
@@ -210,20 +198,20 @@ public class View extends Application implements ViewIF {
 		
 		emailInput = new TextField();
 		emailInput.setPromptText("Syötä sähköposti");
-		passwordInput = new TextField();
+		passwordInput = new PasswordField();
 		passwordInput.setPromptText("Syötä salasana");
 		signInButton = new Button("Kirjaudu");
 		
 		Label creditLabel = new Label("Saldo: ");
-		creditView = new Label("100.00");
+		creditView = new Label(String.valueOf(this.player.getCredits()));
 		creditView.setStyle("-fx-font-weight: bold; -fx-border-color: black; -fx-background-color: #c4d8de;");
 		creditView.setPadding(new Insets(4, 4, 4, 4));
 
-		MenuButton menu1 = new MenuButton("Testaaja");
-		menu1.setGraphic(new ImageView(user));
+		playerMenu = new MenuButton("Tester");
+		playerMenu.setGraphic(new ImageView(user));
 		playerInfoMI = new MenuItem("Näytä tiedot");
 		logOutMI = new MenuItem("Kirjaudu ulos");
-		menu1.getItems().addAll(playerInfoMI, logOutMI);
+		playerMenu.getItems().addAll(playerInfoMI, logOutMI);
 		MenuButton menu2 = new MenuButton();
 		menu2.setGraphic(new ImageView(settings));
 		infoMI = new MenuItem("Lisätietoja");
@@ -231,13 +219,13 @@ public class View extends Application implements ViewIF {
 		menu2.getItems().addAll(infoMI, exitMI);
 		
 		navBar.getChildren().addAll(homeButton, registerButton, signInLabel, emailInput, passwordInput, signInButton, 
-				creditLabel, creditView, menu1, menu2);
+				creditLabel, creditView, playerMenu, menu2);
 		navBar.setAlignment(Pos.CENTER);
 		navBar.setPadding(new Insets(5, 5, 5, 5));
 		HBox.setMargin(registerButton, new Insets(0, 10, 0, 10));
 		HBox.setMargin(signInLabel, new Insets(0, 10, 0, 0));
 		HBox.setMargin(signInButton, new Insets(0, 10, 0, 0));
-		HBox.setMargin(menu1, new Insets(0, 10, 0, 10));
+		HBox.setMargin(playerMenu, new Insets(0, 10, 0, 10));
 		return navBar;
 	}
 	
@@ -246,11 +234,6 @@ public class View extends Application implements ViewIF {
 	 * @return AnchorPane type layout for the poker game
 	 */
 	private AnchorPane pokerGameBuilder() {
-		
-		// mainmenu button
-		backToMainMenu1 = new Button("Takaisin");
-		AnchorPane.setLeftAnchor(backToMainMenu1, 5.0);
-		AnchorPane.setTopAnchor(backToMainMenu1, 5.0);
 		
 		// gamble button placement
 		Button gamble = new Button ("Tuplaa");
@@ -367,7 +350,7 @@ public class View extends Application implements ViewIF {
 		
 		
 		//Sets the whole AnchorPane with elements
-		AnchorPane pokerGameView = new AnchorPane(backToMainMenu1, play, gamble, plus, minus, pokerGameCredits, pokerGameBet, wintable, cardPane);
+		AnchorPane pokerGameView = new AnchorPane(play, gamble, plus, minus, pokerGameCredits, pokerGameBet, wintable, cardPane);
 		pokerGameView.setPrefSize(600, 400);
 		
 		
@@ -407,10 +390,7 @@ public class View extends Application implements ViewIF {
 		BorderPane.setAlignment(save, Pos.CENTER);
 		BorderPane.setMargin(save, new Insets(50, 50, 50, 50));
 		
-		backToMainMenu2 = new Button("Takaisin");
-		
-		settingsView.setCenter(save);
-		settingsView.setTop(backToMainMenu2);
+		settingsView.setTop(save);
 		settingsView.setCenter(volumeControl);
 		
 		return settingsView;
@@ -448,10 +428,43 @@ public class View extends Application implements ViewIF {
         tabPane.getTabs().add(ranking);
         
 		statsView.setPrefSize(500, 500);
-		backToMainMenu3 = new Button("Takaisin");
-		statsView.setTop(backToMainMenu3);
 		statsView.setCenter(tabPane);
 		return statsView;
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public Player getPlayer() {
+		return this.player;
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void setDefaultPlayer(Player defaultPlayer) {
+		this.player = defaultPlayer;
+		//this is a bit stupid way to make sure that the method does not run updateToolBar() before all GUI components are created, PLS FIX
+		if (creditView != null) { 
+			updateToolBar();
+		}
+		System.out.println("Default player set");
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void setCurrentPlayer(Player currentPlayer) {
+		this.player = currentPlayer;
+		updateToolBar();
+		System.out.println("Player data updated");
+	}
+	
+	/**
+	 * This method updates all the information in the toolbar to match any changes on the player
+	 */
+	private void updateToolBar() {
+		this.creditView.setText(String.valueOf(this.player.getCredits()));
+		this.playerMenu.setText(this.player.getProfileName());
+		this.emailInput.setText("");
+		this.passwordInput.setText("");
 	}
 
 	/**
@@ -474,16 +487,13 @@ public class View extends Application implements ViewIF {
 			System.out.println("STATS");
 			fillStatistics();
 		});
-		backToMainMenu1.setOnAction(e -> {
-			mainView.setCenter(mainMenu);
-		});
-		backToMainMenu2.setOnAction(e -> {
-			mainView.setCenter(mainMenu);
-		});
-		backToMainMenu3.setOnAction(e -> {
+		homeButton.setOnAction(e -> {
 			mainView.setCenter(mainMenu);
 		});
 		exitProgram.setOnAction(e -> Platform.exit());
+		exitMI.setOnAction(e -> Platform.exit());
+		signInButton.setOnAction(e -> controller.attemptLogIn());
+		logOutMI.setOnAction(e -> controller.getDefaultPlayer());
 	}
 	
 	/**
@@ -546,5 +556,27 @@ public class View extends Application implements ViewIF {
 		controller.setSwappedCardIndexes(cardsToSwapIndexes);
 		cardsToSwapIndexes.clear();
 		pokerGameCardImgs.clear();
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public String getEmailInput() {
+		return String.valueOf(this.emailInput.getText());
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public String getPasswordInput() {
+		return String.valueOf(this.passwordInput.getText());
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void showLogInError() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Varoitus");
+		alert.setHeaderText("Varoitus - syötetty data ei kelpaa");
+		alert.setContentText("Varmista että sähköposti ja salasana ovat oikein");
+		alert.showAndWait();
 	}
 }

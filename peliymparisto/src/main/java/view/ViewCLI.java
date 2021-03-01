@@ -112,5 +112,29 @@ public class ViewCLI implements ViewIF {
 		}
 		controller.setSwappedCardIndexes(indexes);
 	}
+
+	@Override
+	public String getEmailInput() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getPasswordInput() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void showLogInError() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setDefaultPlayer(Player defaultPlayer) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

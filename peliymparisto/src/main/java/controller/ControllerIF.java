@@ -10,7 +10,7 @@ import model.Player;
 /**
  * The interface for the Controller. All necessary methods for the functionality of the MVC model are found here.
  * @author ---
- * @version 1.0 26.01.2021
+ * @version 1.1 01.03.2021
  */
 public interface ControllerIF {
 	
@@ -71,6 +71,12 @@ public interface ControllerIF {
 	 * @return double current bet amount
 	 */
 	public double getBet();
+	/**
+	 * Gets email and password from View and checks from database if they are correct
+	 * Changes current player in View if everything is fine.
+	 * Shows an error message if log in is not succesful
+	 */
+	public void attemptLogIn();
 	
 	
 }

@@ -22,7 +22,7 @@ import org.hibernate.query.Query;
 /**
  * The Data Access Object to handle database connections, uses hibernate
  * @author Aki Koppinen
- * @version 1.4 18.02.2021
+ * @version 1.5 01.03.2021
  */
 public class DAO implements DAOIF {
 	
@@ -141,6 +141,61 @@ public class DAO implements DAOIF {
 		Player[] playersArray = new Player[playersList.size()];
 		
 		return (Player[])playersList.toArray(playersArray);
+	}
+	
+	/**	{@inheritDoc} */
+	public String searchEmail(String email) {
+		try (Session session = sFactory.openSession()) {
+			String hql = "from Player";
+			@SuppressWarnings("rawtypes")
+			Query query = session.createQuery(hql);
+			@SuppressWarnings("unchecked")
+			List<Player> result = query.list();
+			
+			for (Player a: result) {
+				if (a.getEmail().equals(email)) {
+					return a.getPassword();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/** Should make this hql command work instead
+	public Player getPlayer(String email) {
+		Player player = null;
+		try (Session session = sFactory.openSession()) {
+			String hql = "from Player where email=:email";
+			@SuppressWarnings("rawtypes")
+			Query query = session.createQuery(hql);
+			player = (Player)query.getSingleResult();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return player;
+	}
+	*/
+	
+	/**	{@inheritDoc} */
+	public Player getPlayer(String email) {
+		try (Session session = sFactory.openSession()) {
+			String hql = "from Player";
+			@SuppressWarnings("rawtypes")
+			Query query = session.createQuery(hql);
+			@SuppressWarnings("unchecked")
+			List<Player> result = query.list();
+			
+			for (Player a: result) {
+				if (a.getEmail().equals(email)) {
+					return a;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	/**	{@inheritDoc} */
