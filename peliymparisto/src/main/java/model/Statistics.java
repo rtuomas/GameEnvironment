@@ -19,7 +19,7 @@ public class Statistics {
 		
 		DAOIF dao = new DAO();
 		ArrayList<Double> creditsList = new ArrayList<>();
-		creditsList = dao.readCredits(1002);
+		creditsList = dao.readCredits(1001);
 		//ArrayList<Double> myCredits = new ArrayList<>();
 		/*
 		double temp = 0.0;
@@ -43,7 +43,7 @@ public class Statistics {
         //series.setName("My portfolio");
         
         for(int i=0;i<creditsList.size();i++) {
-        	series.getData().add(new XYChart.Data(dates[i], creditsList.get(i)));
+        	series.getData().add(new XYChart.Data(i, creditsList.get(i)));
         }
         
         /*
