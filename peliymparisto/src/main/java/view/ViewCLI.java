@@ -107,7 +107,7 @@ public class ViewCLI implements ViewIF {
 		while(s != 0) {
 			s = scanner.nextInt();
 			if(s != 0) {
-			indexes.add(s);
+			indexes.add(s - 1);
 			}
 		}
 		controller.setSwappedCardIndexes(indexes);

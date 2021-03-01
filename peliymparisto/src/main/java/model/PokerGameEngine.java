@@ -109,10 +109,18 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		controller.showCards(this.hand.getHand());
 	}
 	
+	/**
+	 * Returns current bet amount
+	 * @return current bet amount
+	 */
 	public static double getBet() {
 		return bet;
 	}
 	
+	/**
+	 * increases current bet amount
+	 * @return current bet amount
+	 */
 	public static double increaseBet() {
 		if(bet!=10.0) {
 			bet = betTable[Arrays.asList(betTable).indexOf(bet)+1];
@@ -120,7 +128,10 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		return getBet();
 	}
 	
-	
+	/**
+	 * decreases current bet amount
+	 * @return current bet amount
+	 */
 	public static double decreaseBet() {
 		if(bet!=0.1) {
 			bet = betTable[Arrays.asList(betTable).indexOf(bet)-1];
@@ -133,8 +144,12 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		controller.setScore(this.hand.getScore().name());
 	}
 	
+	/**
+	 * Waits for user interaction until user has decided which cards are going to get swapped.
+	 * Swaps cards and returns new hand to controller -> view.
+	 */
 	public synchronized void swapCards () {
-		while(indexes == null) {
+		while(this.indexes == null) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
@@ -142,12 +157,15 @@ public class PokerGameEngine extends Thread implements ModelIF {
 				e.printStackTrace();
 			}
 		}
-		controller.showCards(hand.swapCards(indexes));
-		notifyAll();
+		controller.showCards(hand.swapCards(this.indexes));
+		//notifyAll();
 	}
 	
+	/**
+	 * Sets up ArrayList which cards are going to get swapped.
+	 */
 	public synchronized void setCardsToSwapIndexes(ArrayList<Integer> indexes) {
-		this.indexes = indexes;
+		this.indexes = new ArrayList<>(indexes);
 		notifyAll();
 	}
 	

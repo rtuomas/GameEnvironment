@@ -53,14 +53,17 @@ public class Controller implements ControllerIF {
 		view.setCurrentPlayer(model.getCurrentPlayer());
 	}
 	
+	@Override
 	public double getBetIncrement() {
 		return PokerGameEngine.increaseBet();
 	}
 	
+	@Override
 	public double getBetDecrement() {
 		return PokerGameEngine.decreaseBet();
 	}
 	
+	@Override
 	public double getBet() {
 		return PokerGameEngine.getBet();
 	}
@@ -83,6 +86,8 @@ public class Controller implements ControllerIF {
 	public void setSwappedCardIndexes (ArrayList<Integer> indexes) {
 		model.setCardsToSwapIndexes(indexes);
 	}
+	
+	
 
 	@Override
 	public LineChart<Number, Number> getLineChart() {

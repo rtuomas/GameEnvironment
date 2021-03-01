@@ -178,7 +178,7 @@ public class Hand{
 	
 	public Card[] swapCards (ArrayList<Integer> indexes) {
 		for(int i : indexes) {
-			this.hand[i - 1] = currentDeck.nextCard();
+			this.hand[i] = currentDeck.nextCard();
 		}
 		return this.hand;
 	}

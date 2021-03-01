@@ -6,6 +6,7 @@ import controller.Controller;
 import controller.ControllerIF;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -62,6 +63,14 @@ public class View extends Application implements ViewIF {
 	/** Button to close the program */
 	private Button exitProgram;
 	private Tab ranking, creditDevelopment;
+	
+	//PokerGameView variables
+	private Text pokerGameCredits;
+	private Text pokerGameBet;
+	private ArrayList<ImageView> pokerGameCardImgs;
+	private GridPane cardPane;
+	private ArrayList<Integer> cardsToSwapIndexes = new ArrayList <Integer>();
+	private boolean gameOn = false;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -173,20 +182,28 @@ public class View extends Application implements ViewIF {
 		plus.setLayoutX(324.0);
 		plus.setLayoutY(350.0);
 		AnchorPane.setBottomAnchor(plus, 24.4);
+		plus.setOnAction(e -> {
+			setPokerGameBet(controller.getBetIncrement());
+		});
 		
 		// bet decrement button placement
 		Button minus = new Button("-");
 		minus.setLayoutX(219.0);
 		minus.setLayoutY(349.0);
 		AnchorPane.setBottomAnchor(minus, 24.4);
+		minus.setOnAction(e -> {
+			setPokerGameBet(controller.getBetDecrement());
+		});
 		
 		// credits & bet placements
-		Text credits = new Text("Saldo: 100");
-		credits.setLayoutX(36.0);
-		credits.setLayoutY(364.0);
-		Text bet = new Text("Panos: 1,20");
-		bet.setLayoutX(248.0);
-		bet.setLayoutY(367);
+		pokerGameCredits = new Text();
+		pokerGameBet = new Text();
+		setPokerGamePlayerCredits();
+		pokerGameCredits.setLayoutX(36.0);
+		pokerGameCredits.setLayoutY(364.0);
+		setPokerGameBet(controller.getBet());
+		pokerGameBet.setLayoutX(248.0);
+		pokerGameBet.setLayoutY(367);
 		
 		// Gridpane for wintable
 		GridPane wintable = new GridPane();
@@ -228,7 +245,7 @@ public class View extends Application implements ViewIF {
 		wintable.add(fiveofkind, 1, 0);
 		
 		// Gridpane for card images. Below space for ''locked''. Will remove gridlines when finished.
-		GridPane cardPane = new GridPane ();
+		cardPane = new GridPane ();
 		cardPane.setGridLinesVisible(true);
 		cardPane.setLayoutX(5.0);
 		cardPane.setLayoutY(155.0);
@@ -249,23 +266,27 @@ public class View extends Application implements ViewIF {
 		}
 		
 		// Initial card images
+		pokerGameCardImgs = new ArrayList<ImageView>();
 		Image startcard = new Image("/images/green_back.png", 120, 128, false, false);
 		for(int i = 0; i < 5 ; i++) {
-			cardPane.add(new ImageView(startcard), i, 0);
+			pokerGameCardImgs.add(i, new ImageView(startcard));
+			cardPane.add(pokerGameCardImgs.get(i), i, 0);
 		}
 		
+		
 		//Sets the whole AnchorPane with elements
-		AnchorPane pokerGameView = new AnchorPane(backToMainMenu1, play, gamble, plus, minus, credits, bet, wintable, cardPane);
+		AnchorPane pokerGameView = new AnchorPane(backToMainMenu1, play, gamble, plus, minus, pokerGameCredits, pokerGameBet, wintable, cardPane);
 		pokerGameView.setPrefSize(600, 400);
 		
-		// On action for play button, should be refactored
+		
 		play.setOnAction(e -> {
-//				ArrayList<String> cards = controller.dealCards();
-//			
-//			for(int i = 0; i < cards.size(); i++) {
-//				Image newCard = new Image("/images/" + cards.get(i) + ".png", 120, 128, false, false);
-//				cardPane.add(new ImageView(newCard), i, 0);
-//			}
+			if(!gameOn) {
+			controller.startPokerGame();
+			gameOn = !gameOn;
+			} else {
+			setSwappedCards();
+			gameOn = !gameOn;
+			}
 		});
 		
 		return pokerGameView;
@@ -372,17 +393,46 @@ public class View extends Application implements ViewIF {
 		});
 		exitProgram.setOnAction(e -> Platform.exit());
 	}
+	
+	/**
+	 * Custom onClick handler for card images.
+	 * @param img ImageView image of the card
+	 * @param index int card index, helps to determine which card is clicked.
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void setImagesOnClick(final ImageView img, final int index) {
+		img.setPickOnBounds(true);
+	    img.setOnMouseClicked(new EventHandler() {
+				@Override
+				public void handle(Event event) {
+					cardsToSwapIndexes.add(index);
+				}
+	    });
+	}
+	
+	public void setPokerGamePlayerCredits () {
+		pokerGameCredits.setText("Saldo: " + Double.toString(this.player.getCredits()));
+	}
+	
+	public void setPokerGameBet (double bet) {
+		pokerGameBet.setText("Panos: " + Double.toString(bet));
+	}
 
 	@Override
 	public void setCards(ArrayList<String> cards) {
-		// TODO Auto-generated method stub
-		
+		Platform.runLater(() -> {
+		for(int i = 0; i < cards.size(); i++) {
+			Image newCard = new Image("/images/" + cards.get(i) + ".png", 120, 128, false, false);
+			pokerGameCardImgs.add(i, new ImageView(newCard));
+			cardPane.add(pokerGameCardImgs.get(i), i, 0);
+			setImagesOnClick(pokerGameCardImgs.get(i), i);
+		}
+		});
 	}
 
 	@Override
 	public void setScore(String score) {
-		// TODO Auto-generated method stub
-		
+		System.out.println(score);
 	}
 
 	private void fillStatistics() {
@@ -401,8 +451,8 @@ public class View extends Application implements ViewIF {
 
 	@Override
 	public void setSwappedCards() {
-		// TODO Auto-generated method stub
-		
+		controller.setSwappedCardIndexes(cardsToSwapIndexes);
+		cardsToSwapIndexes.clear();
+		pokerGameCardImgs.clear();
 	}
-
 }

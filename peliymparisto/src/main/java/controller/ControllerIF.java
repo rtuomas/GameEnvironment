@@ -54,5 +54,23 @@ public interface ControllerIF {
 	 */
 	public void setCurrentPlayer();
 	
+	/**
+	 * Gets bet increment from model.
+	 * @return double current bet amount
+	 */
+	public double getBetIncrement();
+	
+	/**
+	 * Gets bet decrement from model.
+	 * @return double current bet amount
+	 */
+	public double getBetDecrement();
+	
+	/**
+	 * Gets current bet size from model
+	 * @return double current bet amount
+	 */
+	public double getBet();
+	
 	
 }

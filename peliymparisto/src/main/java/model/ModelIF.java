@@ -36,7 +36,10 @@ public interface ModelIF {
 	LineChart<Number, Number> getLineChart();
 
 	String[] getRanking();
-
+	/**
+	 * Sets up indexes which cards are going to be swapped.
+	 * @param indexes ArrayList<Integer> card indexes 0-4.
+	 */
 	public void setCardsToSwapIndexes(ArrayList<Integer> indexes);
 	
 	public void setUpSinglePlayerGame(Player player); //make non interface
