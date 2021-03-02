@@ -32,6 +32,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -259,6 +261,7 @@ public class View extends Application implements ViewIF {
 		gamble.setPrefHeight(58.0);
 		gamble.setPrefWidth(98.0);
 		AnchorPane.setBottomAnchor(gamble, 11.39);
+		AnchorPane.setRightAnchor(gamble, 135.0);
 		
 		// play button placement
 		Button play = new Button("Pelaa");
@@ -274,6 +277,7 @@ public class View extends Application implements ViewIF {
 		plus.setLayoutX(324.0);
 		plus.setLayoutY(350.0);
 		AnchorPane.setBottomAnchor(plus, 24.4);
+		AnchorPane.setLeftAnchor(plus, 450.0);
 		plus.setOnAction(e -> {
 			setPokerGameBet(controller.getBetIncrement());
 		});
@@ -283,6 +287,7 @@ public class View extends Application implements ViewIF {
 		minus.setLayoutX(219.0);
 		minus.setLayoutY(349.0);
 		AnchorPane.setBottomAnchor(minus, 24.4);
+		AnchorPane.setLeftAnchor(minus, 350.0);
 		minus.setOnAction(e -> {
 			setPokerGameBet(controller.getBetDecrement());
 		});
@@ -293,9 +298,14 @@ public class View extends Application implements ViewIF {
 		setPokerGamePlayerCredits();
 		pokerGameCredits.setLayoutX(36.0);
 		pokerGameCredits.setLayoutY(364.0);
+		AnchorPane.setBottomAnchor(pokerGameCredits, 30.0);
+		AnchorPane.setLeftAnchor(pokerGameCredits, 36.0);
 		setPokerGameBet(controller.getBet());
-		pokerGameBet.setLayoutX(248.0);
-		pokerGameBet.setLayoutY(367);
+		//pokerGameBet.setLayoutX(220.0); // 248
+		//pokerGameBet.setLayoutY(367);
+		AnchorPane.setBottomAnchor(pokerGameBet, 30.0);
+		AnchorPane.setLeftAnchor(pokerGameBet, 385.0);
+		
 		
 		// Gridpane for wintable
 		GridPane wintable = new GridPane();
@@ -336,49 +346,63 @@ public class View extends Application implements ViewIF {
 		wintable.add(straightflush, 1, 1);
 		wintable.add(fiveofkind, 1, 0);
 		
-		// Gridpane for card images. Below space for ''locked''. Will remove gridlines when finished.
+		// Gridpane for card images. Below space for ''locked''.
 		cardPane = new GridPane ();
-		cardPane.setGridLinesVisible(true);
-		cardPane.setLayoutX(5.0);
-		cardPane.setLayoutY(155.0);
-		cardPane.setPrefHeight(167.0);
-		cardPane.setPrefWidth(594.0);
-		AnchorPane.setTopAnchor(cardPane, 155.0);
-		AnchorPane.setRightAnchor(cardPane, 2.6);
+		cardPane.setLayoutX(8.0);
+		cardPane.setLayoutY(158.0);
+		cardPane.setPrefHeight(166.0);
+		cardPane.setPrefWidth(579.0);
+		AnchorPane.setTopAnchor(cardPane, 158.0);
+		AnchorPane.setRightAnchor(cardPane, 10.0);
+		AnchorPane.setLeftAnchor(cardPane, 10.0);
+		AnchorPane.setBottomAnchor(cardPane, 75.0);
 		
-		RowConstraints cardRow = new RowConstraints(125);
-		RowConstraints chosenRow = new RowConstraints(41);
+		RowConstraints cardRow = new RowConstraints();
+		cardRow.setPrefHeight(30.0);
+		cardRow.setMinHeight(10.0);
+		cardRow.setVgrow(Priority.ALWAYS);
+		cardRow.setFillHeight(true);
+		//RowConstraints chosenRow = new RowConstraints(41);
 		cardPane.getRowConstraints().add(cardRow);
-		cardPane.getRowConstraints().add(chosenRow);
+		//cardPane.getRowConstraints().add(chosenRow);
 		
+	 
 		for(int i = 0; i < 5; i++) {
 			ColumnConstraints column = new ColumnConstraints();
-			column.setPrefWidth(118.0);
+			column.setHgrow(Priority.ALWAYS);
+			column.setPrefWidth(100.0);
+			column.setMinWidth(10.0);
+			column.setFillWidth(true);
 			cardPane.getColumnConstraints().add(column);
 		}
 		
-		// Initial card images
+		//Initial card images
 		pokerGameCardImgs = new ArrayList<ImageView>();
-		Image startcard = new Image("/images/green_back.png", 120, 128, false, false);
+		Image startcard = new Image("/images/green_back.png");
 		for(int i = 0; i < 5 ; i++) {
-			pokerGameCardImgs.add(i, new ImageView(startcard));
-			cardPane.add(pokerGameCardImgs.get(i), i, 0);
+			Pane pane = new Pane();
+			pane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+			ImageView img = new ImageView(startcard);
+			img.fitWidthProperty().bind(pane.widthProperty());
+			img.fitHeightProperty().bind(pane.heightProperty());
+			pane.getChildren().add(img);
+			pokerGameCardImgs.add(i, img);
+			cardPane.add(pane, i, 0);
 		}
 		
 		
 		//Sets the whole AnchorPane with elements
 		AnchorPane pokerGameView = new AnchorPane(backToMainMenu1, play, gamble, plus, minus, pokerGameCredits, pokerGameBet, wintable, cardPane);
-		pokerGameView.setPrefSize(600, 400);
+		//pokerGameView.setPrefSize(600, 400);
 		
 		
 		play.setOnAction(e -> {
 			if(!gameOn) {
 			controller.startPokerGame();
-			gameOn = !gameOn;
 			} else {
 			setSwappedCards();
-			gameOn = !gameOn;
 			}
+			gameOn = !gameOn;
 		});
 		
 		return pokerGameView;
@@ -509,14 +533,20 @@ public class View extends Application implements ViewIF {
 	public void setPokerGameBet (double bet) {
 		pokerGameBet.setText("Panos: " + Double.toString(bet));
 	}
-
+	
 	@Override
 	public void setCards(ArrayList<String> cards) {
 		Platform.runLater(() -> {
 		for(int i = 0; i < cards.size(); i++) {
-			Image newCard = new Image("/images/" + cards.get(i) + ".png", 120, 128, false, false);
-			pokerGameCardImgs.add(i, new ImageView(newCard));
-			cardPane.add(pokerGameCardImgs.get(i), i, 0);
+			Pane pane = new Pane();
+			pane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+			Image newCard = new Image("/images/" + cards.get(i) + ".png");
+			ImageView imageview = new ImageView(newCard);
+			imageview.fitHeightProperty().bind(pane.heightProperty());
+			imageview.fitWidthProperty().bind(pane.widthProperty());
+			pane.getChildren().add(imageview);
+			pokerGameCardImgs.add(i, imageview);
+			cardPane.add(pane, i, 0);
 			setImagesOnClick(pokerGameCardImgs.get(i), i);
 		}
 		});
