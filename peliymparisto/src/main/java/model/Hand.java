@@ -75,11 +75,11 @@ public class Hand{
 
 	public boolean isTwoPairs() {
 		boolean isTwoPairs = false;
-		if(hand[0].getValue() == hand[1].getValue() && hand[2].getValue() == hand[3].getValue()) {
+		if(sortedHand[0].getValue() == sortedHand[1].getValue() && sortedHand[2].getValue() == sortedHand[3].getValue()) {
 			isTwoPairs = true;
-		} else if(hand[0].getValue() == hand[1].getValue() && hand[3].getValue() == hand[4].getValue()) {
+		} else if(sortedHand[0].getValue() == sortedHand[1].getValue() && sortedHand[3].getValue() == sortedHand[4].getValue()) {
 			isTwoPairs = true;
-		} else if(hand[1].getValue() == hand[2].getValue() && hand[3].getValue() == hand[4].getValue()) {
+		} else if(sortedHand[1].getValue() == sortedHand[2].getValue() && sortedHand[3].getValue() == sortedHand[4].getValue()) {
 			isTwoPairs = true;
 		} else {
 			isTwoPairs = false;
