@@ -2,6 +2,7 @@ package model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,8 +23,12 @@ class HandTest {
 
 	@Test
 	void testHand() {
-		System.out.println("Hand tested");
-		assertEquals("1H, 2H, 3H, 4H, 5H", hand.toString());
+		System.out.println("Hand tested " + hand.toString());
+		boolean handTest = false;
+		if(hand != null) {
+			handTest = true;
+		}
+		assertTrue(handTest);
 	}
 	
 	@Test
@@ -46,18 +51,6 @@ class HandTest {
 		assertTrue("Hand is not sorted", sorted);
 	}
 	
-	@Test
-	void testSwapCards() {
-		Card[] handToSwap = hand.getHand();
-		handToSwap[0] = null;
-		handToSwap[3] = null;
-		//hand.swapCards(handToSwap);
-		System.out.println("Swap cards tested");
-		System.out.println(hand.toString());
-		assertEquals("6H, 2H, 3H, 7H, 5H", hand.getHand());
-		//SwapCards works, but implementing this to work with view might be a problem
-		
-	}
 	
 	@Test
 	void testSet() {
@@ -68,8 +61,86 @@ class HandTest {
 			hand = new Hand(deck);
 			rounds++;
 		} while(!hand.isSet());
-		System.out.println(hand.toString() + " " + rounds + " rounds, set");
+		System.out.println(hand.toString() + " " + rounds + " rounds, three of a kind. Multiplier: " + hand.getScore().getMultiplier());
 		assertTrue(hand.isSet());
+		assertEquals(2.5, hand.getScore().getMultiplier(), "Multiplier wrong");
+	}
+	@Test
+	void testAcePair() {
+		int rounds = 0;
+		do {
+			deck = new Deck();
+			deck.shuffle();
+			hand = new Hand(deck);
+			rounds++;
+		} while(!hand.isAcePair());
+		System.out.println(hand.toString() + " " + rounds + " rounds, ace pair. Multiplier: " + hand.getScore().getMultiplier());
+		assertTrue(hand.isAcePair());
+		assertEquals(1.0, hand.getScore().getMultiplier(), "Multiplier wrong");
+	}
+	@Test
+	void testNoWin() {
+		int rounds = 0;
+		do {
+			deck = new Deck();
+			deck.shuffle();
+			hand = new Hand(deck);
+			rounds++;
+		} while(hand.getScore().getMultiplier() != 0);
+		System.out.println(hand.toString() + " " + rounds + " rounds, no win. Multiplier: " + hand.getScore().getMultiplier());
+		assertEquals(0, hand.getScore().getMultiplier(), "Multiplier wrong");
+	}
+	@Test
+	void testStraight() {
+		int rounds = 0;
+		do {
+			deck = new Deck();
+			deck.shuffle();
+			hand = new Hand(deck);
+			rounds++;
+		} while(!hand.isStraight());
+		System.out.println(hand.toString() + " " + rounds + " rounds, straight. Multiplier: " + hand.getScore().getMultiplier());
+		assertTrue(hand.isStraight());
+		assertEquals(3.0, hand.getScore().getMultiplier(), "Multiplier wrong");
+	}
+	@Test
+	void testFlush() {
+		int rounds = 0;
+		do {
+			deck = new Deck();
+			deck.shuffle();
+			hand = new Hand(deck);
+			rounds++;
+		} while(!hand.isFlush());
+		System.out.println(hand.toString() + " " + rounds + " rounds, flush. Multiplier: " + hand.getScore().getMultiplier());
+		assertTrue(hand.isFlush());
+		assertEquals(3.5, hand.getScore().getMultiplier(), "Multiplier wrong");
+	}
+	@Test
+	void test4s() {
+		int rounds = 0;
+		do {
+			deck = new Deck();
+			deck.shuffle();
+			hand = new Hand(deck);
+			rounds++;
+		} while(!hand.is4s());
+		System.out.println(hand.toString() + " " + rounds + " rounds, four of a kind. Multiplier: " + hand.getScore().getMultiplier());
+		assertTrue(hand.is4s());
+		assertEquals(7.0, hand.getScore().getMultiplier(), "Multiplier wrong");
+	}
+	@Test
+	void testStraightFlush() {
+		int rounds = 0;
+		do {
+			deck = new Deck();
+			deck.shuffle();
+			hand = new Hand(deck);
+			rounds++;
+		} while(!hand.isStraightFlush());
+		System.out.println(hand.toString() + " " + rounds + " rounds, straight flush. Multiplier: " + hand.getScore().getMultiplier());
+		assertTrue(hand.isStraightFlush());
+		assertEquals(10.0, hand.getScore().getMultiplier(), "Multiplier wrong");
 	}
 	@Test
 	void testTwoPairs() {
@@ -80,8 +151,9 @@ class HandTest {
 			hand = new Hand(deck);
 			rounds++;
 		} while(!hand.isTwoPairs());
-		System.out.println(hand.toString() + " " + rounds + " rounds, two pairs");
+		System.out.println(hand.toString() + " " + rounds + " rounds, two pairs. Multiplier: " + hand.getScore().getMultiplier());
 		assertTrue(hand.isTwoPairs());
+		assertEquals(2.0, hand.getScore().getMultiplier(), "Multiplier wrong");
 	}
 	
 	@Test
@@ -93,8 +165,9 @@ class HandTest {
 			hand = new Hand(deck);
 			rounds++;
 		} while(!hand.isFullHouse());
-		System.out.println(hand.toString() + " " + rounds + " rounds, fullhouse");
+		System.out.println(hand.toString() + " " + rounds + " rounds, fullhouse. Multiplier: " + hand.getScore().getMultiplier());
 		assertTrue(hand.isFullHouse());
+		assertEquals(5.0, hand.getScore().getMultiplier(), "Multiplier wrong");
 	}
 
 }

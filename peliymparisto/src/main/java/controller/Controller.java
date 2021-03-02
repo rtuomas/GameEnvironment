@@ -2,6 +2,7 @@ package controller;
 
 import java.util.ArrayList;
 
+import javafx.application.Platform;
 import javafx.scene.chart.LineChart;
 import model.Card;
 import model.DAO;
@@ -14,7 +15,7 @@ import view.ViewIF;
 /**
  * The Controller which connects the GUI and chosen game engine together using MVC model.
  * @author ---
- * @version 1.1 15.02.2021
+ * @version 1.2 01.03.2021
  */
 public class Controller implements ControllerIF {
 	
@@ -44,13 +45,13 @@ public class Controller implements ControllerIF {
 	/**	{@inheritDoc} */
 	@Override
 	public void getDefaultPlayer() {
-		view.setCurrentPlayer(dao.getPlayer(1001));
+		Platform.runLater(()->view.setDefaultPlayer(dao.getPlayer(1001)));
 	}
 	
 	/**	{@inheritDoc} */
 	@Override
 	public void setCurrentPlayer() {
-		view.setCurrentPlayer(model.getCurrentPlayer());
+		Platform.runLater(()->view.setCurrentPlayer(model.getCurrentPlayer()));
 	}
 	
 	@Override
@@ -70,7 +71,7 @@ public class Controller implements ControllerIF {
 	
 	@Override
 	public void setScore(String score) {
-		view.setScore(score);
+		Platform.runLater(()->view.setScore(score));
 	}
 
 	@Override
@@ -87,7 +88,26 @@ public class Controller implements ControllerIF {
 		model.setCardsToSwapIndexes(indexes);
 	}
 	
-	
+	/**	{@inheritDoc} */
+	@Override
+	public void attemptLogIn() {
+		Platform.runLater(new Runnable(){ 
+			public void run() {
+				String email = view.getEmailInput();
+				String password = view.getPasswordInput();
+				if (email.isEmpty() || password.isEmpty()) {
+					view.showLogInError();
+				} else {
+					String passwordToMatch = dao.searchEmail(email);
+					if (passwordToMatch != null && password.equals(passwordToMatch)) {
+						view.setCurrentPlayer(dao.getPlayer(email));
+					} else {
+						view.showLogInError();
+					}
+				}
+			}
+		});
+	}
 
 	@Override
 	public LineChart<Number, Number> getLineChart() {
