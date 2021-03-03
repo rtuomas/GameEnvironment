@@ -1,6 +1,7 @@
 package view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import controller.Controller;
 import controller.ControllerIF;
@@ -72,6 +73,7 @@ public class View extends Application implements ViewIF {
 	private Text pokerGameCredits;
 	private Text pokerGameBet;
 	private ArrayList<ImageView> pokerGameCardImgs;
+	private HashMap<Integer, Image> clickedImgs = new HashMap <Integer, Image>();
 	private GridPane cardPane;
 	private ArrayList<Integer> cardsToSwapIndexes = new ArrayList <Integer>();
 	private boolean gameOn = false;
@@ -638,7 +640,6 @@ public class View extends Application implements ViewIF {
 		this.player = currentPlayer;
 		logOutMI.setVisible(true);
 		updateToolBar();
-		// hmm
 		setPokerGamePlayerCredits();
 		System.out.println("Player data updated");
 	}
@@ -731,7 +732,17 @@ public class View extends Application implements ViewIF {
 	    img.setOnMouseClicked(new EventHandler() {
 				@Override
 				public void handle(Event event) {
-					cardsToSwapIndexes.add(index);
+					if(gameOn) {
+					if(cardsToSwapIndexes.contains(index)) {
+						img.setImage(clickedImgs.get(index));
+						clickedImgs.remove(index);
+						cardsToSwapIndexes.remove(Integer.valueOf(index));
+					} else {
+						clickedImgs.put(index, img.getImage());
+						img.setImage(new Image("/images/green_back.png"));
+						cardsToSwapIndexes.add(index);
+						}
+					}
 				}
 	    });
 	}
