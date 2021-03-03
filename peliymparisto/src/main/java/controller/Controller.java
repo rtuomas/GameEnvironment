@@ -8,6 +8,7 @@ import model.Card;
 import model.DAO;
 import model.DAOIF;
 import model.ModelIF;
+import model.Player;
 import model.PokerGameEngine;
 import model.Statistics;
 import view.ViewIF;
@@ -15,7 +16,7 @@ import view.ViewIF;
 /**
  * The Controller which connects the GUI and chosen game engine together using MVC model.
  * @author ---
- * @version 1.2 01.03.2021
+ * @version 1.3 03.03.2021
  */
 public class Controller implements ControllerIF {
 	
@@ -96,17 +97,60 @@ public class Controller implements ControllerIF {
 				String email = view.getEmailInput();
 				String password = view.getPasswordInput();
 				if (email.isEmpty() || password.isEmpty()) {
-					view.showLogInError();
+					view.showLogInError(); //user is told that there was a problem with the input data
 				} else {
 					String passwordToMatch = dao.searchEmail(email);
 					if (passwordToMatch != null && password.equals(passwordToMatch)) {
 						view.setCurrentPlayer(dao.getPlayer(email));
 					} else {
-						view.showLogInError();
+						view.showLogInError(); //user is told that there was a problem with the input data
 					}
 				}
 			}
 		});
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void attemptRegistration() {
+		Platform.runLater(new Runnable(){ 
+			public void run() {
+				String firstName = view.getFirstNameRegInput();
+				String lastName = view.getLastNameRegInput();
+				String profileName = view.getProfileNameRegInput();
+				String emailReg = view.getEmailRegInput();
+				String pw1Reg = view.getPasswordRegInput();
+				String pw2Reg = view.getPasswordRegVerInput();
+				Boolean creditTransfer = view.getCreditTransferRegInput();
+				
+				if (firstName.isEmpty() || lastName.isEmpty() || emailReg.isEmpty() || pw1Reg.isEmpty() || pw2Reg.isEmpty()) {
+					view.showRegistrationErrorEmptyFields();
+				} else if(!pw1Reg.equals(pw2Reg)) {
+					view.showRegistrationErrorPasswordsNotMatch();
+				} else if(dao.searchEmail(emailReg) != null) {
+					view.showRegistrationErrorEmailAlreadyExists();
+				} else {
+					Player player = new Player(firstName, lastName, emailReg, pw1Reg);
+					if (!profileName.isEmpty()) { //if the profile name was not given, the default player name will be Player
+						player.setProfileName(profileName);
+					}
+					if (creditTransfer) { //this checks if the checkbox for credit transfer was chosen
+						double testerCredits = view.getPlayer().getCredits();
+						if (testerCredits > 100) { //The testers credit amount is copied to the new account if it is over 100 credits
+							player.setCredits(testerCredits);
+						}
+					}
+					boolean check = dao.createPlayer(player); //creating a new Player into database
+					if (check) {
+						view.setCurrentPlayer(player); //logging in with new Player
+						view.handleRegistrationSuccess(); //inform the user of success, close registration window
+					} else {
+						view.showRegistrationErrorDatabase(); //shows default error message if the player information could not be created to database
+					}
+				}
+			}
+		});
+		
 	}
 
 	@Override
@@ -133,4 +177,6 @@ public class Controller implements ControllerIF {
 		return null;
 		
 	}
+
+
 }

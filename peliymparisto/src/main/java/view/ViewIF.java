@@ -7,7 +7,7 @@ import model.Player;
 /**
  * The interface for the GUI. The Controller handles GUI related traffic through this interface.
  * @author ---
- * @version 1.1 01.03.2021
+ * @version 1.2 03.03.2021
  */
 public interface ViewIF {
 	
@@ -41,12 +41,12 @@ public interface ViewIF {
 	 */
 	public void setCurrentPlayer(Player currentPlayer);
 	/**
-	 * fetches the email from textfield
+	 * Fetches the email from textfield
 	 * @return String form of email
 	 */
 	public String getEmailInput();
 	/**
-	 * fetches the password from textfield
+	 * Fetches the password from textfield
 	 * @return String form of password
 	 */
 	public String getPasswordInput();
@@ -54,5 +54,61 @@ public interface ViewIF {
 	 * Shows error message incase of failure with login
 	 */
 	public void showLogInError();
+	/**
+	 * Shows error message with registration if one or more of required fields are empty
+	 */
+	public void showRegistrationErrorEmptyFields();
+	/**
+	 * Shows error message with registration if password does not match with retyped password
+	 */
+	public void showRegistrationErrorPasswordsNotMatch();
+	/**
+	 * Shows error message with registration if email is allready in use
+	 */
+	public void showRegistrationErrorEmailAlreadyExists();
+	/**
+	 * Shows error message with registration if there was an error with saving the information to database
+	 */
+	public void showRegistrationErrorDatabase();
+	/**
+	 * Notifies the user about the success of registration
+	 * Closes the registration window
+	 */
+	public void handleRegistrationSuccess();
+	/**
+	 * Fetches the first name from registration window
+	 * @return String form of first name
+	 */
+	public String getFirstNameRegInput();
+	/**
+	 * Fetches the last name from registration window
+	 * @return String form of last name
+	 */
+	public String getLastNameRegInput();
+	/**
+	 * Fetches the profile name from registration window
+	 * @return String form of profile name
+	 */
+	public String getProfileNameRegInput();
+	/**
+	 * Fetches the email from registration window
+	 * @return String form of first name
+	 */
+	public String getEmailRegInput();
+	/**
+	 * Fetches the password from registration window
+	 * @return String form of first name
+	 */
+	public String getPasswordRegInput();
+	/**
+	 * Fetches the repeated password from registration window
+	 * @return String form of repeated password
+	 */
+	public String getPasswordRegVerInput();
+	/**
+	 * Fetches the choice box choice from registration window
+	 * @return Boolean which tells if the Choice box is chosen or not
+	 */
+	public Boolean getCreditTransferRegInput();
 	
 }
