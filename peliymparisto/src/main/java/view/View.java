@@ -640,7 +640,8 @@ public class View extends Application implements ViewIF {
 		img.setPickOnBounds(true);
 	    img.setOnMouseClicked(new EventHandler() {
 				@Override
-				public void handle(Event event) { 
+				public void handle(Event event) {
+					if(gameOn) {
 					if(cardsToSwapIndexes.contains(index)) {
 						img.setImage(clickedImgs.get(index));
 						clickedImgs.remove(index);
@@ -649,6 +650,7 @@ public class View extends Application implements ViewIF {
 						clickedImgs.put(index, img.getImage());
 						img.setImage(new Image("/images/green_back.png"));
 						cardsToSwapIndexes.add(index);
+						}
 					}
 				}
 	    });
