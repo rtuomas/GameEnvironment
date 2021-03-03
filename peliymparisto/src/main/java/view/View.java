@@ -37,6 +37,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -74,6 +75,7 @@ public class View extends Application implements ViewIF {
 	private GridPane cardPane;
 	private ArrayList<Integer> cardsToSwapIndexes = new ArrayList <Integer>();
 	private boolean gameOn = false;
+	private Text notification;
 
 	//navBar components
 	/** Button to go to main menu*/
@@ -245,6 +247,12 @@ public class View extends Application implements ViewIF {
 	 */
 	private AnchorPane pokerGameBuilder() {
 		
+		notification = new Text("Valitse panos ja paina jako");
+		AnchorPane.setBottomAnchor(notification, 70.0);
+		notification.setLayoutX(270);
+		//AnchorPane.setLeftAnchor(notification, 350.0);
+		notification.setFont(Font.font(24));
+		
 		// gamble button placement
 		Button gamble = new Button ("Tuplaa");
 		gamble.setLayoutX(367.0);
@@ -255,7 +263,8 @@ public class View extends Application implements ViewIF {
 		AnchorPane.setRightAnchor(gamble, 135.0);
 		
 		// play button placement
-		Button play = new Button("Pelaa");
+		Button play = new Button("Jako");
+		//play.setStyle("-fx-background-color: green");
 		play.setLayoutX(487.0);
 		play.setLayoutY(331.0);
 		play.setPrefHeight(58.0);
@@ -313,12 +322,13 @@ public class View extends Application implements ViewIF {
 			wintable.getRowConstraints().add(row);
 		}
 		
-		for(int i = 0; i < 2; i++) {
+		for(int i = 0; i < 3; i++) {
 			ColumnConstraints column = new ColumnConstraints();
 			column.setPrefWidth(100.0);
 			wintable.getColumnConstraints().add(column);
 		}
 		
+		Text acepair = new Text("Ässä pari:");
 		Text pair = new Text("Kaksi paria:");
 		Text threeofkind = new Text("Kolmoset:");
 		Text straight = new Text("Suora:");
@@ -326,16 +336,22 @@ public class View extends Application implements ViewIF {
 		Text fullhouse = new Text("Täyskäsi:");
 		Text fourofkind = new Text("Neloset:");
 		Text straightflush = new Text("Värisuora:");
-		Text fiveofkind = new Text ("Vitoset:");
-		
-		wintable.add(pair, 0, 3);
-		wintable.add(threeofkind, 0, 2);
+		wintable.add(acepair, 0, 2);
+		wintable.add(pair, 1, 2);
+		wintable.add(threeofkind, 2, 2);
 		wintable.add(straight, 0, 1);
-		wintable.add(flush, 0, 0);
-		wintable.add(fullhouse, 1, 3);
-		wintable.add(fourofkind, 1, 2);
-		wintable.add(straightflush, 1, 1);
-		wintable.add(fiveofkind, 1, 0);
+		wintable.add(flush, 1, 1);
+		wintable.add(fullhouse, 2, 1);
+		wintable.add(fourofkind, 0, 0);
+		wintable.add(straightflush, 1, 0);
+		
+		//wintable.add(pair, 0, 3);
+		//wintable.add(threeofkind, 0, 2);
+		//wintable.add(straight, 0, 1);
+		//wintable.add(flush, 0, 0);
+		//wintable.add(fullhouse, 1, 3);
+		//wintable.add(fourofkind, 1, 2);
+		//wintable.add(straightflush, 1, 1);
 		
 		// Gridpane for card images. Below space for ''locked''.
 		cardPane = new GridPane ();
@@ -343,10 +359,10 @@ public class View extends Application implements ViewIF {
 		cardPane.setLayoutY(158.0);
 		cardPane.setPrefHeight(166.0);
 		cardPane.setPrefWidth(579.0);
-		AnchorPane.setTopAnchor(cardPane, 158.0);
+		AnchorPane.setTopAnchor(cardPane, 115.0);
 		AnchorPane.setRightAnchor(cardPane, 10.0);
 		AnchorPane.setLeftAnchor(cardPane, 10.0);
-		AnchorPane.setBottomAnchor(cardPane, 75.0);
+		AnchorPane.setBottomAnchor(cardPane, 105.0);
 		
 		RowConstraints cardRow = new RowConstraints();
 		cardRow.setPrefHeight(30.0);
@@ -383,14 +399,19 @@ public class View extends Application implements ViewIF {
 		
 		
 		//Sets the whole AnchorPane with elements
-		AnchorPane pokerGameView = new AnchorPane(play, gamble, plus, minus, pokerGameCredits, pokerGameBet, wintable, cardPane);
-		pokerGameView.setPrefSize(600, 400);
+		AnchorPane pokerGameView = new AnchorPane(play, gamble, plus, minus, pokerGameCredits, pokerGameBet, wintable, cardPane, notification);
+		//pokerGameView.setPrefSize(600, 400);
 		
 		play.setOnAction(e -> {
 			if(!gameOn) {
 			controller.startPokerGame();
+			plus.setVisible(false);
+			minus.setVisible(false);
+			setNotification("Valitse kortit jotka haluat vaihtaa ja paina jako");
 			} else {
 			setSwappedCards();
+			plus.setVisible(true);
+			minus.setVisible(true);
 			}
 			gameOn = !gameOn;
 		});
@@ -546,6 +567,8 @@ public class View extends Application implements ViewIF {
 	public void setCurrentPlayer(Player currentPlayer) {
 		this.player = currentPlayer;
 		updateToolBar();
+		// hmm
+		setPokerGamePlayerCredits();
 		System.out.println("Player data updated");
 	}
 	
@@ -650,7 +673,7 @@ public class View extends Application implements ViewIF {
 
 	@Override
 	public void setScore(String score) {
-		System.out.println(score);
+		setNotification(score);
 	}
 
 	private void fillStatistics() {
@@ -802,5 +825,15 @@ public class View extends Application implements ViewIF {
 	public Boolean getCreditTransferRegInput() {
 		return this.creditTransferRegisterInput.isSelected();
 	}
-
+	
+	public void setNotification(String text) {
+		if(text.length() < 13) {
+		  notification.setLayoutX(360);
+		} else if(text.length() >= 13 && text.length() < 30) {
+			notification.setLayoutX(290);	
+		} else {
+			notification.setLayoutX(180);
+		}
+		notification.setText(text);
+	}
 }

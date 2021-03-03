@@ -141,7 +141,12 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	
 	@Override
 	public void setScore () {
-		controller.setScore(this.hand.getScore().name());
+		HandValue score = this.hand.getScore();
+		if(score.getMultiplier() != 0) {
+			controller.setScore(score.name() + ", voitit " + score.getMultiplier() * bet);
+		} else {
+			controller.setScore("Ei voittoa");
+		}
 	}
 	
 	/**
