@@ -10,15 +10,13 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
@@ -41,11 +39,10 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import model.Card;
 import model.Player;
-import model.Statistics;
 
 /**
  * The Graphical User Interface built with JavaFX
@@ -102,6 +99,17 @@ public class View extends Application implements ViewIF {
 	private MenuItem infoMI;
 	/** Button to exit the program*/
 	private MenuItem exitMI;
+	
+	//registerform components
+	private TextField firstNameRegisterInput;
+	private TextField lastNameRegisterInput;
+	private TextField profileNameRegisterInput;
+	private TextField emailRegisterInput;
+	private PasswordField passwordRegisterInput;
+	private PasswordField passwordRegisterVerifyInput;
+	private CheckBox creditTransferRegisterInput;
+	private Button confirmRegisterButton;
+	private Button cancelRegisterButton;
 
 
 	public static void main(String[] args) {
@@ -144,7 +152,7 @@ public class View extends Application implements ViewIF {
 			mainView.setTop(navBar);
 			mainView.setCenter(mainMenu);
 			Scene mainScene = new Scene(mainView);
-			createGUITransitions(mainView, mainMenu, pokerGame, settings, stats);
+			createGUITransitions(primaryStage, mainView, mainMenu, pokerGame, settings, stats);
 
 			primaryStage.setScene(mainScene);
 	        primaryStage.show();
@@ -476,6 +484,62 @@ public class View extends Application implements ViewIF {
 		return statsView;
 	}
 	
+	private void showRegisterDialog(Stage primaryStage) {
+		Stage rDialog = new Stage();
+		rDialog.initModality(Modality.APPLICATION_MODAL);
+		rDialog.initOwner(primaryStage);
+		rDialog.setTitle("Rekisteröitymislomake");
+		VBox rHeadline = new VBox();
+		GridPane gridPane = new GridPane();
+		HBox rButtons = new HBox();
+        
+		firstNameRegisterInput = new TextField();
+		firstNameRegisterInput.setPromptText("Syötä etunimi");
+		lastNameRegisterInput = new TextField();
+		lastNameRegisterInput.setPromptText("Syötä sukunimi");
+		profileNameRegisterInput = new TextField();
+		profileNameRegisterInput.setPromptText("Valitse pelaajanimi");
+		emailRegisterInput = new TextField();
+		emailRegisterInput.setPromptText("Syötä sähköposti");
+		passwordRegisterInput = new PasswordField();
+		passwordRegisterInput.setPromptText("Valitse salasana");
+		passwordRegisterVerifyInput = new PasswordField();
+		passwordRegisterVerifyInput.setPromptText("Syötä salasana uudestaan");
+		creditTransferRegisterInput = new CheckBox("Vie testikäyttäjänä kerätty saldo\nuudelle tilille (min. 100 krediittiä)");
+		confirmRegisterButton = new Button("Rekisteröidy");
+		cancelRegisterButton = new Button("Peruuta");
+		
+		rHeadline.getChildren().add(new Label("Luo tili"));
+		rHeadline.setPadding(new Insets(10, 10, 10, 10));
+		rHeadline.setAlignment(Pos.CENTER);
+		
+		gridPane.add(firstNameRegisterInput, 0, 0);
+		gridPane.add(lastNameRegisterInput, 1, 0);
+		gridPane.add(profileNameRegisterInput, 0, 1);
+		gridPane.add(new Label("Tämä nimi näytetään muille pelaajille"), 1, 1);
+		gridPane.add(emailRegisterInput, 0, 2, 2, 1);
+		gridPane.add(passwordRegisterInput, 0, 3, 2, 1);
+		gridPane.add(passwordRegisterVerifyInput, 0, 4, 2, 1);
+		gridPane.add(creditTransferRegisterInput, 0, 5);
+		gridPane.setPadding(new Insets(10,10,10,10));
+		gridPane.setHgap(5);
+		gridPane.setVgap(5);
+
+		rButtons.getChildren().addAll(confirmRegisterButton, cancelRegisterButton);
+		rButtons.setPadding(new Insets(10, 10, 10, 10));
+		rButtons.setSpacing(10);
+		rButtons.setAlignment(Pos.CENTER);
+
+		BorderPane rDialogView = new BorderPane();
+		rDialogView.setTop(rHeadline);
+		rDialogView.setCenter(gridPane);
+		rDialogView.setBottom(rButtons);
+		
+        Scene rDialogScene = new Scene(rDialogView); //100,100
+        rDialog.setScene(rDialogScene);
+        rDialog.show();
+	}
+	
 	/**	{@inheritDoc} */
 	@Override
 	public Player getPlayer() {
@@ -521,7 +585,7 @@ public class View extends Application implements ViewIF {
 	 * @param settingsScene Settings view
 	 * @param statsScene Stats view
 	 */
-	private void createGUITransitions(BorderPane mainView, BorderPane mainMenu, AnchorPane pokerGame, BorderPane settings, BorderPane stats) {
+	private void createGUITransitions(Stage primaryStage, BorderPane mainView, BorderPane mainMenu, AnchorPane pokerGame, BorderPane settings, BorderPane stats) {
 		enterPokerGame.setOnAction(e -> {
 			mainView.setCenter(pokerGame);
 		});
@@ -540,6 +604,7 @@ public class View extends Application implements ViewIF {
 		exitMI.setOnAction(e -> Platform.exit());
 		signInButton.setOnAction(e -> controller.attemptLogIn());
 		logOutMI.setOnAction(e -> controller.getDefaultPlayer());
+		registerButton.setOnAction(e -> showRegisterDialog(primaryStage));
 	}
 	
 	/**
