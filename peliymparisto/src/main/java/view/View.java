@@ -701,7 +701,7 @@ public class View extends Application implements ViewIF {
 		if(text.length() < 13) {
 		  notification.setLayoutX(360);
 		} else if(text.length() >= 13 && text.length() < 30) {
-			notification.setLayoutX(250);	
+			notification.setLayoutX(290);	
 		} else {
 			notification.setLayoutX(180);
 		}
