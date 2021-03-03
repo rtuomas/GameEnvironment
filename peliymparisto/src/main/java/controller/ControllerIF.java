@@ -10,7 +10,7 @@ import model.Player;
 /**
  * The interface for the Controller. All necessary methods for the functionality of the MVC model are found here.
  * @author ---
- * @version 1.2 03.03.2021
+ * @version 1.3 03.03.2021
  */
 public interface ControllerIF {
 	

@@ -47,7 +47,7 @@ import model.Player;
 /**
  * The Graphical User Interface built with JavaFX
  * @author ---
- * @version 1.2 03.03.2021
+ * @version 1.3 03.03.2021
  */
 public class View extends Application implements ViewIF {
 	

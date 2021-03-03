@@ -7,7 +7,7 @@ import model.Player;
 /**
  * The interface for the GUI. The Controller handles GUI related traffic through this interface.
  * @author ---
- * @version 1.2 03.03.2021
+ * @version 1.3 03.03.2021
  */
 public interface ViewIF {
 	

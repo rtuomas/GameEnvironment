@@ -16,7 +16,7 @@ import view.ViewIF;
 /**
  * The Controller which connects the GUI and chosen game engine together using MVC model.
  * @author ---
- * @version 1.3 03.03.2021
+ * @version 1.4 03.03.2021
  */
 public class Controller implements ControllerIF {
 	
