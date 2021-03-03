@@ -48,7 +48,7 @@ import model.Player;
 /**
  * The Graphical User Interface built with JavaFX
  * @author ---
- * @version 1.1 01.03.2021
+ * @version 1.3 03.03.2021
  */
 public class View extends Application implements ViewIF {
 	
@@ -486,6 +486,10 @@ public class View extends Application implements ViewIF {
 		return statsView;
 	}
 	
+	/**
+	 * This shows a window prompting the user to input their information for registration
+	 * @param primaryStage this variable is used to link the new stage to the primaryStage
+	 */
 	private void showRegisterDialog(Stage primaryStage) {
 		Stage rDialog = new Stage();
 		rDialog.initModality(Modality.APPLICATION_MODAL);
@@ -539,6 +543,7 @@ public class View extends Application implements ViewIF {
 		
         Scene rDialogScene = new Scene(rDialogView); //100,100
         rDialog.setScene(rDialogScene);
+        createRegisterActions();
         rDialog.show();
 	}
 	
@@ -605,7 +610,24 @@ public class View extends Application implements ViewIF {
 		exitMI.setOnAction(e -> Platform.exit());
 		signInButton.setOnAction(e -> controller.attemptLogIn());
 		logOutMI.setOnAction(e -> controller.getDefaultPlayer());
-		registerButton.setOnAction(e -> showRegisterDialog(primaryStage));
+		registerButton.setOnAction(e -> {
+			if (this.player.getId() == 1001) { //if the current player is Tester, it means he/she has not logged in yet
+				showRegisterDialog(primaryStage);
+			} else {
+				showRegistrationErrorAlreadyLoggedIn(); //User is prompted to log out before registering
+			}
+		});
+	}
+	
+	/**
+	 * This method has the functionality for the confirm and cancel buttons in Registration window
+	 */
+	private void createRegisterActions() {
+		confirmRegisterButton.setOnAction(e -> controller.attemptRegistration());
+		cancelRegisterButton.setOnAction(e -> {
+			Stage stage = (Stage)cancelRegisterButton.getScene().getWindow();
+			stage.close();
+		});
 	}
 	
 	/**
@@ -686,6 +708,81 @@ public class View extends Application implements ViewIF {
 	
 	/**	{@inheritDoc} */
 	@Override
+	public void showLogInError() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Varoitus");
+		alert.setHeaderText("Varoitus - syötetty data ei kelpaa");
+		alert.setContentText("Varmista että sähköposti ja salasana ovat oikein.");
+		alert.showAndWait();
+	}
+	
+	/**
+	 * Tells the user that they cannot create an account if they are already logged in
+	 */
+	private void showRegistrationErrorAlreadyLoggedIn() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Varoitus");
+		alert.setHeaderText("Varoitus - Olet jo kirjautunut sisään");
+		alert.setContentText("Kirjaudu ulos luodaksesi uuden tilin.");
+		alert.showAndWait();
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void showRegistrationErrorEmptyFields() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Varoitus");
+		alert.setHeaderText("Varoitus - vaaditut tiedot puuttuvat");
+		alert.setContentText("Varmista että etunimi, sukunimi, sähköposti, salasana ja salasanan vahvistus on syötetty.");
+		alert.showAndWait();
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public void showRegistrationErrorPasswordsNotMatch() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Varoitus");
+		alert.setHeaderText("Varoitus - salasanat eivät täsmää");
+		alert.setContentText("Varmista että syöttämäsi salasanat vastaavat toisiaan.");
+		alert.showAndWait();
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public void showRegistrationErrorEmailAlreadyExists() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Varoitus");
+		alert.setHeaderText("Varoitus - sähköpostiosoite on jo käytössä");
+		alert.setContentText("Tähän sähköpostiosoitteeseen liitetty tili on jo olemassa.\n\n"
+				+ "Kirjaudu sisään tai luo uudet tunnukset käyttäen toista sähköpostiosoitetta.\n"
+				+ "Jos et muista salasanaasi, ota yhteyttä tukeen.");
+		alert.showAndWait();
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void showRegistrationErrorDatabase() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Varoitus");
+		alert.setHeaderText("Varoitus - Tilin luonti ei onnistunut");
+		alert.setContentText("Jokin meni pieleen, kokeile hetken kuluttua uudelleen.");
+		alert.showAndWait();
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void handleRegistrationSuccess() {
+		Stage stage = (Stage)cancelRegisterButton.getScene().getWindow();
+		stage.close();
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Rekisteröityminen");
+		alert.setHeaderText("Tilin luominen onnistui!");
+		alert.setContentText("Sinut on kirjattu sisään ja voit jatkaa pelaamista uusilla tunnuksilla");
+		alert.showAndWait();
+	}
+
+	/**	{@inheritDoc} */
+	@Override
 	public String getEmailInput() {
 		return String.valueOf(this.emailInput.getText());
 	}
@@ -695,15 +792,47 @@ public class View extends Application implements ViewIF {
 	public String getPasswordInput() {
 		return String.valueOf(this.passwordInput.getText());
 	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public String getFirstNameRegInput() {
+		return String.valueOf(this.firstNameRegisterInput.getText());
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public String getLastNameRegInput() {
+		return String.valueOf(this.lastNameRegisterInput.getText());
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public String getProfileNameRegInput() {
+		return String.valueOf(this.profileNameRegisterInput.getText());
+	}
 	
 	/**	{@inheritDoc} */
 	@Override
-	public void showLogInError() {
-		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Varoitus");
-		alert.setHeaderText("Varoitus - syötetty data ei kelpaa");
-		alert.setContentText("Varmista että sähköposti ja salasana ovat oikein");
-		alert.showAndWait();
+	public String getEmailRegInput() {
+		return String.valueOf(this.emailRegisterInput.getText());
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public String getPasswordRegInput() {
+		return String.valueOf(this.passwordRegisterInput.getText());
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public String getPasswordRegVerInput() {
+		return String.valueOf(this.passwordRegisterVerifyInput.getText());
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public Boolean getCreditTransferRegInput() {
+		return this.creditTransferRegisterInput.isSelected();
 	}
 	
 	public void setNotification(String text) {
