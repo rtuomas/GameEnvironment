@@ -47,7 +47,7 @@ import model.Player;
 /**
  * The Graphical User Interface built with JavaFX
  * @author ---
- * @version 1.3 03.03.2021
+ * @version 1.4 03.03.2021
  */
 public class View extends Application implements ViewIF {
 	
@@ -110,6 +110,10 @@ public class View extends Application implements ViewIF {
 	private CheckBox creditTransferRegisterInput;
 	private Button confirmRegisterButton;
 	private Button cancelRegisterButton;
+	
+	//playerinformation components
+	private Button savePlayerInfoButton;
+	private Button cancelPlayerInfoButton;
 
 
 	public static void main(String[] args) {
@@ -221,12 +225,13 @@ public class View extends Application implements ViewIF {
 
 		playerMenu = new MenuButton("Tester");
 		playerMenu.setGraphic(new ImageView(user));
-		playerInfoMI = new MenuItem("Näytä tiedot");
+		playerInfoMI = new MenuItem("Näytä pelaajatiedot");
 		logOutMI = new MenuItem("Kirjaudu ulos");
+		logOutMI.setVisible(false);
 		playerMenu.getItems().addAll(playerInfoMI, logOutMI);
 		MenuButton menu2 = new MenuButton();
 		menu2.setGraphic(new ImageView(settings));
-		infoMI = new MenuItem("Lisätietoja");
+		infoMI = new MenuItem("Lisätietoja ohjelmasta");
 		exitMI = new MenuItem("Lopeta ohjelma");
 		menu2.getItems().addAll(infoMI, exitMI);
 		
@@ -494,7 +499,7 @@ public class View extends Application implements ViewIF {
 		rDialog.initOwner(primaryStage);
 		rDialog.setTitle("Rekisteröitymislomake");
 		VBox rHeadline = new VBox();
-		GridPane gridPane = new GridPane();
+		GridPane rGridPane = new GridPane();
 		HBox rButtons = new HBox();
         
 		firstNameRegisterInput = new TextField();
@@ -517,17 +522,18 @@ public class View extends Application implements ViewIF {
 		rHeadline.setPadding(new Insets(10, 10, 10, 10));
 		rHeadline.setAlignment(Pos.CENTER);
 		
-		gridPane.add(firstNameRegisterInput, 0, 0);
-		gridPane.add(lastNameRegisterInput, 1, 0);
-		gridPane.add(profileNameRegisterInput, 0, 1);
-		gridPane.add(new Label("Tämä nimi näytetään muille pelaajille"), 1, 1);
-		gridPane.add(emailRegisterInput, 0, 2, 2, 1);
-		gridPane.add(passwordRegisterInput, 0, 3, 2, 1);
-		gridPane.add(passwordRegisterVerifyInput, 0, 4, 2, 1);
-		gridPane.add(creditTransferRegisterInput, 0, 5);
-		gridPane.setPadding(new Insets(10,10,10,10));
-		gridPane.setHgap(5);
-		gridPane.setVgap(5);
+		rGridPane.add(firstNameRegisterInput, 0, 0);
+		rGridPane.add(lastNameRegisterInput, 1, 0);
+		rGridPane.add(profileNameRegisterInput, 0, 1);
+		rGridPane.add(new Label("Tämä nimi näytetään muille pelaajille"), 1, 1);
+		rGridPane.add(emailRegisterInput, 0, 2, 2, 1);
+		rGridPane.add(passwordRegisterInput, 0, 3, 2, 1);
+		rGridPane.add(passwordRegisterVerifyInput, 0, 4, 2, 1);
+		rGridPane.add(creditTransferRegisterInput, 0, 5);
+		rGridPane.setPadding(new Insets(10,10,10,10));
+		rGridPane.setHgap(5);
+		rGridPane.setVgap(5);
+		rGridPane.setAlignment(Pos.CENTER);
 
 		rButtons.getChildren().addAll(confirmRegisterButton, cancelRegisterButton);
 		rButtons.setPadding(new Insets(10, 10, 10, 10));
@@ -536,13 +542,76 @@ public class View extends Application implements ViewIF {
 
 		BorderPane rDialogView = new BorderPane();
 		rDialogView.setTop(rHeadline);
-		rDialogView.setCenter(gridPane);
+		rDialogView.setCenter(rGridPane);
 		rDialogView.setBottom(rButtons);
 		
         Scene rDialogScene = new Scene(rDialogView); //100,100
         rDialog.setScene(rDialogScene);
         createRegisterActions();
         rDialog.show();
+	}
+	
+	/**
+	 * This shows a window showing users their information and lets them change password and user name
+	 * @param primaryStage this variable is used to link the new stage to the primaryStage
+	 */
+	private void showPlayerInfoDialog(Stage primaryStage) {
+		Image edit = new Image("/images/edit.png", 20, 20, false, false);
+		
+		Stage pIDialog = new Stage();
+		pIDialog.initModality(Modality.APPLICATION_MODAL);
+		pIDialog.initOwner(primaryStage);
+		pIDialog.setTitle("Pelaajatiedot");
+		VBox pIHeadline = new VBox();
+		GridPane pIGridPane = new GridPane();
+		HBox pIButtons = new HBox();
+		
+		Label playerWholeName = new Label(this.player.getFirstName() + " " + this.player.getLastName());
+		Label playerJoinDate = new Label(String.valueOf(this.player.getCreatedOn()));
+		Label playerEmail = new Label(this.player.getEmail());
+		Label playerProfileName = new Label(this.player.getProfileName());
+		Button editProfileNameButton = new Button();
+		editProfileNameButton.setGraphic(new ImageView(edit));
+		Button editPasswordButton = new Button();
+		editPasswordButton.setGraphic(new ImageView(edit));
+		savePlayerInfoButton = new Button("Tallenna");
+		cancelPlayerInfoButton = new Button("Peruuta");
+		
+		pIHeadline.getChildren().add(new Label("Pelaajatiedot"));
+		pIHeadline.setPadding(new Insets(10, 10, 10, 10));
+		pIHeadline.setAlignment(Pos.CENTER);
+		
+		pIGridPane.add(new Label("Nimi:"), 0, 0);
+		pIGridPane.add(playerWholeName, 1, 0);
+		pIGridPane.add(new Label("Liittynyt:"), 0, 1);
+		pIGridPane.add(playerJoinDate, 1, 1);
+		pIGridPane.add(new Label("Sähköposti:"), 0, 2);
+		pIGridPane.add(playerEmail, 1, 2);
+		pIGridPane.add(new Label("Nimimerkki:"), 0, 3);
+		pIGridPane.add(playerProfileName, 1, 3);
+		pIGridPane.add(editProfileNameButton, 2, 3);
+		pIGridPane.add(new Label("Salasana:"), 0, 4);
+		pIGridPane.add(new Label("********"), 1, 4);
+		pIGridPane.add(editPasswordButton, 2, 4);
+		pIGridPane.setPadding(new Insets(10,10,10,10));
+		pIGridPane.setHgap(5);
+		pIGridPane.setVgap(5);
+		pIGridPane.setAlignment(Pos.CENTER);
+		
+		pIButtons.getChildren().addAll(savePlayerInfoButton, cancelPlayerInfoButton);
+		pIButtons.setPadding(new Insets(10, 10, 10, 10));
+		pIButtons.setSpacing(10);
+		pIButtons.setAlignment(Pos.CENTER);
+		
+		BorderPane pIDialogView = new BorderPane();
+		pIDialogView.setTop(pIHeadline);
+		pIDialogView.setCenter(pIGridPane);
+		pIDialogView.setBottom(pIButtons);
+		
+        Scene pIDialogScene = new Scene(pIDialogView); //100,100
+        pIDialog.setScene(pIDialogScene);
+        createPlayerInfoActions();
+        pIDialog.show();
 	}
 	
 	/**	{@inheritDoc} */
@@ -556,7 +625,8 @@ public class View extends Application implements ViewIF {
 	public void setDefaultPlayer(Player defaultPlayer) {
 		this.player = defaultPlayer;
 		//this is a bit stupid way to make sure that the method does not run updateToolBar() before all GUI components are created, PLS FIX
-		if (creditView != null) { 
+		if (creditView != null) {
+			logOutMI.setVisible(false);
 			updateToolBar();
 		}
 		System.out.println("Default player set");
@@ -566,6 +636,7 @@ public class View extends Application implements ViewIF {
 	@Override
 	public void setCurrentPlayer(Player currentPlayer) {
 		this.player = currentPlayer;
+		logOutMI.setVisible(true);
 		updateToolBar();
 		// hmm
 		setPokerGamePlayerCredits();
@@ -616,6 +687,14 @@ public class View extends Application implements ViewIF {
 				showRegistrationErrorAlreadyLoggedIn(); //User is prompted to log out before registering
 			}
 		});
+		playerInfoMI.setOnAction(e -> {
+			if (this.player.getId() == 1001) { //if the current player is Tester, it means he/she has not logged in yet
+				showPlayerInfoErrorNotLoggedIn(); //User is prompted to log in before they can see their information
+			} else {
+				showPlayerInfoDialog(primaryStage); 
+			}
+		});
+		infoMI.setOnAction(e -> showProgramInfo());
 	}
 	
 	/**
@@ -625,6 +704,18 @@ public class View extends Application implements ViewIF {
 		confirmRegisterButton.setOnAction(e -> controller.attemptRegistration());
 		cancelRegisterButton.setOnAction(e -> {
 			Stage stage = (Stage)cancelRegisterButton.getScene().getWindow();
+			stage.close();
+		});
+	}
+	
+	/**
+	 * This method has the functionality for the save and cancel buttons in Player info window
+	 * SAVE METHOD NOT IMPLEMENTED YET
+	 */
+	private void createPlayerInfoActions() {
+		//savePlayerInfoButton, 
+		cancelPlayerInfoButton.setOnAction(e -> {
+			Stage stage = (Stage)cancelPlayerInfoButton.getScene().getWindow();
 			stage.close();
 		});
 	}
@@ -769,6 +860,29 @@ public class View extends Application implements ViewIF {
 		alert.setTitle("Rekisteröityminen");
 		alert.setHeaderText("Tilin luominen onnistui!");
 		alert.setContentText("Sinut on kirjattu sisään ja voit jatkaa pelaamista uusilla tunnuksilla");
+		alert.showAndWait();
+	}
+	
+	/**
+	 * Tells the user that they need to be logged in to view their information
+	 */
+	private void showPlayerInfoErrorNotLoggedIn() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Huomio");
+		alert.setHeaderText("Huomio - Et ole kirjautunut sisään");
+		alert.setContentText("Olet tällä hetkellä testaaja\nKirjaudu sisään tai luo tili tarkastellaksesi pelaajatietoja");
+		alert.showAndWait();
+	}
+	
+	/**
+	 * Shows user information about the program
+	 * NOT MUCH HERE YET
+	 */
+	private void showProgramInfo() {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Tietoa ohjelmasta");
+		alert.setHeaderText("Peliymäristö info");
+		alert.setContentText(":)");
 		alert.showAndWait();
 	}
 
