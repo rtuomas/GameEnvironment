@@ -136,5 +136,77 @@ public class ViewCLI implements ViewIF {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public String getFirstNameRegInput() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getLastNameRegInput() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getProfileNameRegInput() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getPasswordRegInput() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getPasswordRegVerInput() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Boolean getCreditTransferRegInput() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getEmailRegInput() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void handleRegistrationSuccess() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showRegistrationErrorEmptyFields() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showRegistrationErrorPasswordsNotMatch() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showRegistrationErrorEmailAlreadyExists() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showRegistrationErrorDatabase() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

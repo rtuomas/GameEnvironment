@@ -10,7 +10,7 @@ import model.Player;
 /**
  * The interface for the Controller. All necessary methods for the functionality of the MVC model are found here.
  * @author ---
- * @version 1.1 01.03.2021
+ * @version 1.3 03.03.2021
  */
 public interface ControllerIF {
 	
@@ -74,9 +74,15 @@ public interface ControllerIF {
 	/**
 	 * Gets email and password from View and checks from database if they are correct
 	 * Changes current player in View if everything is fine.
-	 * Shows an error message if log in is not succesful
+	 * Shows an error message if log in is not successful
 	 */
 	public void attemptLogIn();
+	/**
+	 * Gets registration information from View and checks if they are okay
+	 * Creates a new Player in database if everything checks out.
+	 * Shows error messages depending on the errors encountered
+	 */
+	public void attemptRegistration();
 	
 	
 }

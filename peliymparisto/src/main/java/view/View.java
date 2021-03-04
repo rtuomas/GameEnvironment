@@ -1,6 +1,7 @@
 package view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import controller.Controller;
 import controller.ControllerIF;
@@ -10,15 +11,13 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
@@ -39,17 +38,17 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import model.Card;
 import model.Player;
-import model.Statistics;
 
 /**
  * The Graphical User Interface built with JavaFX
  * @author ---
- * @version 1.1 01.03.2021
+ * @version 1.5 03.03.2021
  */
 public class View extends Application implements ViewIF {
 	
@@ -74,9 +73,11 @@ public class View extends Application implements ViewIF {
 	private Text pokerGameCredits;
 	private Text pokerGameBet;
 	private ArrayList<ImageView> pokerGameCardImgs;
+	private HashMap<Integer, Image> clickedImgs = new HashMap <Integer, Image>();
 	private GridPane cardPane;
 	private ArrayList<Integer> cardsToSwapIndexes = new ArrayList <Integer>();
 	private boolean gameOn = false;
+	private Text notification;
 
 	//navBar components
 	/** Button to go to main menu*/
@@ -100,6 +101,21 @@ public class View extends Application implements ViewIF {
 	private MenuItem infoMI;
 	/** Button to exit the program*/
 	private MenuItem exitMI;
+	
+	//registerform components
+	private TextField firstNameRegisterInput;
+	private TextField lastNameRegisterInput;
+	private TextField profileNameRegisterInput;
+	private TextField emailRegisterInput;
+	private PasswordField passwordRegisterInput;
+	private PasswordField passwordRegisterVerifyInput;
+	private CheckBox creditTransferRegisterInput;
+	private Button confirmRegisterButton;
+	private Button cancelRegisterButton;
+	
+	//playerinformation components
+	private Button savePlayerInfoButton;
+	private Button cancelPlayerInfoButton;
 
 
 	public static void main(String[] args) {
@@ -142,7 +158,7 @@ public class View extends Application implements ViewIF {
 			mainView.setTop(navBar);
 			mainView.setCenter(mainMenu);
 			Scene mainScene = new Scene(mainView);
-			createGUITransitions(mainView, mainMenu, pokerGame, settings, stats);
+			createGUITransitions(primaryStage, mainView, mainMenu, pokerGame, settings, stats);
 
 			primaryStage.setScene(mainScene);
 	        primaryStage.show();
@@ -211,12 +227,13 @@ public class View extends Application implements ViewIF {
 
 		playerMenu = new MenuButton("Tester");
 		playerMenu.setGraphic(new ImageView(user));
-		playerInfoMI = new MenuItem("Näytä tiedot");
+		playerInfoMI = new MenuItem("Näytä pelaajatiedot");
 		logOutMI = new MenuItem("Kirjaudu ulos");
+		logOutMI.setVisible(false);
 		playerMenu.getItems().addAll(playerInfoMI, logOutMI);
 		MenuButton menu2 = new MenuButton();
 		menu2.setGraphic(new ImageView(settings));
-		infoMI = new MenuItem("Lisätietoja");
+		infoMI = new MenuItem("Lisätietoja ohjelmasta");
 		exitMI = new MenuItem("Lopeta ohjelma");
 		menu2.getItems().addAll(infoMI, exitMI);
 		
@@ -237,6 +254,12 @@ public class View extends Application implements ViewIF {
 	 */
 	private AnchorPane pokerGameBuilder() {
 		
+		notification = new Text("Valitse panos ja paina jako");
+		AnchorPane.setBottomAnchor(notification, 70.0);
+		notification.setLayoutX(270);
+		//AnchorPane.setLeftAnchor(notification, 350.0);
+		notification.setFont(Font.font(24));
+		
 		// gamble button placement
 		Button gamble = new Button ("Tuplaa");
 		gamble.setLayoutX(367.0);
@@ -247,7 +270,8 @@ public class View extends Application implements ViewIF {
 		AnchorPane.setRightAnchor(gamble, 135.0);
 		
 		// play button placement
-		Button play = new Button("Pelaa");
+		Button play = new Button("Jako");
+		//play.setStyle("-fx-background-color: green");
 		play.setLayoutX(487.0);
 		play.setLayoutY(331.0);
 		play.setPrefHeight(58.0);
@@ -305,12 +329,13 @@ public class View extends Application implements ViewIF {
 			wintable.getRowConstraints().add(row);
 		}
 		
-		for(int i = 0; i < 2; i++) {
+		for(int i = 0; i < 3; i++) {
 			ColumnConstraints column = new ColumnConstraints();
 			column.setPrefWidth(100.0);
 			wintable.getColumnConstraints().add(column);
 		}
 		
+		Text acepair = new Text("Ässä pari:");
 		Text pair = new Text("Kaksi paria:");
 		Text threeofkind = new Text("Kolmoset:");
 		Text straight = new Text("Suora:");
@@ -318,16 +343,22 @@ public class View extends Application implements ViewIF {
 		Text fullhouse = new Text("Täyskäsi:");
 		Text fourofkind = new Text("Neloset:");
 		Text straightflush = new Text("Värisuora:");
-		Text fiveofkind = new Text ("Vitoset:");
-		
-		wintable.add(pair, 0, 3);
-		wintable.add(threeofkind, 0, 2);
+		wintable.add(acepair, 0, 2);
+		wintable.add(pair, 1, 2);
+		wintable.add(threeofkind, 2, 2);
 		wintable.add(straight, 0, 1);
-		wintable.add(flush, 0, 0);
-		wintable.add(fullhouse, 1, 3);
-		wintable.add(fourofkind, 1, 2);
-		wintable.add(straightflush, 1, 1);
-		wintable.add(fiveofkind, 1, 0);
+		wintable.add(flush, 1, 1);
+		wintable.add(fullhouse, 2, 1);
+		wintable.add(fourofkind, 0, 0);
+		wintable.add(straightflush, 1, 0);
+		
+		//wintable.add(pair, 0, 3);
+		//wintable.add(threeofkind, 0, 2);
+		//wintable.add(straight, 0, 1);
+		//wintable.add(flush, 0, 0);
+		//wintable.add(fullhouse, 1, 3);
+		//wintable.add(fourofkind, 1, 2);
+		//wintable.add(straightflush, 1, 1);
 		
 		// Gridpane for card images. Below space for ''locked''.
 		cardPane = new GridPane ();
@@ -335,10 +366,10 @@ public class View extends Application implements ViewIF {
 		cardPane.setLayoutY(158.0);
 		cardPane.setPrefHeight(166.0);
 		cardPane.setPrefWidth(579.0);
-		AnchorPane.setTopAnchor(cardPane, 158.0);
+		AnchorPane.setTopAnchor(cardPane, 115.0);
 		AnchorPane.setRightAnchor(cardPane, 10.0);
 		AnchorPane.setLeftAnchor(cardPane, 10.0);
-		AnchorPane.setBottomAnchor(cardPane, 75.0);
+		AnchorPane.setBottomAnchor(cardPane, 105.0);
 		
 		RowConstraints cardRow = new RowConstraints();
 		cardRow.setPrefHeight(30.0);
@@ -375,14 +406,19 @@ public class View extends Application implements ViewIF {
 		
 		
 		//Sets the whole AnchorPane with elements
-		AnchorPane pokerGameView = new AnchorPane(play, gamble, plus, minus, pokerGameCredits, pokerGameBet, wintable, cardPane);
-		pokerGameView.setPrefSize(600, 400);
+		AnchorPane pokerGameView = new AnchorPane(play, gamble, plus, minus, pokerGameCredits, pokerGameBet, wintable, cardPane, notification);
+		//pokerGameView.setPrefSize(600, 400);
 		
 		play.setOnAction(e -> {
 			if(!gameOn) {
 			controller.startPokerGame();
+			plus.setVisible(false);
+			minus.setVisible(false);
+			setNotification("Valitse kortit jotka haluat vaihtaa ja paina jako");
 			} else {
 			setSwappedCards();
+			plus.setVisible(true);
+			minus.setVisible(true);
 			}
 			gameOn = !gameOn;
 		});
@@ -455,6 +491,131 @@ public class View extends Application implements ViewIF {
 		return statsView;
 	}
 	
+	/**
+	 * This shows a window prompting the user to input their information for registration
+	 * @param primaryStage this variable is used to link the new stage to the primaryStage
+	 */
+	private void showRegisterDialog(Stage primaryStage) {
+		Stage rDialog = new Stage();
+		rDialog.initModality(Modality.APPLICATION_MODAL);
+		rDialog.initOwner(primaryStage);
+		rDialog.setTitle("Rekisteröitymislomake");
+		VBox rHeadline = new VBox();
+		GridPane rGridPane = new GridPane();
+		HBox rButtons = new HBox();
+        
+		firstNameRegisterInput = new TextField();
+		firstNameRegisterInput.setPromptText("Syötä etunimi");
+		lastNameRegisterInput = new TextField();
+		lastNameRegisterInput.setPromptText("Syötä sukunimi");
+		profileNameRegisterInput = new TextField();
+		profileNameRegisterInput.setPromptText("Valitse pelaajanimi");
+		emailRegisterInput = new TextField();
+		emailRegisterInput.setPromptText("Syötä sähköposti");
+		passwordRegisterInput = new PasswordField();
+		passwordRegisterInput.setPromptText("Valitse salasana");
+		passwordRegisterVerifyInput = new PasswordField();
+		passwordRegisterVerifyInput.setPromptText("Syötä salasana uudestaan");
+		creditTransferRegisterInput = new CheckBox("Vie testikäyttäjänä kerätty saldo\nuudelle tilille (min. 100 krediittiä)");
+		confirmRegisterButton = new Button("Rekisteröidy");
+		cancelRegisterButton = new Button("Peruuta");
+		
+		rHeadline.getChildren().add(new Label("Luo tili"));
+		rHeadline.setPadding(new Insets(10, 10, 10, 10));
+		rHeadline.setAlignment(Pos.CENTER);
+		
+		rGridPane.add(firstNameRegisterInput, 0, 0);
+		rGridPane.add(lastNameRegisterInput, 1, 0);
+		rGridPane.add(profileNameRegisterInput, 0, 1);
+		rGridPane.add(new Label("Tämä nimi näytetään muille pelaajille"), 1, 1);
+		rGridPane.add(emailRegisterInput, 0, 2, 2, 1);
+		rGridPane.add(passwordRegisterInput, 0, 3, 2, 1);
+		rGridPane.add(passwordRegisterVerifyInput, 0, 4, 2, 1);
+		rGridPane.add(creditTransferRegisterInput, 0, 5);
+		rGridPane.setPadding(new Insets(10,10,10,10));
+		rGridPane.setHgap(5);
+		rGridPane.setVgap(5);
+		rGridPane.setAlignment(Pos.CENTER);
+
+		rButtons.getChildren().addAll(confirmRegisterButton, cancelRegisterButton);
+		rButtons.setPadding(new Insets(10, 10, 10, 10));
+		rButtons.setSpacing(10);
+		rButtons.setAlignment(Pos.CENTER);
+
+		BorderPane rDialogView = new BorderPane();
+		rDialogView.setTop(rHeadline);
+		rDialogView.setCenter(rGridPane);
+		rDialogView.setBottom(rButtons);
+		
+        Scene rDialogScene = new Scene(rDialogView); //100,100
+        rDialog.setScene(rDialogScene);
+        createRegisterActions();
+        rDialog.show();
+	}
+	
+	/**
+	 * This shows a window showing users their information and lets them change password and user name
+	 * @param primaryStage this variable is used to link the new stage to the primaryStage
+	 */
+	private void showPlayerInfoDialog(Stage primaryStage) {
+		Image edit = new Image("/images/edit.png", 20, 20, false, false);
+		
+		Stage pIDialog = new Stage();
+		pIDialog.initModality(Modality.APPLICATION_MODAL);
+		pIDialog.initOwner(primaryStage);
+		pIDialog.setTitle("Pelaajatiedot");
+		VBox pIHeadline = new VBox();
+		GridPane pIGridPane = new GridPane();
+		HBox pIButtons = new HBox();
+		
+		Label playerWholeName = new Label(this.player.getFirstName() + " " + this.player.getLastName());
+		Label playerJoinDate = new Label(String.valueOf(this.player.getCreatedOn()));
+		Label playerEmail = new Label(this.player.getEmail());
+		Label playerProfileName = new Label(this.player.getProfileName());
+		Button editProfileNameButton = new Button();
+		editProfileNameButton.setGraphic(new ImageView(edit));
+		Button editPasswordButton = new Button();
+		editPasswordButton.setGraphic(new ImageView(edit));
+		savePlayerInfoButton = new Button("Tallenna");
+		cancelPlayerInfoButton = new Button("Peruuta");
+		
+		pIHeadline.getChildren().add(new Label("Pelaajatiedot"));
+		pIHeadline.setPadding(new Insets(10, 10, 10, 10));
+		pIHeadline.setAlignment(Pos.CENTER);
+		
+		pIGridPane.add(new Label("Nimi:"), 0, 0);
+		pIGridPane.add(playerWholeName, 1, 0);
+		pIGridPane.add(new Label("Liittynyt:"), 0, 1);
+		pIGridPane.add(playerJoinDate, 1, 1);
+		pIGridPane.add(new Label("Sähköposti:"), 0, 2);
+		pIGridPane.add(playerEmail, 1, 2);
+		pIGridPane.add(new Label("Nimimerkki:"), 0, 3);
+		pIGridPane.add(playerProfileName, 1, 3);
+		pIGridPane.add(editProfileNameButton, 2, 3);
+		pIGridPane.add(new Label("Salasana:"), 0, 4);
+		pIGridPane.add(new Label("********"), 1, 4);
+		pIGridPane.add(editPasswordButton, 2, 4);
+		pIGridPane.setPadding(new Insets(10,10,10,10));
+		pIGridPane.setHgap(5);
+		pIGridPane.setVgap(5);
+		pIGridPane.setAlignment(Pos.CENTER);
+		
+		pIButtons.getChildren().addAll(savePlayerInfoButton, cancelPlayerInfoButton);
+		pIButtons.setPadding(new Insets(10, 10, 10, 10));
+		pIButtons.setSpacing(10);
+		pIButtons.setAlignment(Pos.CENTER);
+		
+		BorderPane pIDialogView = new BorderPane();
+		pIDialogView.setTop(pIHeadline);
+		pIDialogView.setCenter(pIGridPane);
+		pIDialogView.setBottom(pIButtons);
+		
+        Scene pIDialogScene = new Scene(pIDialogView); //100,100
+        pIDialog.setScene(pIDialogScene);
+        createPlayerInfoActions();
+        pIDialog.show();
+	}
+	
 	/**	{@inheritDoc} */
 	@Override
 	public Player getPlayer() {
@@ -466,7 +627,8 @@ public class View extends Application implements ViewIF {
 	public void setDefaultPlayer(Player defaultPlayer) {
 		this.player = defaultPlayer;
 		//this is a bit stupid way to make sure that the method does not run updateToolBar() before all GUI components are created, PLS FIX
-		if (creditView != null) { 
+		if (creditView != null) {
+			logOutMI.setVisible(false);
 			updateToolBar();
 		}
 		System.out.println("Default player set");
@@ -476,7 +638,9 @@ public class View extends Application implements ViewIF {
 	@Override
 	public void setCurrentPlayer(Player currentPlayer) {
 		this.player = currentPlayer;
+		logOutMI.setVisible(true);
 		updateToolBar();
+		setPokerGamePlayerCredits();
 		System.out.println("Player data updated");
 	}
 	
@@ -498,7 +662,7 @@ public class View extends Application implements ViewIF {
 	 * @param settingsScene Settings view
 	 * @param statsScene Stats view
 	 */
-	private void createGUITransitions(BorderPane mainView, BorderPane mainMenu, AnchorPane pokerGame, BorderPane settings, BorderPane stats) {
+	private void createGUITransitions(Stage primaryStage, BorderPane mainView, BorderPane mainMenu, AnchorPane pokerGame, BorderPane settings, BorderPane stats) {
 		enterPokerGame.setOnAction(e -> {
 			mainView.setCenter(pokerGame);
 		});
@@ -517,6 +681,44 @@ public class View extends Application implements ViewIF {
 		exitMI.setOnAction(e -> Platform.exit());
 		signInButton.setOnAction(e -> controller.attemptLogIn());
 		logOutMI.setOnAction(e -> controller.getDefaultPlayer());
+		registerButton.setOnAction(e -> {
+			if (this.player.getId() == 1001) { //if the current player is Tester, it means he/she has not logged in yet
+				showRegisterDialog(primaryStage);
+			} else {
+				showRegistrationErrorAlreadyLoggedIn(); //User is prompted to log out before registering
+			}
+		});
+		playerInfoMI.setOnAction(e -> {
+			if (this.player.getId() == 1001) { //if the current player is Tester, it means he/she has not logged in yet
+				showPlayerInfoErrorNotLoggedIn(); //User is prompted to log in before they can see their information
+			} else {
+				showPlayerInfoDialog(primaryStage); 
+			}
+		});
+		infoMI.setOnAction(e -> showProgramInfo());
+	}
+	
+	/**
+	 * This method has the functionality for the confirm and cancel buttons in Registration window
+	 */
+	private void createRegisterActions() {
+		confirmRegisterButton.setOnAction(e -> controller.attemptRegistration());
+		cancelRegisterButton.setOnAction(e -> {
+			Stage stage = (Stage)cancelRegisterButton.getScene().getWindow();
+			stage.close();
+		});
+	}
+	
+	/**
+	 * This method has the functionality for the save and cancel buttons in Player info window
+	 * SAVE METHOD NOT IMPLEMENTED YET
+	 */
+	private void createPlayerInfoActions() {
+		//savePlayerInfoButton, 
+		cancelPlayerInfoButton.setOnAction(e -> {
+			Stage stage = (Stage)cancelPlayerInfoButton.getScene().getWindow();
+			stage.close();
+		});
 	}
 	
 	/**
@@ -530,7 +732,17 @@ public class View extends Application implements ViewIF {
 	    img.setOnMouseClicked(new EventHandler() {
 				@Override
 				public void handle(Event event) {
-					cardsToSwapIndexes.add(index);
+					if(gameOn) {
+					if(cardsToSwapIndexes.contains(index)) {
+						img.setImage(clickedImgs.get(index));
+						clickedImgs.remove(index);
+						cardsToSwapIndexes.remove(Integer.valueOf(index));
+					} else {
+						clickedImgs.put(index, img.getImage());
+						img.setImage(new Image("/images/green_back.png"));
+						cardsToSwapIndexes.add(index);
+						}
+					}
 				}
 	    });
 	}
@@ -563,7 +775,7 @@ public class View extends Application implements ViewIF {
 
 	@Override
 	public void setScore(String score) {
-		System.out.println(score);
+		setNotification(score);
 	}
 
 	private void fillStatistics() {
@@ -589,6 +801,104 @@ public class View extends Application implements ViewIF {
 	
 	/**	{@inheritDoc} */
 	@Override
+	public void showLogInError() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Varoitus");
+		alert.setHeaderText("Varoitus - syötetty data ei kelpaa");
+		alert.setContentText("Varmista että sähköposti ja salasana ovat oikein.");
+		alert.showAndWait();
+	}
+	
+	/**
+	 * Tells the user that they cannot create an account if they are already logged in
+	 */
+	private void showRegistrationErrorAlreadyLoggedIn() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Varoitus");
+		alert.setHeaderText("Varoitus - Olet jo kirjautunut sisään");
+		alert.setContentText("Kirjaudu ulos luodaksesi uuden tilin.");
+		alert.showAndWait();
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void showRegistrationErrorEmptyFields() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Varoitus");
+		alert.setHeaderText("Varoitus - vaaditut tiedot puuttuvat");
+		alert.setContentText("Varmista että etunimi, sukunimi, sähköposti, salasana ja salasanan vahvistus on syötetty.");
+		alert.showAndWait();
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public void showRegistrationErrorPasswordsNotMatch() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Varoitus");
+		alert.setHeaderText("Varoitus - salasanat eivät täsmää");
+		alert.setContentText("Varmista että syöttämäsi salasanat vastaavat toisiaan.");
+		alert.showAndWait();
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public void showRegistrationErrorEmailAlreadyExists() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Varoitus");
+		alert.setHeaderText("Varoitus - sähköpostiosoite on jo käytössä");
+		alert.setContentText("Tähän sähköpostiosoitteeseen liitetty tili on jo olemassa.\n\n"
+				+ "Kirjaudu sisään tai luo uudet tunnukset käyttäen toista sähköpostiosoitetta.\n"
+				+ "Jos et muista salasanaasi, ota yhteyttä tukeen.");
+		alert.showAndWait();
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void showRegistrationErrorDatabase() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Varoitus");
+		alert.setHeaderText("Varoitus - Tilin luonti ei onnistunut");
+		alert.setContentText("Jokin meni pieleen, kokeile hetken kuluttua uudelleen.");
+		alert.showAndWait();
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void handleRegistrationSuccess() {
+		Stage stage = (Stage)cancelRegisterButton.getScene().getWindow();
+		stage.close();
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Rekisteröityminen");
+		alert.setHeaderText("Tilin luominen onnistui!");
+		alert.setContentText("Sinut on kirjattu sisään ja voit jatkaa pelaamista uusilla tunnuksilla");
+		alert.showAndWait();
+	}
+	
+	/**
+	 * Tells the user that they need to be logged in to view their information
+	 */
+	private void showPlayerInfoErrorNotLoggedIn() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Huomio");
+		alert.setHeaderText("Huomio - Et ole kirjautunut sisään");
+		alert.setContentText("Olet tällä hetkellä testaaja\nKirjaudu sisään tai luo tili tarkastellaksesi pelaajatietoja");
+		alert.showAndWait();
+	}
+	
+	/**
+	 * Shows user information about the program
+	 * NOT MUCH HERE YET
+	 */
+	private void showProgramInfo() {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Tietoa ohjelmasta");
+		alert.setHeaderText("Peliymäristö info");
+		alert.setContentText(":)");
+		alert.showAndWait();
+	}
+
+	/**	{@inheritDoc} */
+	@Override
 	public String getEmailInput() {
 		return String.valueOf(this.emailInput.getText());
 	}
@@ -598,14 +908,57 @@ public class View extends Application implements ViewIF {
 	public String getPasswordInput() {
 		return String.valueOf(this.passwordInput.getText());
 	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public String getFirstNameRegInput() {
+		return String.valueOf(this.firstNameRegisterInput.getText());
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public String getLastNameRegInput() {
+		return String.valueOf(this.lastNameRegisterInput.getText());
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public String getProfileNameRegInput() {
+		return String.valueOf(this.profileNameRegisterInput.getText());
+	}
 	
 	/**	{@inheritDoc} */
 	@Override
-	public void showLogInError() {
-		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Varoitus");
-		alert.setHeaderText("Varoitus - syötetty data ei kelpaa");
-		alert.setContentText("Varmista että sähköposti ja salasana ovat oikein");
-		alert.showAndWait();
+	public String getEmailRegInput() {
+		return String.valueOf(this.emailRegisterInput.getText());
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public String getPasswordRegInput() {
+		return String.valueOf(this.passwordRegisterInput.getText());
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public String getPasswordRegVerInput() {
+		return String.valueOf(this.passwordRegisterVerifyInput.getText());
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public Boolean getCreditTransferRegInput() {
+		return this.creditTransferRegisterInput.isSelected();
+	}
+	
+	public void setNotification(String text) {
+		if(text.length() < 13) {
+		  notification.setLayoutX(360);
+		} else if(text.length() >= 13 && text.length() < 30) {
+			notification.setLayoutX(290);	
+		} else {
+			notification.setLayoutX(180);
+		}
+		notification.setText(text);
 	}
 }
