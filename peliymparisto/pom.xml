@@ -26,7 +26,7 @@
 	<!-- JUnit Jupiter, yksikkotestausta varten -->
 	<dependency>
 		<groupId>org.junit.jupiter</groupId>
-		<artifactId>junit-jupiter-engine</artifactId>
+		<artifactId>junit-jupiter-api</artifactId>
 		<version>5.7.0</version>
 		<scope>test</scope>
 	</dependency>
@@ -47,11 +47,25 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M5</version>
     </dependency>
+    <dependency>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
+        <version>5.7.0</version>
+    </dependency>
 </dependencies>
 
 <build> <!-- Koonnissa ja raporttien tuottamisessa tarvittavia lisaosia -->
 	<plugins>
 		<!-- JUnit testien ajo Maven-ajoymparistossa (kun ei IDE:n kautta) -->
+		<plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.1</version>
+            <configuration>
+                <source>8</source>
+                <target>8</target>
+            </configuration>
+        </plugin>
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-surefire-plugin</artifactId>
