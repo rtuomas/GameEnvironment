@@ -6,7 +6,8 @@
   <description>JavaFX, MariaDB, JDBC, Hibernate, JUnit </description>
 <properties>
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	<maven.compiler.release>11</maven.compiler.release>
+	<maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
 </properties>
 <dependencies>
 		<!-- JavaFX projekti -->
@@ -35,15 +36,16 @@
 	    <artifactId>hibernate-core</artifactId>
 	    <version>5.4.27.Final</version>
 	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.6</version>
+        </dependency>
 </dependencies>
 
 <build> <!-- Koonnissa ja raporttien tuottamisessa tarvittavia lisaosia -->
 	<plugins>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>3.8.1</version>
-		</plugin>
 		<!-- JUnit testien ajo Maven-ajoymparistossa (kun ei IDE:n kautta) -->
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
@@ -53,7 +55,7 @@
 		<plugin>
       		<groupId>org.jacoco</groupId>
       		<artifactId>jacoco-maven-plugin</artifactId>
-      		<version>0.8.7-SNAPSHOT</version>
+      		<version>0.8.6</version>
     	</plugin>
 	</plugins>
 </build>
