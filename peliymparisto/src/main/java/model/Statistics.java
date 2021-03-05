@@ -51,11 +51,19 @@ public class Statistics {
 	 * TESTI!! JATKOSSA KONTROLLERIN KAUTTA
 	 * @return
 	 */
-	public String[] getRanking() {
+	public ArrayList<Player> getRanking() {
 		DAOIF dao = new DAO();
+		/*
 		ArrayList<String> rankingList = new ArrayList<>();
 		rankingList = dao.readRankings();
 		String[] rankings = rankingList.toArray(new String[0]);
 		return rankings;
+		*/
+		return dao.readRankings();
+	}
+
+	public ArrayList<PlayedGame> getPlayedGames() {
+		DAOIF dao = new DAO();
+		return dao.readPlayedGames(this.playerId);
 	}
 }

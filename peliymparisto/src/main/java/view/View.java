@@ -1,6 +1,7 @@
 package view;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import controller.Controller;
@@ -28,7 +29,10 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -46,7 +50,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import model.PlayedGame;
 import model.Player;
+import model.PlayerRanking;
 
 /**
  * The Graphical User Interface built with JavaFX
@@ -69,10 +75,10 @@ public class View extends Application implements ViewIF {
 	private Button enterStats;
 	/** Button to close the program */
 	private Button exitProgram;
-	private Tab ranking, creditDevelopment;
+	private Tab ranking, creditDevelopment, playedGames;
 	private ComboBox combobox;
 	LineChart<String, Number> lineChart;
-	private ListView listViewRanks;
+	private TableView tableViewRanks, tableViewGames;
 
 	
 	//PokerGameView variables
@@ -468,16 +474,12 @@ public class View extends Application implements ViewIF {
 	private BorderPane statsBuilder() {
 		BorderPane statsView = new BorderPane();
 		
-		
-		
 		TabPane tabPane = new TabPane();
 		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 		
 		creditDevelopment = new Tab("Credits", new Label("This pane shows your credit development from the beginning"));
 		ImageView growth = new ImageView(new Image("/images/growthtab.png", 25, 22, false, false));
 		creditDevelopment.setGraphic(growth);
-		
-		
 		combobox = new ComboBox();
 		combobox.getItems().add("MAX");
 		combobox.getItems().add("Last 10");
@@ -489,16 +491,57 @@ public class View extends Application implements ViewIF {
 	    	}
 	    );
 		BorderPane creditsPane = new BorderPane();
-		 creditsPane.setTop(combobox);
-		 creditsPane.setCenter(lineChart);
-		
+		creditsPane.setTop(combobox);
+		creditsPane.setCenter(lineChart);
 		creditDevelopment.setContent(creditsPane);
+		
+		
+		
+		
+		
+		playedGames = new Tab("Game history"  , new Label("Played games"));
+        ImageView played = new ImageView(new Image("/images/playedGame.png", 25, 22, false, false));
+        playedGames.setGraphic(played);
+        
+        tableViewGames = new TableView();
+        TableColumn<PlayedGame, String> playedIDColumn = new TableColumn<>("Credits");
+        playedIDColumn.setCellValueFactory(new PropertyValueFactory<>("creditAfterPlayer1"));
+        TableColumn<PlayedGame, String> playedCreditsColumn = new TableColumn<>("Played on");
+        playedCreditsColumn.setCellValueFactory(new PropertyValueFactory<>("playedOn"));
+        
+        tableViewGames.getColumns().add(playedIDColumn);
+        tableViewGames.getColumns().add(playedCreditsColumn);
+        /*
+        tableViewGames.getItems().add(new PlayedGame(100, new Date()));
+        tableViewGames.getItems().add(new PlayedGame(125,new Date()));
+        */
+        playedGames.setContent(tableViewGames);
+ 
+        
+        
 		
         ranking = new Tab("Ranking"  , new Label("Can you beat the best players?"));
         ImageView rank = new ImageView(new Image("/images/rankingtab.png", 25, 22, false, false));
         ranking.setGraphic(rank);
-        ranking.setContent(listViewRanks);
+        tableViewRanks = new TableView();
+        TableColumn<PlayerRanking, String> playerRankColumn = new TableColumn<>("Rank");
+        playerRankColumn.setCellValueFactory(new PropertyValueFactory<>("rank"));
+        TableColumn<PlayerRanking, String> playerCreditsColumn = new TableColumn<>("Credits");
+        playerCreditsColumn.setCellValueFactory(new PropertyValueFactory<>("credits"));
+        TableColumn<PlayerRanking, String> playerfnColumn = new TableColumn<>("First name");
+        playerfnColumn.setCellValueFactory(new PropertyValueFactory<>("fn"));
+        TableColumn<PlayerRanking, String> playerlnColumn = new TableColumn<>("Last name");
+        playerlnColumn.setCellValueFactory(new PropertyValueFactory<>("ln"));
+        tableViewRanks.getColumns().add(playerRankColumn);
+        tableViewRanks.getColumns().add(playerCreditsColumn);
+        tableViewRanks.getColumns().add(playerfnColumn);
+        tableViewRanks.getColumns().add(playerlnColumn);
+        ranking.setContent(tableViewRanks);
+        
+        
+        
         tabPane.getTabs().add(creditDevelopment);
+        tabPane.getTabs().add(playedGames);
         tabPane.getTabs().add(ranking);
         
 		statsView.setPrefSize(500, 500);
@@ -793,7 +836,6 @@ public class View extends Application implements ViewIF {
 	}
 
 	private void fillStatistics(String count) {
-		System.out.println("statst" + count);
 		
 		switch(count) {
 		case "MAX":
@@ -806,13 +848,34 @@ public class View extends Application implements ViewIF {
 			lineChart = controller.getLineChart(50);
 			break;
 		}
-		//lineChart = controller.getLineChart(timestamp);
 		
-		listViewRanks = new ListView();
+		
+		ArrayList<PlayedGame> playedGames = new ArrayList<>();
+		playedGames = controller.getPlayedGames();
+		//System.out.println("TESTETSETESTEST "+playedGames.get(0).getCreditAfterPlayer1());
+		
+		tableViewGames.getItems().clear();
+		for(int i=0; i<playedGames.size();i++) {
+			tableViewGames.getItems().add(new PlayedGame(playedGames.get(i).getCreditAfterPlayer1(), playedGames.get(i).getPlayedOn()));
+		}
+		
+		
+		
+		
+		ArrayList<Player> ranks = new ArrayList<>();
+		ranks = controller.getRanking();
+		tableViewRanks.getItems().clear();
+		for(int i = 0;i<ranks.size();i++) {
+			tableViewRanks.getItems().add(new PlayerRanking(i+1,ranks.get(i).getFirstName(), 
+					ranks.get(i).getLastName(), ranks.get(i).getCredits()));
+		}
+		/*
+		tableViewRanks = new TableView();
 		String[] ranks = controller.getRanking();
 		for(int i = 0;i<ranks.length;i++) {
-			listViewRanks.getItems().add(ranks[i]);
+			tableViewRanks.getItems().add(ranks[i]);
 		}
+		*/
 		
 		
 		BorderPane pane = new BorderPane();
@@ -821,7 +884,7 @@ public class View extends Application implements ViewIF {
 		pane.setCenter(lineChart);
 		
 		creditDevelopment.setContent(pane);
-        ranking.setContent(listViewRanks);		
+        ranking.setContent(tableViewRanks);		
 	}
 
 	@Override

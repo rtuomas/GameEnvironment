@@ -187,7 +187,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	}
 	
 	@Override
-	public String[] getRanking(){
+	public ArrayList<Player> getRanking(){
 		//Statistics stats = new Statistics();
 		return stats.getRanking();
 	}

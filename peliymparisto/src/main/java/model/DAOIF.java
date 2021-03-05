@@ -75,7 +75,7 @@ public interface DAOIF {
 	 */
 	public PlayedGame getPlayedGame(int playedGameID);
 	
-	public ArrayList<String> readRankings();
+	public ArrayList<Player> readRankings();
 	
 	public List[] readCredits(int id, int timestamp);
 	/**
@@ -90,5 +90,6 @@ public interface DAOIF {
 	 * @return Player object
 	 */
 	public Player getPlayer(String playerEmail);
+	public ArrayList<PlayedGame> readPlayedGames(int playerId);
 
 }

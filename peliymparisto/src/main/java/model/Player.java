@@ -33,6 +33,7 @@ public class Player implements Comparable<Player>{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdOn;
 	
+	
 	public Player() {
 		super();
 	}
@@ -47,12 +48,13 @@ public class Player implements Comparable<Player>{
 		this.profileName = "Player";
 	}
 	
-	public Player(String fn, String ln, int credits) {
+	public Player(String fn, String ln, double credits) {
 		super();
 		this.firstName = fn;
 		this.lastName = ln;
 		this.credits = credits;
 	}
+	
 
 	public int getId() {
 		return id;
