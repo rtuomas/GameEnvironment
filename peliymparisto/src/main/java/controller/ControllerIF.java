@@ -42,7 +42,7 @@ public interface ControllerIF {
 	
 	//hybrid methods -->
 	
-	LineChart<String, Number> getLineChart();
+	LineChart<String, Number> getLineChart(int timestamp);
 
 	String[] getRanking();
 	/**

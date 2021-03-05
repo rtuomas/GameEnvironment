@@ -7,6 +7,8 @@ import controller.Controller;
 import controller.ControllerIF;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -16,6 +18,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuButton;
@@ -67,6 +70,9 @@ public class View extends Application implements ViewIF {
 	/** Button to close the program */
 	private Button exitProgram;
 	private Tab ranking, creditDevelopment;
+	private ComboBox combobox;
+	LineChart<String, Number> lineChart;
+	private ListView listViewRanks;
 
 	
 	//PokerGameView variables
@@ -462,27 +468,36 @@ public class View extends Application implements ViewIF {
 	private BorderPane statsBuilder() {
 		BorderPane statsView = new BorderPane();
 		
-		/*
-		Statistics stats = new Statistics();
-		LineChart<Number, Number> lineChart = stats.getLineChart();
 		
-		ListView listView = new ListView();
-		String[] ranks = stats.getRanking();
-		for(int i = 0;i<ranks.length;i++) {
-			listView.getItems().add(ranks[i]);
-		}
-		*/
 		
 		TabPane tabPane = new TabPane();
 		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+		
 		creditDevelopment = new Tab("Credits", new Label("This pane shows your credit development from the beginning"));
 		ImageView growth = new ImageView(new Image("/images/growthtab.png", 25, 22, false, false));
 		creditDevelopment.setGraphic(growth);
+		
+		
+		combobox = new ComboBox();
+		combobox.getItems().add("MAX");
+		combobox.getItems().add("This month");
+		combobox.getItems().add("this week");
+		combobox.getSelectionModel().select(0);
+		combobox.getSelectionModel().selectedIndexProperty().addListener( (options, oldValue, newValue) -> {
+	           System.out.println(newValue);
+	           fillStatistics(newValue.intValue());
+	    	}
+	    );
+		BorderPane creditsPane = new BorderPane();
+		 creditsPane.setTop(combobox);
+		 creditsPane.setCenter(lineChart);
+		
+		creditDevelopment.setContent(creditsPane);
+		
         ranking = new Tab("Ranking"  , new Label("Can you beat the best players?"));
         ImageView rank = new ImageView(new Image("/images/rankingtab.png", 25, 22, false, false));
         ranking.setGraphic(rank);
-        //creditDevelopment.setContent(lineChart);
-        //ranking.setContent(listView);
+        ranking.setContent(listViewRanks);
         tabPane.getTabs().add(creditDevelopment);
         tabPane.getTabs().add(ranking);
         
@@ -671,8 +686,7 @@ public class View extends Application implements ViewIF {
 		});
 		enterStats.setOnAction(e -> {
 			mainView.setCenter(stats);
-			System.out.println("STATS");
-			fillStatistics();
+			fillStatistics(combobox.getSelectionModel().getSelectedIndex());
 		});
 		homeButton.setOnAction(e -> {
 			mainView.setCenter(mainMenu);
@@ -778,18 +792,51 @@ public class View extends Application implements ViewIF {
 		setNotification(score);
 	}
 
-	private void fillStatistics() {
+	private void fillStatistics(int timestamp) {
 		
-		LineChart<String, Number> lineChart = controller.getLineChart();
+		/*
+		switch(timestamp) {
+			case 0:
+				lineChart = controller.getLineChart();
+				break;
+			case 1:
+				lineChart = controller.getLineChart();
+				break;
+			case 2:
+				lineChart = controller.getLineChart();
+				break;
+		}
+		*/
+		lineChart = controller.getLineChart(timestamp);
 		
-		ListView listView = new ListView();
+		listViewRanks = new ListView();
 		String[] ranks = controller.getRanking();
 		for(int i = 0;i<ranks.length;i++) {
-			listView.getItems().add(ranks[i]);
+			listViewRanks.getItems().add(ranks[i]);
 		}
 		
-		creditDevelopment.setContent(lineChart);
-        ranking.setContent(listView);		
+		/*
+		combobox = new ComboBox();
+		combobox.getItems().add("MAX");
+		combobox.getItems().add("This month");
+		combobox.getItems().add("this week");
+		combobox.getSelectionModel().select(0);
+		combobox.valueProperty().addListener(new ChangeListener<String>() {
+		    @Override
+		    public void changed(ObservableValue ov, String t, String t1) {
+		        System.out.println("Previous Value: "+t);
+		        System.out.println("Current Value: "+t1);
+		    }
+		});
+		*/
+		
+		BorderPane pane = new BorderPane();
+		//creditDevelopment.setContent(value);
+		pane.setTop(combobox);
+		pane.setCenter(lineChart);
+		
+		creditDevelopment.setContent(pane);
+        ranking.setContent(listViewRanks);		
 	}
 
 	@Override

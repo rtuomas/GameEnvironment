@@ -77,7 +77,7 @@ public interface DAOIF {
 	
 	public ArrayList<String> readRankings();
 	
-	public List[] readCredits(int id);
+	public List[] readCredits(int id, int timestamp);
 	/**
 	 * Searches for the given email and returns the password if found
 	 * @param email in String form

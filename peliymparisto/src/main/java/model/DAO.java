@@ -249,29 +249,58 @@ public class DAO implements DAOIF {
 		return statsList;
 	}
 	
-	public List[] readCredits(int id) {
+	public List[] readCredits(int id, int timestamp) {
 		
 		ArrayList<Double> creditsList = new ArrayList<>();
 		ArrayList<String> datesList = new ArrayList<>();
-		//List<ArrayList<Double>, ArrayList<Timestamp>> credits = new List();
-		//Map<ArrayList<String>,ArrayList<Double>> map = new HashMap();
+		
 		
 		try (Session session = sFactory.openSession()) {
 			
+			switch(timestamp) {
+			case 0:
+				System.out.println("DAO   " + timestamp);
+				//hql = "from PlayedGame where player1 = :id";
+				break;
+			case 1:
+				System.out.println("DAO   " + timestamp);
+				//hql = "from PlayedGame where player1 = :id";
+				break;
+			case 2:
+				System.out.println("DAO   " + timestamp);
+				//hql = "from PlayedGame where player1 = :id";
+				break;
+		}
+			
+			//String hql = "SELECT * FROM PlayedGame where `playedOn` >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)";
+			//String hql = "SELECT * FROM playedgame where player1 = " + id;
 			String hql = "from PlayedGame where player1 = :id";
 			
 			@SuppressWarnings("rawtypes")
 			Query query = session.createQuery(hql).setParameter("id", id);
+			
 			@SuppressWarnings("unchecked")
 			List<PlayedGame> result = query.list();
-			
+			//List result = query.list();
 			creditsList.add(100.0);
+			
+			for (PlayedGame a: result) {
+				//System.out.println(a.getPlayedOn());
+				//datesList.add((a.getPlayedOn());
+				creditsList.add(a.getCreditAfterPlayer1());
+				datesList.add((String) a.getPlayedOn().toString());
+				//map.put((String) a.getPlayedOn().toString(), a.getCreditAfterPlayer1());
+			}
+			
+			/*
 			for (PlayedGame a: result) {
 				//datesList.add((a.getPlayedOn());
 				creditsList.add(a.getCreditAfterPlayer1());
 				datesList.add((String) a.getPlayedOn().toString());
 				//map.put((String) a.getPlayedOn().toString(), a.getCreditAfterPlayer1());
 			}
+			*/
+			System.out.println("Result " + result);
 			System.out.println("readcredits, dates" + datesList);
 			System.out.println("readcredits, credits" + creditsList);
 			
@@ -280,7 +309,6 @@ public class DAO implements DAOIF {
 			e.printStackTrace();
 		}
 		return new List[] {datesList, creditsList};
-		//return creditsList;
 	}
 
 	/**	{@inheritDoc} */

@@ -154,10 +154,10 @@ public class Controller implements ControllerIF {
 	}
 
 	@Override
-	public LineChart<String, Number> getLineChart() {
+	public LineChart<String, Number> getLineChart(int timestamp) {
 		try {
 			Statistics stats = new Statistics();
-			return stats.getLineChart();
+			return stats.getLineChart(timestamp);
 			//return model.getLineChart();
 		} catch (Exception e) {
 			System.out.println(e);

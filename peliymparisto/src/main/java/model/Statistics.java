@@ -18,11 +18,10 @@ public class Statistics {
 		
 	}
 	
-	public LineChart<String, Number> getLineChart() {
+	public LineChart<String, Number> getLineChart(int timestamp) {
 		
 		DAOIF dao = new DAO();
-		List[] creditsList = dao.readCredits(1001);
-		System.out.println("STATS  " + creditsList);
+		List[] creditsList = dao.readCredits(1001, timestamp);
 		
 		final Axis<String> xAxis = new CategoryAxis();
         final NumberAxis yAxis = new NumberAxis();
