@@ -480,12 +480,12 @@ public class View extends Application implements ViewIF {
 		
 		combobox = new ComboBox();
 		combobox.getItems().add("MAX");
-		combobox.getItems().add("This month");
-		combobox.getItems().add("this week");
+		combobox.getItems().add("Last 10");
+		combobox.getItems().add("Last 50");
 		combobox.getSelectionModel().select(0);
-		combobox.getSelectionModel().selectedIndexProperty().addListener( (options, oldValue, newValue) -> {
-	           System.out.println(newValue);
-	           fillStatistics(newValue.intValue());
+		combobox.getSelectionModel().selectedItemProperty().addListener( (options, oldValue, newValue) -> {
+	           //System.out.println(newValue);
+	           fillStatistics((String) newValue);
 	    	}
 	    );
 		BorderPane creditsPane = new BorderPane();
@@ -686,7 +686,7 @@ public class View extends Application implements ViewIF {
 		});
 		enterStats.setOnAction(e -> {
 			mainView.setCenter(stats);
-			fillStatistics(combobox.getSelectionModel().getSelectedIndex());
+			fillStatistics((String) combobox.getSelectionModel().getSelectedItem());
 		});
 		homeButton.setOnAction(e -> {
 			mainView.setCenter(mainMenu);
@@ -792,22 +792,21 @@ public class View extends Application implements ViewIF {
 		setNotification(score);
 	}
 
-	private void fillStatistics(int timestamp) {
+	private void fillStatistics(String count) {
+		System.out.println("statst" + count);
 		
-		/*
-		switch(timestamp) {
-			case 0:
-				lineChart = controller.getLineChart();
-				break;
-			case 1:
-				lineChart = controller.getLineChart();
-				break;
-			case 2:
-				lineChart = controller.getLineChart();
-				break;
+		switch(count) {
+		case "MAX":
+			lineChart = controller.getLineChart(1000);
+			break;
+		case "Last 10":
+			lineChart = controller.getLineChart(10);
+			break;
+		case "Last 50":
+			lineChart = controller.getLineChart(50);
+			break;
 		}
-		*/
-		lineChart = controller.getLineChart(timestamp);
+		//lineChart = controller.getLineChart(timestamp);
 		
 		listViewRanks = new ListView();
 		String[] ranks = controller.getRanking();
@@ -815,20 +814,6 @@ public class View extends Application implements ViewIF {
 			listViewRanks.getItems().add(ranks[i]);
 		}
 		
-		/*
-		combobox = new ComboBox();
-		combobox.getItems().add("MAX");
-		combobox.getItems().add("This month");
-		combobox.getItems().add("this week");
-		combobox.getSelectionModel().select(0);
-		combobox.valueProperty().addListener(new ChangeListener<String>() {
-		    @Override
-		    public void changed(ObservableValue ov, String t, String t1) {
-		        System.out.println("Previous Value: "+t);
-		        System.out.println("Current Value: "+t1);
-		    }
-		});
-		*/
 		
 		BorderPane pane = new BorderPane();
 		//creditDevelopment.setContent(value);

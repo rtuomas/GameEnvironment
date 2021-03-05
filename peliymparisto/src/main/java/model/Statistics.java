@@ -13,15 +13,18 @@ public class Statistics {
 	private int[] dates = {0,1,2,3};
 	//private int[] values = {100,120,115,90,100,80,55};
 	//private String[] ranks = {"1350, Pena Aarnio", "999, AI", "-5000, Jari Aarnio"};
+	private int playerId;
 	
-	public Statistics() {
-		
+	public Statistics(int playerId) {
+		this.playerId = playerId;
 	}
 	
-	public LineChart<String, Number> getLineChart(int timestamp) {
+	public Statistics() {}
+	
+	public LineChart<String, Number> getLineChart(int count) {
 		
 		DAOIF dao = new DAO();
-		List[] creditsList = dao.readCredits(1001, timestamp);
+		List[] creditsList = dao.readCredits(this.playerId, count);
 		
 		final Axis<String> xAxis = new CategoryAxis();
         final NumberAxis yAxis = new NumberAxis();
