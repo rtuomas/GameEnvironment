@@ -780,7 +780,7 @@ public class View extends Application implements ViewIF {
 
 	private void fillStatistics() {
 		
-		LineChart<Number, Number> lineChart = controller.getLineChart();
+		LineChart<String, Number> lineChart = controller.getLineChart();
 		
 		ListView listView = new ListView();
 		String[] ranks = controller.getRanking();

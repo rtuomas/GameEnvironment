@@ -154,7 +154,7 @@ public class Controller implements ControllerIF {
 	}
 
 	@Override
-	public LineChart<Number, Number> getLineChart() {
+	public LineChart<String, Number> getLineChart() {
 		try {
 			Statistics stats = new Statistics();
 			return stats.getLineChart();

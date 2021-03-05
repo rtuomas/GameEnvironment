@@ -9,9 +9,12 @@ import java.util.ArrayList;
 */
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -246,10 +249,12 @@ public class DAO implements DAOIF {
 		return statsList;
 	}
 	
-	public ArrayList<Double> readCredits(int id) {
+	public List[] readCredits(int id) {
 		
 		ArrayList<Double> creditsList = new ArrayList<>();
-		ArrayList<Date> datesList = new ArrayList<>();
+		ArrayList<String> datesList = new ArrayList<>();
+		//List<ArrayList<Double>, ArrayList<Timestamp>> credits = new List();
+		//Map<ArrayList<String>,ArrayList<Double>> map = new HashMap();
 		
 		try (Session session = sFactory.openSession()) {
 			
@@ -264,6 +269,8 @@ public class DAO implements DAOIF {
 			for (PlayedGame a: result) {
 				//datesList.add((a.getPlayedOn());
 				creditsList.add(a.getCreditAfterPlayer1());
+				datesList.add((String) a.getPlayedOn().toString());
+				//map.put((String) a.getPlayedOn().toString(), a.getCreditAfterPlayer1());
 			}
 			System.out.println("readcredits, dates" + datesList);
 			System.out.println("readcredits, credits" + creditsList);
@@ -272,7 +279,8 @@ public class DAO implements DAOIF {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return creditsList;
+		return new List[] {datesList, creditsList};
+		//return creditsList;
 	}
 
 	/**	{@inheritDoc} */

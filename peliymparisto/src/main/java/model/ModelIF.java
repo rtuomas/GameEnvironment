@@ -33,7 +33,7 @@ public interface ModelIF {
 	//public double decreaseBet();
 	//public double increaseBet();
 
-	LineChart<Number, Number> getLineChart();
+	LineChart<String, Number> getLineChart();
 
 	String[] getRanking();
 	/**
