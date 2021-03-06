@@ -1,8 +1,10 @@
 package view;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import controller.Controller;
 import controller.ControllerIF;
@@ -44,6 +46,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -84,12 +87,13 @@ public class View extends Application implements ViewIF {
 	//PokerGameView variables
 	private Text pokerGameCredits;
 	private Text pokerGameBet;
-	private ArrayList<ImageView> pokerGameCardImgs;
-	private HashMap<Integer, Image> clickedImgs = new HashMap <Integer, Image>();
 	private GridPane cardPane;
-	private ArrayList<Integer> cardsToSwapIndexes = new ArrayList <Integer>();
+	private ArrayList<Integer> cardsToSwapIndexes = new ArrayList<Integer>();
 	private boolean gameOn = false;
 	private Text notification;
+	private StackPane [] imageStacks = new StackPane [5];
+	private ImageView [] cardViews = new ImageView [5];
+	private ImageView [] lockViews = new ImageView [5];
 
 	//navBar components
 	/** Button to go to main menu*/
@@ -277,6 +281,7 @@ public class View extends Application implements ViewIF {
 	 * @return AnchorPane type layout for the poker game
 	 */
 	private AnchorPane pokerGameBuilder() {
+		Collections.addAll(cardsToSwapIndexes,0,1,2,3,4);
 		
 		notification = new Text("Valitse panos ja paina jako");
 		AnchorPane.setBottomAnchor(notification, 70.0);
@@ -414,18 +419,22 @@ public class View extends Application implements ViewIF {
 			cardPane.getColumnConstraints().add(column);
 		}
 		
-		//Initial card images
-		pokerGameCardImgs = new ArrayList<ImageView>();
-		Image startcard = new Image("/images/green_back.png");
-		for(int i = 0; i < 5 ; i++) {
-			Pane pane = new Pane();
-			pane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-			ImageView img = new ImageView(startcard);
-			img.fitWidthProperty().bind(pane.widthProperty());
-			img.fitHeightProperty().bind(pane.heightProperty());
-			pane.getChildren().add(img);
-			pokerGameCardImgs.add(i, img);
-			cardPane.add(pane, i, 0);
+		
+		
+		// Initial card images
+		for(int i = 0; i < imageStacks.length ; i++) {
+			imageStacks[i] = new StackPane();
+			imageStacks[i].setMinHeight(0);
+			imageStacks[i].setMinWidth(0);
+			imageStacks[i].setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+			cardViews[i] = new ImageView(new Image("/images/green_back.png"));
+			cardViews[i].fitWidthProperty().bind(imageStacks[i].widthProperty());
+			cardViews[i].fitHeightProperty().bind(imageStacks[i].heightProperty());
+			imageStacks[i].getChildren().add(cardViews[i]);
+			lockViews[i] = new ImageView(new Image("/images/lukko.png", 75, 75, true, true));
+			imageStacks[i].getChildren().add(lockViews[i]);
+			lockViews[i].setVisible(false);
+			cardPane.add(imageStacks[i], i, 0);
 		}
 		
 		
@@ -438,7 +447,7 @@ public class View extends Application implements ViewIF {
 			controller.startPokerGame();
 			plus.setVisible(false);
 			minus.setVisible(false);
-			setNotification("Valitse kortit jotka haluat vaihtaa ja paina jako");
+			setNotification("Valitse kortit jotka haluat lukita ja paina jako");
 			} else {
 			setSwappedCards();
 			plus.setVisible(true);
@@ -872,23 +881,23 @@ public class View extends Application implements ViewIF {
 	 * @param index int card index, helps to determine which card is clicked.
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void setImagesOnClick(final ImageView img, final int index) {
-		img.setPickOnBounds(true);
-	    img.setOnMouseClicked(new EventHandler() {
+	private void setImagesOnClick(final StackPane pane, final ImageView img, final int index) {
+		//img.setPickOnBounds(true);
+	    pane.setOnMouseClicked(new EventHandler() {
 				@Override
 				public void handle(Event event) {
 					if(gameOn) {
-					if(cardsToSwapIndexes.contains(index)) {
-						img.setImage(clickedImgs.get(index));
-						clickedImgs.remove(index);
+						if(!cardsToSwapIndexes.contains(index)) {
+							cardsToSwapIndexes.add(index);
+							lockViews[index].setVisible(false);
+							img.setOpacity(1);
+						} else {
 						cardsToSwapIndexes.remove(Integer.valueOf(index));
-					} else {
-						clickedImgs.put(index, img.getImage());
-						img.setImage(new Image("/images/green_back.png"));
-						cardsToSwapIndexes.add(index);
-						}
+						lockViews[index].setVisible(true);
+						img.setOpacity(0.3); 
 					}
 				}
+			}
 	    });
 	}
 	
@@ -904,16 +913,11 @@ public class View extends Application implements ViewIF {
 	public void setCards(ArrayList<String> cards) {
 		Platform.runLater(() -> {
 		for(int i = 0; i < cards.size(); i++) {
-			Pane pane = new Pane();
-			pane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+			lockViews[i].setVisible(false);
 			Image newCard = new Image("/images/" + cards.get(i) + ".png");
-			ImageView imageview = new ImageView(newCard);
-			imageview.fitHeightProperty().bind(pane.heightProperty());
-			imageview.fitWidthProperty().bind(pane.widthProperty());
-			pane.getChildren().add(imageview);
-			pokerGameCardImgs.add(i, imageview);
-			cardPane.add(pane, i, 0);
-			setImagesOnClick(pokerGameCardImgs.get(i), i);
+			cardViews[i].setImage(newCard);
+			cardViews[i].setOpacity(1);
+			setImagesOnClick(imageStacks[i], cardViews[i], i);
 		}
 		});
 	}
@@ -979,7 +983,7 @@ public class View extends Application implements ViewIF {
 	public void setSwappedCards() {
 		controller.setSwappedCardIndexes(cardsToSwapIndexes);
 		cardsToSwapIndexes.clear();
-		pokerGameCardImgs.clear();
+		Collections.addAll(cardsToSwapIndexes,0,1,2,3,4);
 	}
 	
 	/**	{@inheritDoc} */
