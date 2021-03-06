@@ -50,6 +50,13 @@ public class PlayedGame {
 		this.creditAfterPlayer2 = cap2;
 	}
 	
+	public PlayedGame(double credits, Date playedOn) {
+		super();
+		
+		this.creditAfterPlayer1 = credits;
+		this.playedOn = playedOn;
+	}
+	
 	public int getId() {
 		return id;
 	}

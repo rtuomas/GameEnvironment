@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javafx.scene.chart.LineChart;
 import model.Card;
 import model.HandValue;
+import model.PlayedGame;
 import model.Player;
 
 /**
@@ -42,9 +43,9 @@ public interface ControllerIF {
 	
 	//hybrid methods -->
 	
-	LineChart<Number, Number> getLineChart();
+	LineChart<String, Number> getLineChart(int timestamp);
 
-	String[] getRanking();
+	ArrayList<Player> getRanking();
 	/**
 	 * Sets the default player as Tester when program starts
 	 */
@@ -83,6 +84,8 @@ public interface ControllerIF {
 	 * Shows error messages depending on the errors encountered
 	 */
 	public void attemptRegistration();
+
+	public ArrayList<PlayedGame> getPlayedGames();
 	
 	
 }

@@ -9,9 +9,12 @@ import java.util.ArrayList;
 */
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -21,8 +24,8 @@ import org.hibernate.query.Query;
 
 /**
  * The Data Access Object to handle database connections, uses hibernate
- * @author Aki Koppinen
- * @version 1.5 01.03.2021
+ * @author Aki Koppinen, Tuomas Rajala
+ * @version 1.6 05.03.2021
  */
 public class DAO implements DAOIF {
 	
@@ -224,8 +227,8 @@ public class DAO implements DAOIF {
 		return playedGame;
 	}
 	
-	public ArrayList<String> readRankings() {
-		ArrayList<String> statsList = new ArrayList<>();
+	public ArrayList<Player> readRankings() {
+		ArrayList<Player> statsList = new ArrayList<>();
 		try (Session session = sFactory.openSession()) {
 			
 			String hql = "from Player";
@@ -235,10 +238,10 @@ public class DAO implements DAOIF {
 			@SuppressWarnings("unchecked")
 			List<Player> result = query.list();
 			Collections.sort(result);
+			
 			for (Player a: result) {
-				statsList.add(a.getCredits() + ", " + a.getFirstName() + " " + a.getLastName());
+				statsList.add(a);
 			}
-			System.out.println("readrankings" + statsList);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -246,25 +249,31 @@ public class DAO implements DAOIF {
 		return statsList;
 	}
 	
-	public ArrayList<Double> readCredits(int id) {
+	public List[] readCredits(int id, int count) {
 		
 		ArrayList<Double> creditsList = new ArrayList<>();
-		ArrayList<Date> datesList = new ArrayList<>();
+		ArrayList<String> datesList = new ArrayList<>();
+		String hql = "from PlayedGame where player1 = :id order by id desc";
+		
+		System.out.println("COUNT!!!"  + count);
 		
 		try (Session session = sFactory.openSession()) {
 			
-			String hql = "from PlayedGame where player1 = :id";
-			
 			@SuppressWarnings("rawtypes")
-			Query query = session.createQuery(hql).setParameter("id", id);
+			Query query = session.createQuery(hql).setParameter("id", id).setMaxResults(count);
 			@SuppressWarnings("unchecked")
 			List<PlayedGame> result = query.list();
 			
-			creditsList.add(100.0);
+			if(count==1000) creditsList.add(100.0);
+
 			for (PlayedGame a: result) {
-				//datesList.add((a.getPlayedOn());
 				creditsList.add(a.getCreditAfterPlayer1());
+				datesList.add((String) a.getPlayedOn().toString());
 			}
+			Collections.reverse(creditsList);
+			Collections.reverse(datesList);
+			
+			System.out.println("Result " + result);
 			System.out.println("readcredits, dates" + datesList);
 			System.out.println("readcredits, credits" + creditsList);
 			
@@ -272,7 +281,7 @@ public class DAO implements DAOIF {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return creditsList;
+		return new List[] {datesList, creditsList};
 	}
 
 	/**	{@inheritDoc} */
@@ -377,67 +386,27 @@ public class DAO implements DAOIF {
 		}
 		return true;
 	}
-	
-}
 
-/*
-public class DAO implements DAOIF {
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			System.err.println("JDBC-ajurin lataus epäonnistui");
-			System.exit(-1); // lopetus heti virheen vuoksi
-		}
-		//ArrayList<Valuutta> valuutat = new ArrayList<>();
-		//final String URL = "jdbc:mysql://localhost/game_database";
-		String URL = "jdbc:mysql://localhost:2206/game_database";
-		final String USERNAME = "akikoppinen";
-		final String PASSWORD = "rootpassword";
-		try {
-			Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+	@Override
+	public ArrayList<PlayedGame> readPlayedGames(int playerId) {
+		ArrayList<PlayedGame> playedGames = new ArrayList<>();
+		String hql = "from PlayedGame where player1 = :id";
+		
+		try (Session session = sFactory.openSession()) {
 			
-			Statement stmt1 = conn.createStatement();
-			String query1 = "SELECT firstName, lastName FROM player";
-			ResultSet rs = stmt1.executeQuery(query1);
-			
-			while (rs.next()) {
-				 String etunimi = rs.getString("firstName"); // tai rs.getInt(1)
-				 String sukunimi = rs.getString("lastName");
-				 System.out.println(etunimi);
-				 //valuutat.add(new Valuutta(etunimi, sukunimi));
+			@SuppressWarnings("rawtypes")
+			Query query = session.createQuery(hql).setParameter("id", playerId);
+			@SuppressWarnings("unchecked")
+			List<PlayedGame> result = query.list();
+			for (PlayedGame a: result) {
+				playedGames.add(a);
 			}
 			
-			ResultSetMetaData rsMetaData = rs.getMetaData();
-			int a = rsMetaData.getColumnCount();
-			String b = rsMetaData.getColumnName(1); //starts from 1, käytä (getInt(), getDouble(),getBoolean() ja getString()
 			
-			System.out.println(a);
-			System.out.println(b);
-			
-			//for (Valuutta valuutta: valuutat) {
-				//System.out.println(valuutta);
-			//}
-			
-			/*
-			Statement stmt2 = conn.createStatement();
-			String query2 = "INSERT INTO valuutta " +
-			 "VALUES ('NTD', 40.0, 'New Taiwan Dollar')";
-			int count = stmt2.executeUpdate(query2); //rivimuutosten määrä
-			
-			
-			rs.close(); // tulosjoukko
-			stmt1.close(); // kysely
-			//stmt2.close(); // kysely
-			conn.close(); // tietokantayhteys, vapauta AINA
-			
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		return playedGames;
 	}
-
-}*/
-
+	
+}

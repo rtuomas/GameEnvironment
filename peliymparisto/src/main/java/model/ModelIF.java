@@ -33,9 +33,9 @@ public interface ModelIF {
 	//public double decreaseBet();
 	//public double increaseBet();
 
-	LineChart<Number, Number> getLineChart();
+	LineChart<String, Number> getLineChart();
 
-	String[] getRanking();
+	ArrayList<Player> getRanking();
 	/**
 	 * Sets up indexes which cards are going to be swapped.
 	 * @param indexes ArrayList<Integer> card indexes 0-4.

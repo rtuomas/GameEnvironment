@@ -8,6 +8,7 @@ import model.Card;
 import model.DAO;
 import model.DAOIF;
 import model.ModelIF;
+import model.PlayedGame;
 import model.Player;
 import model.PokerGameEngine;
 import model.Statistics;
@@ -154,10 +155,10 @@ public class Controller implements ControllerIF {
 	}
 
 	@Override
-	public LineChart<Number, Number> getLineChart() {
+	public LineChart<String, Number> getLineChart(int count) {
 		try {
-			Statistics stats = new Statistics();
-			return stats.getLineChart();
+			Statistics stats = new Statistics(view.getPlayer().getId());
+			return stats.getLineChart(count);
 			//return model.getLineChart();
 		} catch (Exception e) {
 			System.out.println(e);
@@ -167,15 +168,26 @@ public class Controller implements ControllerIF {
 	}
 	
 	@Override
-	public String[] getRanking() {
+	public ArrayList<Player> getRanking() {
 		try {
-			Statistics stats = new Statistics();
+			Statistics stats = new Statistics(view.getPlayer().getId());
 			return stats.getRanking();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		return null;
 		
+	}
+
+	@Override
+	public ArrayList<PlayedGame> getPlayedGames() {
+		try {
+			Statistics stats = new Statistics(view.getPlayer().getId());
+			return stats.getPlayedGames();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return null;
 	}
 
 

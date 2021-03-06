@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DAOIF gives interface for DAO class.
@@ -74,9 +75,9 @@ public interface DAOIF {
 	 */
 	public PlayedGame getPlayedGame(int playedGameID);
 	
-	public ArrayList<String> readRankings();
+	public ArrayList<Player> readRankings();
 	
-	public ArrayList<Double> readCredits(int id);
+	public List[] readCredits(int id, int timestamp);
 	/**
 	 * Searches for the given email and returns the password if found
 	 * @param email in String form
@@ -89,5 +90,6 @@ public interface DAOIF {
 	 * @return Player object
 	 */
 	public Player getPlayer(String playerEmail);
+	public ArrayList<PlayedGame> readPlayedGames(int playerId);
 
 }

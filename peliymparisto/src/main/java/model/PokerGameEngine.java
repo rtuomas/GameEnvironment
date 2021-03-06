@@ -179,15 +179,15 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	}
 	
 	@Override
-	public LineChart<Number, Number> getLineChart() {
+	public LineChart<String, Number> getLineChart() {
 		//Statistics stats = new Statistics();
-		LineChart<Number, Number> lineChart = stats.getLineChart();
+		LineChart<String, Number> lineChart = stats.getLineChart(-1);
 		
 		return lineChart;
 	}
 	
 	@Override
-	public String[] getRanking(){
+	public ArrayList<Player> getRanking(){
 		//Statistics stats = new Statistics();
 		return stats.getRanking();
 	}

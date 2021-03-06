@@ -6,7 +6,8 @@
   <description>JavaFX, MariaDB, JDBC, Hibernate, JUnit </description>
 <properties>
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	<maven.compiler.release>11</maven.compiler.release>
+	<maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
 </properties>
 <dependencies>
 		<!-- JavaFX projekti -->
@@ -25,7 +26,7 @@
 	<!-- JUnit Jupiter, yksikkotestausta varten -->
 	<dependency>
 		<groupId>org.junit.jupiter</groupId>
-		<artifactId>junit-jupiter-engine</artifactId>
+		<artifactId>junit-jupiter-api</artifactId>
 		<version>5.7.0</version>
 		<scope>test</scope>
 	</dependency>
@@ -35,26 +36,80 @@
 	    <artifactId>hibernate-core</artifactId>
 	    <version>5.4.27.Final</version>
 	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
+    <dependency>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.6</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M5</version>
+    </dependency>
+    <dependency>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
+        <version>5.7.0</version>
+    </dependency>
 </dependencies>
 
 <build> <!-- Koonnissa ja raporttien tuottamisessa tarvittavia lisaosia -->
 	<plugins>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>3.8.1</version>
-		</plugin>
 		<!-- JUnit testien ajo Maven-ajoymparistossa (kun ei IDE:n kautta) -->
+		<plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.1</version>
+            <configuration>
+                <source>8</source>
+                <target>8</target>
+            </configuration>
+        </plugin>
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-surefire-plugin</artifactId>
 			<version>3.0.0-M5</version>
 		</plugin>
 		<plugin>
-      		<groupId>org.jacoco</groupId>
-      		<artifactId>jacoco-maven-plugin</artifactId>
-      		<version>0.8.7-SNAPSHOT</version>
-    	</plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.6</version>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>COMPLEXITY</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.60</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 	</plugins>
 </build>
 </project>
