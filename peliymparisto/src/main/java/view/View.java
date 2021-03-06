@@ -60,7 +60,7 @@ import model.PlayerRanking;
 /**
  * The Graphical User Interface built with JavaFX
  * @author ---
- * @version 1.5 03.03.2021
+ * @version 1.6 06.03.2021
  */
 public class View extends Application implements ViewIF {
 	
@@ -628,8 +628,18 @@ public class View extends Application implements ViewIF {
 		
         Scene rDialogScene = new Scene(rDialogView); //100,100
         rDialog.setScene(rDialogScene);
-        createRegisterActions();
         rDialog.show();
+        
+        //Actions
+        //----->
+        //These actions have the functionality for the confirm and cancel buttons in Registration window
+        //controller handles saving the information to database, it then calls handleRegistrationSuccess method in View
+      	confirmRegisterButton.setOnAction(e -> controller.attemptRegistration());
+      	//This method closes the window
+      	cancelRegisterButton.setOnAction(e -> {
+      		Stage stage = (Stage)cancelRegisterButton.getScene().getWindow();
+      		stage.close();
+      	});
 	}
 	
 	/**
@@ -861,18 +871,6 @@ public class View extends Application implements ViewIF {
 			}
 		});
 		infoMI.setOnAction(e -> showProgramInfo());
-	}
-	
-	/**
-	 * This method has the functionality for the confirm and cancel buttons in Registration window
-	 */
-	private void createRegisterActions() {
-		//controller handles saving the information to database, it then calls handleRegistrationSuccess method in View
-		confirmRegisterButton.setOnAction(e -> controller.attemptRegistration());
-		cancelRegisterButton.setOnAction(e -> {
-			Stage stage = (Stage)cancelRegisterButton.getScene().getWindow();
-			stage.close();
-		});
 	}
 	
 	/**
