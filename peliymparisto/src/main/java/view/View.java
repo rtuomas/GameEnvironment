@@ -1,6 +1,7 @@
 package view;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +88,7 @@ public class View extends Application implements ViewIF {
 	private Text pokerGameCredits;
 	private Text pokerGameBet;
 	private GridPane cardPane;
-	private ArrayList<Integer> cardsToSwapIndexes = new ArrayList<>(List.of(0,1,2,3,4));
+	private ArrayList<Integer> cardsToSwapIndexes = new ArrayList<Integer>();
 	private boolean gameOn = false;
 	private Text notification;
 	private StackPane [] imageStacks = new StackPane [5];
@@ -272,6 +273,7 @@ public class View extends Application implements ViewIF {
 	 * @return AnchorPane type layout for the poker game
 	 */
 	private AnchorPane pokerGameBuilder() {
+		Collections.addAll(cardsToSwapIndexes,0,1,2,3,4);
 		
 		notification = new Text("Valitse panos ja paina jako");
 		AnchorPane.setBottomAnchor(notification, 70.0);
@@ -896,7 +898,8 @@ public class View extends Application implements ViewIF {
 	@Override
 	public void setSwappedCards() {
 		controller.setSwappedCardIndexes(cardsToSwapIndexes);
-		cardsToSwapIndexes = new ArrayList<>(List.of(0,1,2,3,4));
+		cardsToSwapIndexes.clear();
+		Collections.addAll(cardsToSwapIndexes,0,1,2,3,4);
 	}
 	
 	/**	{@inheritDoc} */
