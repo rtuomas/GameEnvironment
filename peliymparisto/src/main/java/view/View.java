@@ -170,6 +170,10 @@ public class View extends Application implements ViewIF {
 			mainView.setTop(navBar);
 			mainView.setCenter(mainMenu);
 			Scene mainScene = new Scene(mainView);
+			
+			
+			mainScene.getStylesheets().add("/styles/style.css");
+			
 			createGUITransitions(primaryStage, mainView, mainMenu, pokerGame, settings, stats);
 
 			primaryStage.setScene(mainScene);
