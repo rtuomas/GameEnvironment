@@ -110,5 +110,14 @@ public interface ViewIF {
 	 * @return Boolean which tells if the Choice box is chosen or not
 	 */
 	public Boolean getCreditTransferRegInput();
+	/**
+	 * Notifies the user about the success in changing the player information
+	 * Closes the player information window
+	 */
+	public void handlePlayerInfoChangeSuccess();
+	/**
+	 * Shows error message if there was an error with updating the player information to database
+	 */
+	public void showPlayerInfoChangeErrorDatabase();
 	
 }

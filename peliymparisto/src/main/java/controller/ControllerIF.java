@@ -86,6 +86,10 @@ public interface ControllerIF {
 	public void attemptRegistration();
 
 	public ArrayList<PlayedGame> getPlayedGames();
-	
-	
+	/**
+	 * Gets edited Player information from View and attempts to save them into database
+	 * Updates the existing Player in database if everything checks out and then calls to show success message in view.
+	 * If saving to database fails, shows an error message in View
+	 */
+	public void changePlayerInfo();
 }

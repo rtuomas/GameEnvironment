@@ -208,5 +208,17 @@ public class ViewCLI implements ViewIF {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void handlePlayerInfoChangeSuccess() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showPlayerInfoChangeErrorDatabase() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
