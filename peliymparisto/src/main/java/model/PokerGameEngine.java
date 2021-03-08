@@ -142,10 +142,42 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	@Override
 	public void setScore () {
 		HandValue score = this.hand.getScore();
+		String s = "";
+		
+		switch(score) {
+		case ACE_PAIR:
+			s = "Ässä pari";
+			break;
+		case TWO_PAIRS:
+			s = "Kaksi paria";
+			break;
+		case THREE_OF_A_KIND:
+			s = "Kolmoset";
+			break;
+		case STRAIGHT:
+			s = "Suora";
+			break;
+		case FLUSH:
+			s = "Väri";
+			break;
+		case FULL_HOUSE:
+			s = "Täyskäsi";
+			break;
+		case FOUR_OF_A_KIND:
+			s = "Neloset";
+			break;
+		case STRAIGHT_FLUSH:
+			s = "Värisuora";
+			break;
+		case NO_WIN:
+			s = "Ei voittoa";
+			break;
+		}
+		
 		if(score.getMultiplier() != 0) {
-			controller.setScore(score.name() + ", voitit " + score.getMultiplier() * bet);
+			controller.setScore(s + ", voitit " + score.getMultiplier() * bet);
 		} else {
-			controller.setScore("Ei voittoa");
+			controller.setScore(s);
 		}
 	}
 	
@@ -158,12 +190,10 @@ public class PokerGameEngine extends Thread implements ModelIF {
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		controller.showCards(hand.swapCards(this.indexes));
-		//notifyAll();
 	}
 	
 	/**

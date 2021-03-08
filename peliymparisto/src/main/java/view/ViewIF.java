@@ -111,4 +111,16 @@ public interface ViewIF {
 	 */
 	public Boolean getCreditTransferRegInput();
 	
+	//private void setNotification(String text); ??
+	
+	/**
+	 * Updates poker game player credits text.
+	 */
+	public void setPokerGamePlayerCredits();
+	
+	/**
+	 * Updates poker game bet text. Calls updateWintale so wintable gets updated bet.
+	 * @param bet double bet amount
+	 */
+	public void setPokerGameBet(double bet);
 }

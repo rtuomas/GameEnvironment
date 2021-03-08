@@ -53,6 +53,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import model.HandValue;
 import model.PlayedGame;
 import model.Player;
 import model.PlayerRanking;
@@ -94,6 +95,7 @@ public class View extends Application implements ViewIF {
 	private StackPane [] imageStacks = new StackPane [5];
 	private ImageView [] cardViews = new ImageView [5];
 	private ImageView [] lockViews = new ImageView [5];
+	private List <Text> winTableTexts = new ArrayList<Text>(); 
 
 	//navBar components
 	/** Button to go to main menu*/
@@ -275,16 +277,20 @@ public class View extends Application implements ViewIF {
 	private AnchorPane pokerGameBuilder() {
 		Collections.addAll(cardsToSwapIndexes,0,1,2,3,4);
 		
+		//Notification text under cards
 		notification = new Text("Valitse panos ja paina jako");
 		AnchorPane.setBottomAnchor(notification, 70.0);
 		notification.setLayoutX(270);
-		//AnchorPane.setLeftAnchor(notification, 350.0);
 		notification.setFont(Font.font(24));
+		
+		// Top left corner image
+		ImageView topLeftImg = new ImageView(new Image("/images/pokergame_top_left.png", 110, 125.4 , true, true));
+		AnchorPane.setLeftAnchor(topLeftImg, 13.0);
+		AnchorPane.setTopAnchor(topLeftImg, 5.0);
+		
 		
 		// gamble button placement
 		Button gamble = new Button ("Tuplaa");
-		gamble.setLayoutX(367.0);
-		gamble.setLayoutY(330.0);
 		gamble.setPrefHeight(58.0);
 		gamble.setPrefWidth(98.0);
 		AnchorPane.setBottomAnchor(gamble, 11.39);
@@ -292,9 +298,6 @@ public class View extends Application implements ViewIF {
 		
 		// play button placement
 		Button play = new Button("Jako");
-		//play.setStyle("-fx-background-color: green");
-		play.setLayoutX(487.0);
-		play.setLayoutY(331.0);
 		play.setPrefHeight(58.0);
 		play.setPrefWidth(98.0);
 		AnchorPane.setBottomAnchor(play, 11.39);
@@ -302,92 +305,81 @@ public class View extends Application implements ViewIF {
 		
 		// bet increment button placement
 		Button plus = new Button("+");
-		plus.setLayoutX(324.0);
-		plus.setLayoutY(350.0);
+		plus.setPrefSize(30, 30);
 		AnchorPane.setBottomAnchor(plus, 24.4);
-		AnchorPane.setLeftAnchor(plus, 450.0);
+		AnchorPane.setLeftAnchor(plus, 470.0);
 		plus.setOnAction(e -> {
 			setPokerGameBet(controller.getBetIncrement());
 		});
-		
+			
 		// bet decrement button placement
 		Button minus = new Button("-");
-		minus.setLayoutX(219.0);
-		minus.setLayoutY(349.0);
+		minus.setPrefSize(30, 30);
 		AnchorPane.setBottomAnchor(minus, 24.4);
-		AnchorPane.setLeftAnchor(minus, 350.0);
+		AnchorPane.setLeftAnchor(minus, 340.0);
 		minus.setOnAction(e -> {
 			setPokerGameBet(controller.getBetDecrement());
 		});
-		
-		// credits & bet placements
-		pokerGameCredits = new Text();
-		pokerGameBet = new Text();
-		setPokerGamePlayerCredits();
-		pokerGameCredits.setLayoutX(36.0);
-		pokerGameCredits.setLayoutY(364.0);
-		AnchorPane.setBottomAnchor(pokerGameCredits, 30.0);
-		AnchorPane.setLeftAnchor(pokerGameCredits, 36.0);
-		setPokerGameBet(controller.getBet());
-		//pokerGameBet.setLayoutX(220.0); // 248
-		//pokerGameBet.setLayoutY(367);
-		AnchorPane.setBottomAnchor(pokerGameBet, 30.0);
-		AnchorPane.setLeftAnchor(pokerGameBet, 385.0);
 		
 		
 		// Gridpane for wintable
 		GridPane wintable = new GridPane();
 		wintable.setGridLinesVisible(true);
-		wintable.setLayoutX(367.0);
-		wintable.setLayoutY(20.0);
-		wintable.setPrefHeight(128.0);
-		wintable.setPrefWidth(222.0);
-		AnchorPane.setTopAnchor(wintable, 20.0);
-		AnchorPane.setRightAnchor(wintable, 10.59);
+		AnchorPane.setTopAnchor(wintable, 0.0);
+		AnchorPane.setRightAnchor(wintable, 13.0);
 		
-		for(int i = 0; i < 3; i++) {
-			RowConstraints row = new RowConstraints(30);
+		for(int i = 0; i < 4; i++) {
+			RowConstraints row = new RowConstraints(33);
 			wintable.getRowConstraints().add(row);
 		}
 		
-		for(int i = 0; i < 3; i++) {
+		for(int i = 0; i < 2; i++) {
 			ColumnConstraints column = new ColumnConstraints();
-			column.setPrefWidth(100.0);
+			column.setPrefWidth(135.0);
 			wintable.getColumnConstraints().add(column);
 		}
 		
-		Text acepair = new Text("Ässä pari:");
-		Text pair = new Text("Kaksi paria:");
-		Text threeofkind = new Text("Kolmoset:");
-		Text straight = new Text("Suora:");
-		Text flush = new Text("Väri:");
-		Text fullhouse = new Text("Täyskäsi:");
-		Text fourofkind = new Text("Neloset:");
-		Text straightflush = new Text("Värisuora:");
-		wintable.add(acepair, 0, 2);
-		wintable.add(pair, 1, 2);
-		wintable.add(threeofkind, 2, 2);
-		wintable.add(straight, 0, 1);
-		wintable.add(flush, 1, 1);
-		wintable.add(fullhouse, 2, 1);
+		// Texts for wintable
+		Text acepair = new Text();
+		Text pair = new Text();
+		Text threeofkind = new Text();
+		Text straight = new Text();
+		Text flush = new Text();
+		Text fullhouse = new Text();
+		Text fourofkind = new Text();
+		Text straightflush = new Text();
+		Collections.addAll(winTableTexts, acepair, pair, threeofkind, straight, flush, fullhouse, fourofkind, straightflush);
+		for(Text t : winTableTexts) {
+			t.setFont(Font.font(16));
+			wintable.setMargin(t, new Insets(5,5,5,5));
+		}
+		
+		wintable.add(acepair, 0, 3);
+		wintable.add(pair, 1, 3);
+		wintable.add(threeofkind, 0, 2);
+		wintable.add(straight, 1, 2);
+		wintable.add(flush, 0, 1);
+		wintable.add(fullhouse, 1, 1);
 		wintable.add(fourofkind, 0, 0);
 		wintable.add(straightflush, 1, 0);
 		
-		//wintable.add(pair, 0, 3);
-		//wintable.add(threeofkind, 0, 2);
-		//wintable.add(straight, 0, 1);
-		//wintable.add(flush, 0, 0);
-		//wintable.add(fullhouse, 1, 3);
-		//wintable.add(fourofkind, 1, 2);
-		//wintable.add(straightflush, 1, 1);
+		// credits & bet placements
+		pokerGameCredits = new Text();
+		pokerGameCredits.setFont(Font.font(16));
+		pokerGameBet = new Text();
+		pokerGameBet.setFont(Font.font(16));
+		setPokerGamePlayerCredits();
+		AnchorPane.setBottomAnchor(pokerGameCredits, 30.0);
+		AnchorPane.setLeftAnchor(pokerGameCredits, 36.0);
+		setPokerGameBet(controller.getBet());
+		AnchorPane.setBottomAnchor(pokerGameBet, 30.0);
+		AnchorPane.setLeftAnchor(pokerGameBet, 385.0);
 		
-		// Gridpane for card images. Below space for ''locked''.
+		// Gridpane for card images
 		cardPane = new GridPane ();
-		cardPane.setLayoutX(8.0);
-		cardPane.setLayoutY(158.0);
 		cardPane.setPrefHeight(166.0);
 		cardPane.setPrefWidth(579.0);
-		AnchorPane.setTopAnchor(cardPane, 115.0);
+		AnchorPane.setTopAnchor(cardPane, 140.0);
 		AnchorPane.setRightAnchor(cardPane, 10.0);
 		AnchorPane.setLeftAnchor(cardPane, 10.0);
 		AnchorPane.setBottomAnchor(cardPane, 105.0);
@@ -397,9 +389,7 @@ public class View extends Application implements ViewIF {
 		cardRow.setMinHeight(10.0);
 		cardRow.setVgrow(Priority.ALWAYS);
 		cardRow.setFillHeight(true);
-		//RowConstraints chosenRow = new RowConstraints(41);
 		cardPane.getRowConstraints().add(cardRow);
-		//cardPane.getRowConstraints().add(chosenRow);
 		
 	 
 		for(int i = 0; i < 5; i++) {
@@ -431,8 +421,8 @@ public class View extends Application implements ViewIF {
 		
 		
 		//Sets the whole AnchorPane with elements
-		AnchorPane pokerGameView = new AnchorPane(play, gamble, plus, minus, pokerGameCredits, pokerGameBet, wintable, cardPane, notification);
-		//pokerGameView.setPrefSize(600, 400);
+		AnchorPane pokerGameView = new AnchorPane(play, gamble, plus, minus, pokerGameCredits, pokerGameBet,
+				wintable, cardPane, notification, topLeftImg);
 		
 		play.setOnAction(e -> {
 			if(!gameOn) {
@@ -792,13 +782,14 @@ public class View extends Application implements ViewIF {
 	}
 	
 	/**
-	 * Custom onClick handler for card images.
+	 * Custom onClick handler for card image containers. Handles events where card is clicked, places
+	 * lock image to container when clicked first time and removes it if repeated.
 	 * @param img ImageView image of the card
 	 * @param index int card index, helps to determine which card is clicked.
+	 * @param pane StackPane card image container.
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void setImagesOnClick(final StackPane pane, final ImageView img, final int index) {
-		//img.setPickOnBounds(true);
 	    pane.setOnMouseClicked(new EventHandler() {
 				@Override
 				public void handle(Event event) {
@@ -817,12 +808,39 @@ public class View extends Application implements ViewIF {
 	    });
 	}
 	
+	@Override
 	public void setPokerGamePlayerCredits () {
 		pokerGameCredits.setText("Saldo: " + Double.toString(this.player.getCredits()));
 	}
 	
+	@Override
 	public void setPokerGameBet (double bet) {
 		pokerGameBet.setText("Panos: " + Double.toString(bet));
+		updateWinTable(bet);
+	}
+	
+	/**
+	 * Updates win table texts based on current bet.
+	 * @param bet double current bet amount.
+	 */
+	private void updateWinTable (double bet) {
+		//Tänne set textit kokonaisuudessaan plus kerroin ja betti
+		winTableTexts.get(0).setText("Ässä pari " + roundToTwoDecimals(bet * HandValue.ACE_PAIR.getMultiplier()));
+		winTableTexts.get(1).setText("Kaksi paria " + roundToTwoDecimals(bet * HandValue.TWO_PAIRS.getMultiplier()));
+		winTableTexts.get(2).setText("Kolmoset: " + roundToTwoDecimals(bet * HandValue.THREE_OF_A_KIND.getMultiplier()));
+		winTableTexts.get(3).setText("Suora " + roundToTwoDecimals(bet * HandValue.STRAIGHT.getMultiplier()));
+		winTableTexts.get(4).setText("Väri: " + roundToTwoDecimals(bet * HandValue.FLUSH.getMultiplier()));
+		winTableTexts.get(5).setText("Täyskäsi: " + roundToTwoDecimals(bet * HandValue.FULL_HOUSE.getMultiplier()));
+		winTableTexts.get(6).setText("Neloset: " + roundToTwoDecimals(bet * HandValue.FOUR_OF_A_KIND.getMultiplier()));
+		winTableTexts.get(7).setText("Värisuora: " + roundToTwoDecimals(bet * HandValue.STRAIGHT_FLUSH.getMultiplier()));
+	}
+	/**
+	 * Helper for rounding two decimal places
+	 * @param a double value to round
+	 * @return double rounded value 
+	 */
+	private double roundToTwoDecimals (double a) {
+		return Math.round(a * 100.0) / 100.0; 
 	}
 	
 	@Override
@@ -1053,14 +1071,17 @@ public class View extends Application implements ViewIF {
 	public Boolean getCreditTransferRegInput() {
 		return this.creditTransferRegisterInput.isSelected();
 	}
-	
-	public void setNotification(String text) {
+	/**
+	 * In pokergame sets up notification and position based on String length
+	 * @param text String notification text
+	 */
+	private void setNotification(String text) {
 		if(text.length() < 13) {
-		  notification.setLayoutX(360);
+		  notification.setLayoutX(370);
 		} else if(text.length() >= 13 && text.length() < 30) {
-			notification.setLayoutX(290);	
+			notification.setLayoutX(310);	
 		} else {
-			notification.setLayoutX(180);
+			notification.setLayoutX(200);
 		}
 		notification.setText(text);
 	}
