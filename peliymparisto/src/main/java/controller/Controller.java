@@ -190,5 +190,19 @@ public class Controller implements ControllerIF {
 		return null;
 	}
 
+	@Override
+	public void changePlayerInfo() {
+		Platform.runLater(()-> {
+			Player player = view.getPlayer();
+			boolean check = dao.updatePlayer(player);
+			if (check) {
+				view.setCurrentPlayer(player); //to use other update methods associated with setCurrentPlayer
+				view.handlePlayerInfoChangeSuccess(); //inform the user of success, close player information window
+			} else {
+				view.showPlayerInfoChangeErrorDatabase(); //shows default error message if the player information could not be updated to database
+			}
+		});
+	}
+
 
 }

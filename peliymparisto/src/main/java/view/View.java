@@ -61,7 +61,7 @@ import model.PlayerRanking;
 /**
  * The Graphical User Interface built with JavaFX
  * @author ---
- * @version 1.5 03.03.2021
+ * @version 1.6 06.03.2021
  */
 public class View extends Application implements ViewIF {
 	
@@ -134,6 +134,14 @@ public class View extends Application implements ViewIF {
 	//playerinformation components
 	private Button savePlayerInfoButton;
 	private Button cancelPlayerInfoButton;
+	private Button editProfileNameButton;
+	private Button editPasswordButton;
+	private TextField newProfileNameInput;
+	private Button acceptPNEditsButton;
+	private Button cancelPNEditsButton;
+	private PasswordField newPasswordInput;
+	private Button acceptPSEditsButton;
+	private Button cancelPSEditsButton;
 
 
 	public static void main(String[] args) {
@@ -595,7 +603,7 @@ public class View extends Application implements ViewIF {
 		rGridPane.add(creditTransferRegisterInput, 0, 5);
 		rGridPane.setPadding(new Insets(10,10,10,10));
 		rGridPane.setHgap(5);
-		rGridPane.setVgap(5);
+		rGridPane.setVgap(10);
 		rGridPane.setAlignment(Pos.CENTER);
 
 		rButtons.getChildren().addAll(confirmRegisterButton, cancelRegisterButton);
@@ -610,8 +618,18 @@ public class View extends Application implements ViewIF {
 		
         Scene rDialogScene = new Scene(rDialogView); //100,100
         rDialog.setScene(rDialogScene);
-        createRegisterActions();
         rDialog.show();
+        
+        //Actions
+        //----->
+        //These actions have the functionality for the confirm and cancel buttons in Registration window
+        //controller handles saving the information to database, it then calls handleRegistrationSuccess method in View
+      	confirmRegisterButton.setOnAction(e -> controller.attemptRegistration());
+      	//This method closes the window
+      	cancelRegisterButton.setOnAction(e -> {
+      		Stage stage = (Stage)cancelRegisterButton.getScene().getWindow();
+      		stage.close();
+      	});
 	}
 	
 	/**
@@ -620,6 +638,8 @@ public class View extends Application implements ViewIF {
 	 */
 	private void showPlayerInfoDialog(Stage primaryStage) {
 		Image edit = new Image("/images/edit.png", 20, 20, false, false);
+		Image accept = new Image("/images/accept.png", 20, 20, false, false);
+		Image cancel = new Image("/images/cancel.png", 20, 20, false, false);
 		
 		Stage pIDialog = new Stage();
 		pIDialog.initModality(Modality.APPLICATION_MODAL);
@@ -633,9 +653,10 @@ public class View extends Application implements ViewIF {
 		Label playerJoinDate = new Label(String.valueOf(this.player.getCreatedOn()));
 		Label playerEmail = new Label(this.player.getEmail());
 		Label playerProfileName = new Label(this.player.getProfileName());
-		Button editProfileNameButton = new Button();
+		Label playerPassword = new Label(this.player.getPassword());
+		editProfileNameButton = new Button();
 		editProfileNameButton.setGraphic(new ImageView(edit));
-		Button editPasswordButton = new Button();
+		editPasswordButton = new Button();
 		editPasswordButton.setGraphic(new ImageView(edit));
 		savePlayerInfoButton = new Button("Tallenna");
 		cancelPlayerInfoButton = new Button("Peruuta");
@@ -654,7 +675,8 @@ public class View extends Application implements ViewIF {
 		pIGridPane.add(playerProfileName, 1, 3);
 		pIGridPane.add(editProfileNameButton, 2, 3);
 		pIGridPane.add(new Label("Salasana:"), 0, 4);
-		pIGridPane.add(new Label("********"), 1, 4);
+		Label pwPlaceholder = new Label("********");
+		pIGridPane.add(pwPlaceholder, 1, 4);
 		pIGridPane.add(editPasswordButton, 2, 4);
 		pIGridPane.setPadding(new Insets(10,10,10,10));
 		pIGridPane.setHgap(5);
@@ -673,8 +695,91 @@ public class View extends Application implements ViewIF {
 		
         Scene pIDialogScene = new Scene(pIDialogView); //100,100
         pIDialog.setScene(pIDialogScene);
-        createPlayerInfoActions();
         pIDialog.show();
+        
+        //Actions
+        //------>
+        //This action opens a TextField where the user can input a new user name. It also opens 2 new actions which are accept and cancel.
+        editProfileNameButton.setOnAction(e -> {
+        	newProfileNameInput = new TextField();
+        	newProfileNameInput.setPromptText("Syötä uusi pelaajanimi");
+        	acceptPNEditsButton = new Button();
+        	acceptPNEditsButton.setGraphic(new ImageView(accept));
+        	cancelPNEditsButton = new Button();
+        	cancelPNEditsButton.setGraphic(new ImageView(cancel));
+        	pIGridPane.getChildren().remove(playerProfileName);
+        	pIGridPane.add(newProfileNameInput, 1, 3);
+        	pIGridPane.getChildren().remove(editProfileNameButton);
+        	pIGridPane.add(acceptPNEditsButton, 2, 3);
+        	pIGridPane.add(cancelPNEditsButton, 3, 3);
+        	
+        	acceptPNEditsButton.setOnAction(e1 -> {
+    			playerProfileName.setText(newProfileNameInput.getText());
+    			pIGridPane.getChildren().remove(newProfileNameInput);
+    			pIGridPane.getChildren().remove(acceptPNEditsButton);
+    			pIGridPane.getChildren().remove(cancelPNEditsButton);
+    			pIGridPane.add(playerProfileName, 1, 3);
+    			pIGridPane.add(editProfileNameButton, 2, 3);
+    		});
+        	
+    		cancelPNEditsButton.setOnAction(e2 -> {
+    			pIGridPane.getChildren().remove(newProfileNameInput);
+    			pIGridPane.getChildren().remove(acceptPNEditsButton);
+    			pIGridPane.getChildren().remove(cancelPNEditsButton);
+    			pIGridPane.add(playerProfileName, 1, 3);
+    			pIGridPane.add(editProfileNameButton, 2, 3);
+    		});
+        });
+        
+        //This action opens a PasswordField where the user can input a new password. It also opens 2 new actions which are accept and cancel.
+		editPasswordButton.setOnAction(e -> {
+        	newPasswordInput = new PasswordField();
+        	newPasswordInput.setPromptText("Syötä uusi salasana");
+        	acceptPSEditsButton = new Button();
+        	acceptPSEditsButton.setGraphic(new ImageView(accept));
+        	cancelPSEditsButton = new Button();
+        	cancelPSEditsButton.setGraphic(new ImageView(cancel));
+        	pIGridPane.getChildren().remove(pwPlaceholder);
+        	pIGridPane.add(newPasswordInput, 1, 4);
+        	pIGridPane.getChildren().remove(editPasswordButton);
+        	pIGridPane.add(acceptPSEditsButton, 2, 4);
+        	pIGridPane.add(cancelPSEditsButton, 3, 4);
+        	
+        	acceptPSEditsButton.setOnAction(e1 -> {
+        		playerPassword.setText(newPasswordInput.getText());
+    			pIGridPane.getChildren().remove(newPasswordInput);
+    			pIGridPane.getChildren().remove(acceptPSEditsButton);
+    			pIGridPane.getChildren().remove(cancelPSEditsButton);
+    			pIGridPane.add(pwPlaceholder, 1, 4);
+    			pIGridPane.add(editPasswordButton, 2, 4);
+    		});
+    		cancelPSEditsButton.setOnAction(e2 -> {
+    			pIGridPane.getChildren().remove(newPasswordInput);
+    			pIGridPane.getChildren().remove(acceptPSEditsButton);
+    			pIGridPane.getChildren().remove(cancelPSEditsButton);
+    			pIGridPane.add(pwPlaceholder, 1, 4);
+    			pIGridPane.add(editPasswordButton, 2, 4);
+    		});
+        });
+		
+		//This method saves the edited information to the current player if the fields are not empty
+		savePlayerInfoButton.setOnAction(e -> {
+			String newPlayerName = playerProfileName.getText();
+			String newPassword = playerPassword.getText();
+			if (!newPlayerName.isEmpty() && !newPassword.isEmpty()) {
+				this.player.setProfileName(newPlayerName);
+				this.player.setPassword(newPassword);
+				controller.changePlayerInfo(); //controller handles saving the information to database, it then calls handlePlayerInfoChangeSuccess method in View
+			} else {
+				showPlayerInfoErrorEmptyFields(); //if the fields are empty, an error message is shown
+			}
+		});
+		
+		//This closes the window
+		cancelPlayerInfoButton.setOnAction(e -> {
+			Stage stage = (Stage)cancelPlayerInfoButton.getScene().getWindow();
+			stage.close();
+		});
 	}
 	
 	/**	{@inheritDoc} */
@@ -924,8 +1029,8 @@ public class View extends Application implements ViewIF {
 	@Override
 	public void showLogInError() {
 		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Varoitus");
-		alert.setHeaderText("Varoitus - syötetty data ei kelpaa");
+		alert.setTitle("Virhe");
+		alert.setHeaderText("Virhe - syötetty data ei kelpaa");
 		alert.setContentText("Varmista että sähköposti ja salasana ovat oikein.");
 		alert.showAndWait();
 	}
@@ -935,8 +1040,8 @@ public class View extends Application implements ViewIF {
 	 */
 	private void showRegistrationErrorAlreadyLoggedIn() {
 		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Varoitus");
-		alert.setHeaderText("Varoitus - Olet jo kirjautunut sisään");
+		alert.setTitle("Virhe");
+		alert.setHeaderText("Virhe - Olet jo kirjautunut sisään");
 		alert.setContentText("Kirjaudu ulos luodaksesi uuden tilin.");
 		alert.showAndWait();
 	}
@@ -945,8 +1050,8 @@ public class View extends Application implements ViewIF {
 	@Override
 	public void showRegistrationErrorEmptyFields() {
 		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Varoitus");
-		alert.setHeaderText("Varoitus - vaaditut tiedot puuttuvat");
+		alert.setTitle("Virhe");
+		alert.setHeaderText("Virhe - vaaditut tiedot puuttuvat");
 		alert.setContentText("Varmista että etunimi, sukunimi, sähköposti, salasana ja salasanan vahvistus on syötetty.");
 		alert.showAndWait();
 	}
@@ -955,8 +1060,8 @@ public class View extends Application implements ViewIF {
 	@Override
 	public void showRegistrationErrorPasswordsNotMatch() {
 		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Varoitus");
-		alert.setHeaderText("Varoitus - salasanat eivät täsmää");
+		alert.setTitle("Virhe");
+		alert.setHeaderText("Virhe - salasanat eivät täsmää");
 		alert.setContentText("Varmista että syöttämäsi salasanat vastaavat toisiaan.");
 		alert.showAndWait();
 	}
@@ -965,8 +1070,8 @@ public class View extends Application implements ViewIF {
 	@Override
 	public void showRegistrationErrorEmailAlreadyExists() {
 		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Varoitus");
-		alert.setHeaderText("Varoitus - sähköpostiosoite on jo käytössä");
+		alert.setTitle("Virhe");
+		alert.setHeaderText("Virhe - sähköpostiosoite on jo käytössä");
 		alert.setContentText("Tähän sähköpostiosoitteeseen liitetty tili on jo olemassa.\n\n"
 				+ "Kirjaudu sisään tai luo uudet tunnukset käyttäen toista sähköpostiosoitetta.\n"
 				+ "Jos et muista salasanaasi, ota yhteyttä tukeen.");
@@ -977,8 +1082,8 @@ public class View extends Application implements ViewIF {
 	@Override
 	public void showRegistrationErrorDatabase() {
 		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Varoitus");
-		alert.setHeaderText("Varoitus - Tilin luonti ei onnistunut");
+		alert.setTitle("Virhe");
+		alert.setHeaderText("Virhe - Tilin luonti ei onnistunut");
 		alert.setContentText("Jokin meni pieleen, kokeile hetken kuluttua uudelleen.");
 		alert.showAndWait();
 	}
@@ -995,6 +1100,28 @@ public class View extends Application implements ViewIF {
 		alert.showAndWait();
 	}
 	
+	/**	{@inheritDoc} */
+	@Override
+	public void showPlayerInfoChangeErrorDatabase() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Virhe");
+		alert.setHeaderText("Virhe - Pelaajatietojen päivitys ei onnistunut");
+		alert.setContentText("Jokin meni pieleen, kokeile hetken kuluttua uudelleen.");
+		alert.showAndWait();
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void handlePlayerInfoChangeSuccess() {
+		Stage stage = (Stage)cancelPlayerInfoButton.getScene().getWindow();
+		stage.close();
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Pelaajatietojen muuttaminen");
+		alert.setHeaderText("Pelaajatietojen muokkaus onnistui!");
+		alert.setContentText("Jos vaihdoit salasanasi, muista käyttää uutta salasanaa seuraavalla kirjautumiskerralla");
+		alert.showAndWait();
+	}
+	
 	/**
 	 * Tells the user that they need to be logged in to view their information
 	 */
@@ -1003,6 +1130,17 @@ public class View extends Application implements ViewIF {
 		alert.setTitle("Huomio");
 		alert.setHeaderText("Huomio - Et ole kirjautunut sisään");
 		alert.setContentText("Olet tällä hetkellä testaaja\nKirjaudu sisään tai luo tili tarkastellaksesi pelaajatietoja");
+		alert.showAndWait();
+	}
+	
+	/**
+	 * Tells the user that they cant have empty values for user name and password
+	 */
+	private void showPlayerInfoErrorEmptyFields() {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Virhe");
+		alert.setHeaderText("Virhe - vaaditut tiedot puuttuvat");
+		alert.setContentText("Varmista että pelaajanimi ja salasana eivät ole tyhjiä");
 		alert.showAndWait();
 	}
 	

@@ -218,6 +218,17 @@ public class ViewCLI implements ViewIF {
 	@Override
 	public void setPokerGameBet(double bet) {
 		// TODO Auto-generated method stub
+	}
+	
+	@Override
+	public void handlePlayerInfoChangeSuccess() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showPlayerInfoChangeErrorDatabase() {
+		// TODO Auto-generated method stub
 		
 	}
 	
