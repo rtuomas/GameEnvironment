@@ -822,21 +822,18 @@ public class View extends Application implements ViewIF {
 	@Override
 	public void setDefaultPlayer(Player defaultPlayer) {
 		this.player = defaultPlayer;
-		//this is a bit stupid way to make sure that the method does not run updateToolBar() before all GUI components are created, PLS FIX
+		//this is to make sure that the method does not run updateToolBar() and statistics methods before all GUI components are created
 		if (creditView != null) {
 			updateToolBar();
+			try {
+				creditDevelopment.setDisable(true);
+				creditDevelopment.getContent().setVisible(false);
+				playedGames.setDisable(true);
+				playedGames.getContent().setVisible(false);
+			}catch(Exception e) {
+				System.out.println(e);
+			}
 		}
-		
-		try {
-			creditDevelopment.setDisable(true);
-			creditDevelopment.getContent().setVisible(false);
-			playedGames.setDisable(true);
-			playedGames.getContent().setVisible(false);
-		}catch(Exception e) {
-			System.out.println(e);
-		}
-		
-		
 		System.out.println("Default player set");
 	}
 	
