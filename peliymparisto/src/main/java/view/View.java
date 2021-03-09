@@ -33,6 +33,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
@@ -991,6 +992,10 @@ public class View extends Application implements ViewIF {
 		setNotification(score);
 	}
 
+	/**
+	 * This method fills all tabs with data from database.
+	 * @param count Value from combobox.
+	 */
 	private void fillStatistics(String count) {
 		
 		switch(count) {
@@ -1013,8 +1018,6 @@ public class View extends Application implements ViewIF {
 		for(int i=0; i<playedGames.size();i++) {
 			tableViewGames.getItems().add(new PlayedGame(playedGames.get(i).getCreditAfterPlayer1(), playedGames.get(i).getPlayedOn()));
 		}
-		
-		
 		
 		
 		ArrayList<Player> ranks = new ArrayList<>();
