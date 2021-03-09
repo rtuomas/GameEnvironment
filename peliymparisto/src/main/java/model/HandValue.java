@@ -15,6 +15,7 @@ public enum HandValue {
 	STRAIGHT_FLUSH(100.0),
 	NO_WIN(0);
 
+	
 
 	private double multiplier;
 	/**
