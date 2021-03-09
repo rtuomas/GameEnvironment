@@ -30,12 +30,6 @@ public interface ModelIF {
 	 */
 	public void setScore();
 	
-	//public double decreaseBet();
-	//public double increaseBet();
-
-	LineChart<String, Number> getLineChart();
-
-	ArrayList<Player> getRanking();
 	/**
 	 * Sets up indexes which cards are going to be swapped.
 	 * @param indexes ArrayList<Integer> card indexes 0-4.

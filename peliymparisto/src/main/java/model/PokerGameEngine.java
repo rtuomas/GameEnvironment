@@ -213,18 +213,4 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	public Player getCurrentPlayer() {
 		return this.player1;
 	}
-	
-	@Override
-	public LineChart<String, Number> getLineChart() {
-		//Statistics stats = new Statistics();
-		LineChart<String, Number> lineChart = stats.getLineChart(-1);
-		
-		return lineChart;
-	}
-	
-	@Override
-	public ArrayList<Player> getRanking(){
-		//Statistics stats = new Statistics();
-		return stats.getRanking();
-	}
 }
