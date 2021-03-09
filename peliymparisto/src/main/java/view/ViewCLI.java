@@ -1,11 +1,9 @@
 package view;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 import controller.Controller;
-import model.Card;
 import model.Player;
 /**
  * CLI of the pokergame

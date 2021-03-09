@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import controller.ControllerIF;
-import javafx.scene.chart.LineChart;
 
 /**
  * The game engine for the poker game. It connects all the different classes needed to run the poker game.
@@ -30,8 +29,6 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	private Player player2;
 	//Game variables
 	private int winner;
-	//Statistics
-	private Statistics stats;
 	
 	/**
 	 * Constructor for the poker game engine.

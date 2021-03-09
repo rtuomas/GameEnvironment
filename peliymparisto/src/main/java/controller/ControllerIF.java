@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import javafx.scene.chart.LineChart;
 import model.Card;
-import model.HandValue;
 import model.PlayedGame;
 import model.Player;
 

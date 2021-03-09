@@ -2,8 +2,6 @@ package model;
 
 import java.util.ArrayList;
 
-import javafx.scene.chart.LineChart;
-
 /**
  * The interface for game engines. The Controller is connected to this interface so it can call different game engines when needed.
  * @author ---
