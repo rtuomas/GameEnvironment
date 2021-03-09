@@ -59,6 +59,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.HandValue;
 import model.PlayedGame;
+import model.PlayedGameTableView;
 import model.Player;
 import model.PlayerRanking;
 
@@ -549,13 +550,24 @@ public class View extends Application implements ViewIF {
         playedGames.setGraphic(played);
         
         tableViewGames = new TableView();
-        TableColumn<PlayedGame, String> playedIDColumn = new TableColumn<>("Saldo");
-        playedIDColumn.setCellValueFactory(new PropertyValueFactory<>("creditAfterPlayer1"));
-        TableColumn<PlayedGame, String> playedCreditsColumn = new TableColumn<>("Pelattu");
-        playedCreditsColumn.setCellValueFactory(new PropertyValueFactory<>("playedOn"));
+        TableColumn<PlayedGameTableView, String> playedCountColumn = new TableColumn<>("#");
+        playedCountColumn.setCellValueFactory(new PropertyValueFactory<>("rank"));
+        TableColumn<PlayedGameTableView, String> playedSaldoColumn = new TableColumn<>("Saldo");
+        playedSaldoColumn.setCellValueFactory(new PropertyValueFactory<>("creditAfter"));
+        TableColumn<PlayedGameTableView, String> playedChangeColumn = new TableColumn<>("Saldon muutos");
+        playedChangeColumn.setCellValueFactory(new PropertyValueFactory<>("creditChange"));
+        TableColumn<PlayedGameTableView, String> playedWinColumn = new TableColumn<>("Voitto/Häviö");
+        playedWinColumn.setCellValueFactory(new PropertyValueFactory<>("winloss"));
+        TableColumn<PlayedGameTableView, String> playedDateColumn = new TableColumn<>("Pelattu");
+        playedDateColumn.setCellValueFactory(new PropertyValueFactory<>("playedOn"));
         
-        tableViewGames.getColumns().add(playedIDColumn);
-        tableViewGames.getColumns().add(playedCreditsColumn);
+        tableViewGames.getColumns().add(playedCountColumn);
+        tableViewGames.getColumns().add(playedSaldoColumn);
+        tableViewGames.getColumns().add(playedChangeColumn);
+        tableViewGames.getColumns().add(playedWinColumn);
+        tableViewGames.getColumns().add(playedDateColumn);
+        
+        
         playedGames.setContent(tableViewGames);
  
         
@@ -1029,8 +1041,15 @@ public class View extends Application implements ViewIF {
 			playedGames = controller.getPlayedGames();
 			
 			tableViewGames.getItems().clear();
-			for(int i=0; i<playedGames.size();i++) {
-				tableViewGames.getItems().add(new PlayedGame(playedGames.get(i).getCreditAfterPlayer1(), playedGames.get(i).getPlayedOn()));
+			String winloss;
+			for(int i=playedGames.size()-1; i>=0;i--) {
+				//tableViewGames.getItems().add(new PlayedGame(playedGames.get(i).getCreditAfterPlayer1(), playedGames.get(i).getPlayedOn()));
+				if(playedGames.get(i).getWinner()==this.player.getId()) {
+					winloss="VOITTO";
+				} else {
+					winloss="HÄVIÖ";
+				}
+				tableViewGames.getItems().add(new PlayedGameTableView(i+1, playedGames.get(i).getCreditAfterPlayer1(),playedGames.get(i).getCreditChange(), playedGames.get(i).getPlayedOn(), winloss));
 			}
 		}
 		
