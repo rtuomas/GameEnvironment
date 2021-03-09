@@ -11,7 +11,7 @@ class PlayerRankingTest {
 	
 	@BeforeEach
 	public void setUp () {
-		ranking = new PlayerRanking(1,"a","b",1.0);
+		ranking = new PlayerRanking(1,"a",1.0);
 	}
 	
 	
@@ -24,21 +24,14 @@ class PlayerRankingTest {
 	}
 	
 	@Test
-	public void testFn() {
-		String setup = "First";
-		ranking.setFn(setup);
-		String result = ranking.getFn();
-		assertEquals(setup, result, "Fn setter or getter not working");
+	public void testProfileName() {
+		String setup = "Profilename";
+		ranking.setProfileName(setup);
+		String result = ranking.getProfileName();
+		assertEquals(setup, result, "ProfileName setter or getter not working");
 	}
 	
-	@Test
-	public void testLn() {
-		String setup = "Last";
-		ranking.setLn(setup);
-		String result = ranking.getLn();
-		assertEquals(setup, result, "Ln setter or getter not working");
-	}
-	
+		
 	@Test
 	public void testCredits() {
 		double setup = 3.5;
