@@ -17,13 +17,14 @@ import view.ViewIF;
 /**
  * The Controller which connects the GUI and chosen game engine together using MVC model.
  * @author ---
- * @version 1.4 03.03.2021
+ * @version 1.5 09.03.2021
  */
 public class Controller implements ControllerIF {
 	
 	private ModelIF model;
 	private ViewIF view;
 	private DAOIF dao;
+	private Statistics stats;
 	
 	/**
 	 * The constructor of the Controller class
@@ -32,6 +33,7 @@ public class Controller implements ControllerIF {
 	public Controller(ViewIF view) {
 		this.view = view;
 		this.dao = new DAO();
+		this.stats = new Statistics(this.dao);
 	}
 	
 	/**	{@inheritDoc} */ //this line copies the JavaDoc from interface
@@ -157,32 +159,27 @@ public class Controller implements ControllerIF {
 	@Override
 	public LineChart<String, Number> getLineChart(int count) {
 		try {
-			Statistics stats = new Statistics(view.getPlayer().getId());
+			stats.setPlayerId(view.getPlayer().getId());
 			return stats.getLineChart(count);
-			//return model.getLineChart();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		return null;
-		
 	}
 	
 	@Override
 	public ArrayList<Player> getRanking() {
 		try {
-			Statistics stats = new Statistics(view.getPlayer().getId());
 			return stats.getRanking();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		return null;
-		
 	}
 
 	@Override
 	public ArrayList<PlayedGame> getPlayedGames() {
 		try {
-			Statistics stats = new Statistics(view.getPlayer().getId());
 			return stats.getPlayedGames();
 		} catch (Exception e) {
 			System.out.println(e);

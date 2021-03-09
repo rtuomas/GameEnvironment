@@ -231,17 +231,18 @@ public class DAO implements DAOIF {
 		ArrayList<Player> statsList = new ArrayList<>();
 		try (Session session = sFactory.openSession()) {
 			
-			String hql = "from Player";
+			String hql = "from Player WHERE NOT id='1000' AND NOT id='1001'";
 			
 			@SuppressWarnings("rawtypes")
 			Query query = session.createQuery(hql);
 			@SuppressWarnings("unchecked")
 			List<Player> result = query.list();
 			Collections.sort(result);
-			
+
 			for (Player a: result) {
 				statsList.add(a);
 			}
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -254,8 +255,6 @@ public class DAO implements DAOIF {
 		ArrayList<Double> creditsList = new ArrayList<>();
 		ArrayList<String> datesList = new ArrayList<>();
 		String hql = "from PlayedGame where player1 = :id order by id desc";
-		
-		System.out.println("COUNT!!!"  + count);
 		
 		try (Session session = sFactory.openSession()) {
 			
@@ -272,12 +271,6 @@ public class DAO implements DAOIF {
 			}
 			Collections.reverse(creditsList);
 			Collections.reverse(datesList);
-			
-			System.out.println("Result " + result);
-			System.out.println("readcredits, dates" + datesList);
-			System.out.println("readcredits, credits" + creditsList);
-			
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

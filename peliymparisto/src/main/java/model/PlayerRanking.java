@@ -3,13 +3,12 @@ package model;
 public class PlayerRanking {
 	
 	private int rank;
-	private String fn, ln;
+	private String profileName;
 	private double credits;
 	
-	public PlayerRanking(int rank, String fn, String ln, double credits) {
+	public PlayerRanking(int rank, String profileName, double credits) {
 		this.rank = rank;
-		this.fn = fn;
-		this.ln = ln;
+		this.profileName = profileName;
 		this.credits = credits;
 	}
 
@@ -21,27 +20,19 @@ public class PlayerRanking {
 		this.rank = rank;
 	}
 
-	public String getFn() {
-		return fn;
-	}
-
-	public void setFn(String fn) {
-		this.fn = fn;
-	}
-
-	public String getLn() {
-		return ln;
-	}
-
-	public void setLn(String ln) {
-		this.ln = ln;
-	}
-
 	public double getCredits() {
 		return credits;
 	}
 
 	public void setCredits(double credits) {
 		this.credits = credits;
+	}
+
+	public String getProfileName() {
+		return profileName;
+	}
+
+	public void setProfileName(String profileName) {
+		this.profileName = profileName;
 	}
 }
