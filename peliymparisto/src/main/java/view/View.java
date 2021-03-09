@@ -58,7 +58,7 @@ import model.PlayerRanking;
 /**
  * The Graphical User Interface built with JavaFX
  * @author ---
- * @version 1.6 06.03.2021
+ * @version 1.7 09.03.2021
  */
 public class View extends Application implements ViewIF {
 	
