@@ -844,14 +844,17 @@ public class View extends Application implements ViewIF {
 		updateToolBar();
 		setPokerGamePlayerCredits();
 		fillStatistics("KAIKKI");
-		try {
-			creditDevelopment.setDisable(false);
-			creditDevelopment.getContent().setVisible(true);
-			playedGames.setDisable(false);
-			playedGames.getContent().setVisible(true);
-		}catch(Exception e) {
-			System.out.println(e);
+		if(this.player.getId()!=1001) {
+			try {
+				creditDevelopment.setDisable(false);
+				creditDevelopment.getContent().setVisible(true);
+				playedGames.setDisable(false);
+				playedGames.getContent().setVisible(true);
+			}catch(Exception e) {
+				System.out.println(e);
+			}
 		}
+		
 		System.out.println("Player data updated");
 	}
 	
@@ -1008,28 +1011,28 @@ public class View extends Application implements ViewIF {
 	 * @param count Value from combobox.
 	 */
 	private void fillStatistics(String count) {
-		
-		switch(count) {
-		case "KAIKKI":
-			lineChart = controller.getLineChart(1000);
-			break;
-		case "Viimeiset 10":
-			lineChart = controller.getLineChart(10);
-			break;
-		case "Viimeiset 50":
-			lineChart = controller.getLineChart(50);
-			break;
+		if(this.player.getId()!=1001) {
+			switch(count) {
+			case "KAIKKI":
+				lineChart = controller.getLineChart(1000);
+				break;
+			case "Viimeiset 10":
+				lineChart = controller.getLineChart(10);
+				break;
+			case "Viimeiset 50":
+				lineChart = controller.getLineChart(50);
+				break;
+			}
+			
+			
+			ArrayList<PlayedGame> playedGames = new ArrayList<>();
+			playedGames = controller.getPlayedGames();
+			
+			tableViewGames.getItems().clear();
+			for(int i=0; i<playedGames.size();i++) {
+				tableViewGames.getItems().add(new PlayedGame(playedGames.get(i).getCreditAfterPlayer1(), playedGames.get(i).getPlayedOn()));
+			}
 		}
-		
-		
-		ArrayList<PlayedGame> playedGames = new ArrayList<>();
-		playedGames = controller.getPlayedGames();
-		
-		tableViewGames.getItems().clear();
-		for(int i=0; i<playedGames.size();i++) {
-			tableViewGames.getItems().add(new PlayedGame(playedGames.get(i).getCreditAfterPlayer1(), playedGames.get(i).getPlayedOn()));
-		}
-		
 		
 		ArrayList<Player> ranks = new ArrayList<>();
 		ranks = controller.getRanking();
