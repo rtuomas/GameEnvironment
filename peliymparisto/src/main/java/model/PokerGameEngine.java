@@ -40,7 +40,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	 */
 	public PokerGameEngine(ControllerIF controller) {
 		this.controller = controller;
-		this.stats = new Statistics();
+		//this.stats = new Statistics();
 	}
 	
 	/**
