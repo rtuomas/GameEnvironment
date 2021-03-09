@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import controller.Controller;
 import controller.ControllerIF;
@@ -34,6 +35,7 @@ import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
@@ -102,6 +104,8 @@ public class View extends Application implements ViewIF {
 	private Button homeButton;
 	/** Button to open the register pop-up*/
 	private Button registerButton;
+	/** Text guide for toolbar*/
+	private Label signInLabel;
 	/** Input field for the user's email*/
 	private TextField emailInput;
 	/** Input field for the user's password*/
@@ -115,32 +119,53 @@ public class View extends Application implements ViewIF {
 	private MenuItem playerInfoMI;
 	/** Button for the user to log out*/
 	private MenuItem logOutMI;
+	/** Button for the not logged in user to get info about forgotten password*/
+	private MenuItem logInProblemMI;
 	/** Button to show information about the program*/
 	private MenuItem infoMI;
 	/** Button to exit the program*/
 	private MenuItem exitMI;
 	
 	//registerform components
+	/** Input field for user's first name in the registration window */
 	private TextField firstNameRegisterInput;
+	/** Input field for user's last name in the registration window */
 	private TextField lastNameRegisterInput;
+	/** Input field for user's profile name in the registration window */
 	private TextField profileNameRegisterInput;
+	/** Input field for user's email in the registration window */
 	private TextField emailRegisterInput;
+	/** Input field for user's chosen password in the registration window */
 	private PasswordField passwordRegisterInput;
+	/** Input field for user's chosen password for the second time in the registration window */
 	private PasswordField passwordRegisterVerifyInput;
+	/** Choice box for user's choice if he wants to transfer accumulated credits in the registration window */
 	private CheckBox creditTransferRegisterInput;
+	/** Button to confirm registration in the registration window */
 	private Button confirmRegisterButton;
+	/** Button to cancel registration in the registration window */
 	private Button cancelRegisterButton;
 	
 	//playerinformation components
+	/** Button to save changes to player information in player info window */
 	private Button savePlayerInfoButton;
+	/** Button to cancel changes to player information in player info window */
 	private Button cancelPlayerInfoButton;
+	/** Button to open editing for player profile name in player info window */
 	private Button editProfileNameButton;
+	/** Button to open editing for player password in player info window */
 	private Button editPasswordButton;
+	/** Input field for user's new profile name in player info window */
 	private TextField newProfileNameInput;
+	/** Button to accept changes to profile name in profile name editing */
 	private Button acceptPNEditsButton;
+	/** Button to cancel changes to profile name in profile name editing */
 	private Button cancelPNEditsButton;
+	/** Input field for user's new password in player info window */
 	private PasswordField newPasswordInput;
+	/** Button to accept changes to password in password editing */
 	private Button acceptPSEditsButton;
+	/** Button to cancel changes to password in password editing */
 	private Button cancelPSEditsButton;
 
 
@@ -233,7 +258,7 @@ public class View extends Application implements ViewIF {
 	 */
 	private HBox navBarBuilder() {
 		Image user = new Image("/images/user.png", 20, 20, false, false);
-		Image settings = new Image("/images/settings.png", 20, 20, false, false);
+		Image settings = new Image("/images/info.png", 20, 20, false, false);
 		Image home = new Image("/images/home.png", 20, 20, false, false);
 		
 		HBox navBar = new HBox();
@@ -242,7 +267,7 @@ public class View extends Application implements ViewIF {
 		homeButton.setGraphic(new ImageView(home));
 		
 		registerButton = new Button("Rekisteröidy");
-		Label signInLabel = new Label("tai kirjaudu: ");
+		signInLabel = new Label("tai kirjaudu: ");
 		
 		emailInput = new TextField();
 		emailInput.setPromptText("Syötä sähköposti");
@@ -255,12 +280,14 @@ public class View extends Application implements ViewIF {
 		creditView.setStyle("-fx-font-weight: bold; -fx-border-color: black; -fx-background-color: #c4d8de;");
 		creditView.setPadding(new Insets(4, 4, 4, 4));
 
-		playerMenu = new MenuButton("Tester");
+		playerMenu = new MenuButton("Ei kirjautunut");
 		playerMenu.setGraphic(new ImageView(user));
 		playerInfoMI = new MenuItem("Näytä pelaajatiedot");
 		logOutMI = new MenuItem("Kirjaudu ulos");
+		logInProblemMI = new MenuItem("Unohditko salasanasi");
+		playerMenu.getItems().addAll(playerInfoMI, logOutMI, logInProblemMI);
 		logOutMI.setVisible(false);
-		playerMenu.getItems().addAll(playerInfoMI, logOutMI);
+		playerInfoMI.setVisible(false);
 		MenuButton menu2 = new MenuButton();
 		menu2.setGraphic(new ImageView(settings));
 		infoMI = new MenuItem("Lisätietoja ohjelmasta");
@@ -794,7 +821,6 @@ public class View extends Application implements ViewIF {
 		this.player = defaultPlayer;
 		//this is a bit stupid way to make sure that the method does not run updateToolBar() before all GUI components are created, PLS FIX
 		if (creditView != null) {
-			logOutMI.setVisible(false);
 			updateToolBar();
 		}
 		System.out.println("Default player set");
@@ -804,7 +830,6 @@ public class View extends Application implements ViewIF {
 	@Override
 	public void setCurrentPlayer(Player currentPlayer) {
 		this.player = currentPlayer;
-		logOutMI.setVisible(true);
 		updateToolBar();
 		setPokerGamePlayerCredits();
 		System.out.println("Player data updated");
@@ -818,6 +843,25 @@ public class View extends Application implements ViewIF {
 		this.playerMenu.setText(this.player.getProfileName());
 		this.emailInput.setText("");
 		this.passwordInput.setText("");
+		if (this.player.getId() == 1001) { //Checking if the set user is the default player, setting elements in the toolbar accordingly
+			registerButton.setVisible(true);
+			signInLabel.setVisible(true);
+			emailInput.setVisible(true);
+			passwordInput.setVisible(true);
+			signInButton.setVisible(true);
+			playerInfoMI.setVisible(false);
+			logOutMI.setVisible(false);
+			logInProblemMI.setVisible(true);
+		} else {
+			registerButton.setVisible(false);
+			signInLabel.setVisible(false);
+			emailInput.setVisible(false);
+			passwordInput.setVisible(false);
+			signInButton.setVisible(false);
+			playerInfoMI.setVisible(true);
+			logOutMI.setVisible(true);
+			logInProblemMI.setVisible(false);
+		}
 	}
 
 	/**
@@ -846,44 +890,10 @@ public class View extends Application implements ViewIF {
 		exitMI.setOnAction(e -> Platform.exit());
 		signInButton.setOnAction(e -> controller.attemptLogIn());
 		logOutMI.setOnAction(e -> controller.getDefaultPlayer());
-		registerButton.setOnAction(e -> {
-			if (this.player.getId() == 1001) { //if the current player is Tester, it means he/she has not logged in yet
-				showRegisterDialog(primaryStage);
-			} else {
-				showRegistrationErrorAlreadyLoggedIn(); //User is prompted to log out before registering
-			}
-		});
-		playerInfoMI.setOnAction(e -> {
-			if (this.player.getId() == 1001) { //if the current player is Tester, it means he/she has not logged in yet
-				showPlayerInfoErrorNotLoggedIn(); //User is prompted to log in before they can see their information
-			} else {
-				showPlayerInfoDialog(primaryStage); 
-			}
-		});
+		registerButton.setOnAction(e -> showRegisterDialog(primaryStage));
+		playerInfoMI.setOnAction(e -> showPlayerInfoDialog(primaryStage));
 		infoMI.setOnAction(e -> showProgramInfo());
-	}
-	
-	/**
-	 * This method has the functionality for the confirm and cancel buttons in Registration window
-	 */
-	private void createRegisterActions() {
-		confirmRegisterButton.setOnAction(e -> controller.attemptRegistration());
-		cancelRegisterButton.setOnAction(e -> {
-			Stage stage = (Stage)cancelRegisterButton.getScene().getWindow();
-			stage.close();
-		});
-	}
-	
-	/**
-	 * This method has the functionality for the save and cancel buttons in Player info window
-	 * SAVE METHOD NOT IMPLEMENTED YET
-	 */
-	private void createPlayerInfoActions() {
-		//savePlayerInfoButton, 
-		cancelPlayerInfoButton.setOnAction(e -> {
-			Stage stage = (Stage)cancelPlayerInfoButton.getScene().getWindow();
-			stage.close();
-		});
+		logInProblemMI.setOnAction(e -> showPasswordReset());
 	}
 	
 	/**
@@ -1035,17 +1045,6 @@ public class View extends Application implements ViewIF {
 		alert.showAndWait();
 	}
 	
-	/**
-	 * Tells the user that they cannot create an account if they are already logged in
-	 */
-	private void showRegistrationErrorAlreadyLoggedIn() {
-		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Virhe");
-		alert.setHeaderText("Virhe - Olet jo kirjautunut sisään");
-		alert.setContentText("Kirjaudu ulos luodaksesi uuden tilin.");
-		alert.showAndWait();
-	}
-	
 	/**	{@inheritDoc} */
 	@Override
 	public void showRegistrationErrorEmptyFields() {
@@ -1123,18 +1122,7 @@ public class View extends Application implements ViewIF {
 	}
 	
 	/**
-	 * Tells the user that they need to be logged in to view their information
-	 */
-	private void showPlayerInfoErrorNotLoggedIn() {
-		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Huomio");
-		alert.setHeaderText("Huomio - Et ole kirjautunut sisään");
-		alert.setContentText("Olet tällä hetkellä testaaja\nKirjaudu sisään tai luo tili tarkastellaksesi pelaajatietoja");
-		alert.showAndWait();
-	}
-	
-	/**
-	 * Tells the user that they cant have empty values for user name and password
+	 * Tells the user that they can't have empty values for user name and password
 	 */
 	private void showPlayerInfoErrorEmptyFields() {
 		Alert alert = new Alert(AlertType.WARNING);
@@ -1142,6 +1130,19 @@ public class View extends Application implements ViewIF {
 		alert.setHeaderText("Virhe - vaaditut tiedot puuttuvat");
 		alert.setContentText("Varmista että pelaajanimi ja salasana eivät ole tyhjiä");
 		alert.showAndWait();
+	}
+	
+	/**
+	 * Shows user password reset dialog
+	 * NO FUNCTIONALITY YET
+	 */
+	private void showPasswordReset() {
+		TextInputDialog dialog = new TextInputDialog();
+		dialog.setTitle("Salasanan palauttaminen");
+		dialog.setHeaderText("Unohditko salasanasi?\nNoh voi voi, tämä ikkuna ei tee vielä mitään");
+		dialog.setContentText("Syötä tilin sähköpostiosoite :");
+		Optional<String> result = dialog.showAndWait();
+		result.ifPresent(email -> System.out.println("Email inputted: " + email)); //to catch the result
 	}
 	
 	/**
