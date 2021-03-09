@@ -238,10 +238,11 @@ public class DAO implements DAOIF {
 			@SuppressWarnings("unchecked")
 			List<Player> result = query.list();
 			Collections.sort(result);
-			
+
 			for (Player a: result) {
 				statsList.add(a);
 			}
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
