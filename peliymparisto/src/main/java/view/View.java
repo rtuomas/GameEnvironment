@@ -577,10 +577,13 @@ public class View extends Application implements ViewIF {
         ranking.setContent(tableViewRanks);
         
         
-        
+        tabPane.getTabs().add(ranking);
         tabPane.getTabs().add(creditDevelopment);
         tabPane.getTabs().add(playedGames);
-        tabPane.getTabs().add(ranking);
+        
+        
+        creditDevelopment.setDisable(true);
+        playedGames.setDisable(true);
         
 		statsView.setPrefSize(500, 500);
 		statsView.setCenter(tabPane);
@@ -823,6 +826,15 @@ public class View extends Application implements ViewIF {
 		if (creditView != null) {
 			updateToolBar();
 		}
+		
+		try {
+			creditDevelopment.setDisable(true);
+			playedGames.setDisable(true);
+		}catch(Exception e) {
+			System.out.println(e);
+		}
+		
+		
 		System.out.println("Default player set");
 	}
 	
@@ -832,6 +844,12 @@ public class View extends Application implements ViewIF {
 		this.player = currentPlayer;
 		updateToolBar();
 		setPokerGamePlayerCredits();
+		try {
+			creditDevelopment.setDisable(false);
+			playedGames.setDisable(false);
+		}catch(Exception e) {
+			System.out.println(e);
+		}
 		System.out.println("Player data updated");
 	}
 	
