@@ -1224,4 +1224,16 @@ public class View extends Application implements ViewIF {
 		}
 		notification.setText(text);
 	}
+	
+  @Override
+	public void notifyCreditReset(){
+    System.out.println("Credits reset");
+    /*
+    Alert alert = new Alert(AlertType.INFORMATION);
+    alert.setTitle("Hävisit pelin!!!");
+    alert.setHeaderText("Saldo palautettu, hävisit liikaa");
+    alert.setContentText("Jos vaihdoit salasanasi, muista käyttää uutta salasanaa seuraavalla kirjautumiskerralla");
+    alert.showAndWait();
+    */
+	}
 }

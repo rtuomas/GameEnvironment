@@ -204,5 +204,8 @@ public class Controller implements ControllerIF {
 		});
 	}
 
+	public void notifyCreditReset(){
+	  view.notifyCreditReset();
+	}
 
 }

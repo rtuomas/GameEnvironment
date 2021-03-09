@@ -92,4 +92,6 @@ public interface ControllerIF {
 	 * If saving to database fails, shows an error message in View
 	 */
 	public void changePlayerInfo();
+
+  public void notifyCreditReset();
 }

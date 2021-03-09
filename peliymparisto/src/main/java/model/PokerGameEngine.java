@@ -23,6 +23,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	private static Double[] betTable = {0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
 	//Players bet (starting with 1.00)
 	private static double bet = betTable[6];
+	private static double initialCredits = 100;
 
 	//Player variables
 	private Player player1;
@@ -95,6 +96,11 @@ public class PokerGameEngine extends Thread implements ModelIF {
 			this.player1.setCredits(player1.getCredits() - bet);
 			this.player2.setCredits(player2.getCredits() + bet); //in two player game this would be win instead of bet
 			currentGame = new PlayedGame(p1ID, p2ID, "poker", this.winner, bet, player1.getCredits(), player2.getCredits());
+		}
+		
+		if(player1.getCredits() <= 0){
+		  player1.setCredits(initialCredits);
+		  controller.notifyCreditReset();
 		}
 
 		dao.createPlayedGame(currentGame);
