@@ -524,7 +524,6 @@ public class View extends Application implements ViewIF {
 		combobox.getItems().add("Viimeiset 50");
 		combobox.getSelectionModel().select(0);
 		combobox.getSelectionModel().selectedItemProperty().addListener( (options, oldValue, newValue) -> {
-	           //System.out.println(newValue);
 	           fillStatistics((String) newValue);
 	    	}
 	    );
@@ -549,10 +548,6 @@ public class View extends Application implements ViewIF {
         
         tableViewGames.getColumns().add(playedIDColumn);
         tableViewGames.getColumns().add(playedCreditsColumn);
-        /*
-        tableViewGames.getItems().add(new PlayedGame(100, new Date()));
-        tableViewGames.getItems().add(new PlayedGame(125,new Date()));
-        */
         playedGames.setContent(tableViewGames);
  
         
@@ -566,14 +561,11 @@ public class View extends Application implements ViewIF {
         playerRankColumn.setCellValueFactory(new PropertyValueFactory<>("rank"));
         TableColumn<PlayerRanking, String> playerCreditsColumn = new TableColumn<>("Saldo");
         playerCreditsColumn.setCellValueFactory(new PropertyValueFactory<>("credits"));
-        TableColumn<PlayerRanking, String> playerfnColumn = new TableColumn<>("Etunimi");
-        playerfnColumn.setCellValueFactory(new PropertyValueFactory<>("fn"));
-        TableColumn<PlayerRanking, String> playerlnColumn = new TableColumn<>("Sukunimi");
-        playerlnColumn.setCellValueFactory(new PropertyValueFactory<>("ln"));
+        TableColumn<PlayerRanking, String> playernicknameColumn = new TableColumn<>("Pelaaja");
+        playernicknameColumn.setCellValueFactory(new PropertyValueFactory<>("profileName"));
         tableViewRanks.getColumns().add(playerRankColumn);
         tableViewRanks.getColumns().add(playerCreditsColumn);
-        tableViewRanks.getColumns().add(playerfnColumn);
-        tableViewRanks.getColumns().add(playerlnColumn);
+        tableViewRanks.getColumns().add(playernicknameColumn);
         ranking.setContent(tableViewRanks);
         
         
@@ -1016,7 +1008,6 @@ public class View extends Application implements ViewIF {
 		
 		ArrayList<PlayedGame> playedGames = new ArrayList<>();
 		playedGames = controller.getPlayedGames();
-		//System.out.println("TESTETSETESTEST "+playedGames.get(0).getCreditAfterPlayer1());
 		
 		tableViewGames.getItems().clear();
 		for(int i=0; i<playedGames.size();i++) {
@@ -1030,20 +1021,10 @@ public class View extends Application implements ViewIF {
 		ranks = controller.getRanking();
 		tableViewRanks.getItems().clear();
 		for(int i = 0;i<ranks.size();i++) {
-			tableViewRanks.getItems().add(new PlayerRanking(i+1,ranks.get(i).getFirstName(), 
-					ranks.get(i).getLastName(), ranks.get(i).getCredits()));
+			tableViewRanks.getItems().add(new PlayerRanking(i+1,ranks.get(i).getProfileName(), ranks.get(i).getCredits()));
 		}
-		/*
-		tableViewRanks = new TableView();
-		String[] ranks = controller.getRanking();
-		for(int i = 0;i<ranks.length;i++) {
-			tableViewRanks.getItems().add(ranks[i]);
-		}
-		*/
-		
 		
 		BorderPane pane = new BorderPane();
-		//creditDevelopment.setContent(value);
 		pane.setTop(combobox);
 		pane.setCenter(lineChart);
 		

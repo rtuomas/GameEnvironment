@@ -255,8 +255,6 @@ public class DAO implements DAOIF {
 		ArrayList<String> datesList = new ArrayList<>();
 		String hql = "from PlayedGame where player1 = :id order by id desc";
 		
-		System.out.println("COUNT!!!"  + count);
-		
 		try (Session session = sFactory.openSession()) {
 			
 			@SuppressWarnings("rawtypes")
@@ -272,12 +270,6 @@ public class DAO implements DAOIF {
 			}
 			Collections.reverse(creditsList);
 			Collections.reverse(datesList);
-			
-			System.out.println("Result " + result);
-			System.out.println("readcredits, dates" + datesList);
-			System.out.println("readcredits, credits" + creditsList);
-			
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
