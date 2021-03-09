@@ -5,14 +5,14 @@ package model;
  *
  */
 public enum HandValue {
-	ACE_PAIR(1),
-	TWO_PAIRS(2.0),
-	THREE_OF_A_KIND(2.5),
-	STRAIGHT(3.0),
-	FLUSH(3.5),
-	FULL_HOUSE(5.0),
-	FOUR_OF_A_KIND(7.0),
-	STRAIGHT_FLUSH(10.0),
+	ACE_PAIR(2.0),
+	TWO_PAIRS(4.0),
+	THREE_OF_A_KIND(6.0),
+	STRAIGHT(12.0),
+	FLUSH(16.0),
+	FULL_HOUSE(18.0),
+	FOUR_OF_A_KIND(40.0),
+	STRAIGHT_FLUSH(100.0),
 	NO_WIN(0);
 
 

@@ -41,6 +41,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -313,7 +314,7 @@ public class View extends Application implements ViewIF {
 		Collections.addAll(cardsToSwapIndexes,0,1,2,3,4);
 		
 		//Notification text under cards
-		notification = new Text("Valitse panos ja paina jako");
+		notification = new Text("Valitse panos ja paina pelaa");
 		AnchorPane.setBottomAnchor(notification, 70.0);
 		notification.setLayoutX(270);
 		notification.setFont(Font.font(24));
@@ -332,7 +333,7 @@ public class View extends Application implements ViewIF {
 		AnchorPane.setRightAnchor(gamble, 135.0);
 		
 		// play button placement
-		Button play = new Button("Jako");
+		Button play = new Button("Pelaa");
 		play.setPrefHeight(58.0);
 		play.setPrefWidth(98.0);
 		AnchorPane.setBottomAnchor(play, 11.39);
@@ -460,8 +461,13 @@ public class View extends Application implements ViewIF {
 				wintable, cardPane, notification, topLeftImg);
 		
 		play.setOnAction(e -> {
+			for(ImageView v : cardViews) {
+				v.setOpacity(1);
+			}
+			cardPane.setStyle(null);
 			if(!gameOn) {
 			controller.startPokerGame();
+			play.setText("Jako");
 			plus.setVisible(false);
 			minus.setVisible(false);
 			setNotification("Valitse kortit jotka haluat lukita ja paina jako");
@@ -469,6 +475,7 @@ public class View extends Application implements ViewIF {
 			setSwappedCards();
 			plus.setVisible(true);
 			minus.setVisible(true);
+			play.setText("Pelaa");
 			}
 			gameOn = !gameOn;
 		});
@@ -934,7 +941,7 @@ public class View extends Application implements ViewIF {
 						} else {
 						cardsToSwapIndexes.remove(Integer.valueOf(index));
 						lockViews[index].setVisible(true);
-						img.setOpacity(0.3); 
+						img.setOpacity(0.5); 
 					}
 				}
 			}
@@ -991,6 +998,13 @@ public class View extends Application implements ViewIF {
 
 	@Override
 	public void setScore(String score) {
+		if(score == "Ei voittoa") {
+			for(ImageView v : cardViews) {
+				v.setOpacity(0.5);
+			}
+		} else {
+			cardPane.setStyle("-fx-border-color: #00FF25;" + " -fx-border-width: 5px;");
+		}
 		setNotification(score);
 	}
 
