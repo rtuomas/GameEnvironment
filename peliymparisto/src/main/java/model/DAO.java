@@ -231,7 +231,7 @@ public class DAO implements DAOIF {
 		ArrayList<Player> statsList = new ArrayList<>();
 		try (Session session = sFactory.openSession()) {
 			
-			String hql = "from Player";
+			String hql = "from Player WHERE NOT id='1000' AND NOT id='1001'";
 			
 			@SuppressWarnings("rawtypes")
 			Query query = session.createQuery(hql);
