@@ -64,7 +64,7 @@ class HandTest {
 		} while(!hand.isSet());
 		System.out.println(hand.toString() + " " + rounds + " rounds, three of a kind. Multiplier: " + hand.getScore().getMultiplier());
 		assertTrue(hand.isSet());
-		assertEquals(2.5, hand.getScore().getMultiplier(), "Multiplier wrong");
+		assertEquals(6.0, hand.getScore().getMultiplier(), "Multiplier wrong");
 	}
 	@Test
 	void testAcePair() {
@@ -77,7 +77,7 @@ class HandTest {
 		} while(!hand.isAcePair());
 		System.out.println(hand.toString() + " " + rounds + " rounds, ace pair. Multiplier: " + hand.getScore().getMultiplier());
 		assertTrue(hand.isAcePair());
-		assertEquals(1.0, hand.getScore().getMultiplier(), "Multiplier wrong");
+		assertEquals(2.0, hand.getScore().getMultiplier(), "Multiplier wrong");
 	}
 	@Test
 	void testNoWin() {
@@ -102,7 +102,7 @@ class HandTest {
 		} while(!hand.isStraight());
 		System.out.println(hand.toString() + " " + rounds + " rounds, straight. Multiplier: " + hand.getScore().getMultiplier());
 		assertTrue(hand.isStraight());
-		assertEquals(3.0, hand.getScore().getMultiplier(), "Multiplier wrong");
+		assertEquals(12.0, hand.getScore().getMultiplier(), "Multiplier wrong");
 	}
 	@Test
 	void testFlush() {
@@ -115,7 +115,7 @@ class HandTest {
 		} while(!hand.isFlush());
 		System.out.println(hand.toString() + " " + rounds + " rounds, flush. Multiplier: " + hand.getScore().getMultiplier());
 		assertTrue(hand.isFlush());
-		assertEquals(3.5, hand.getScore().getMultiplier(), "Multiplier wrong");
+		assertEquals(16.0, hand.getScore().getMultiplier(), "Multiplier wrong");
 	}
 	@Test
 	void test4s() {
@@ -128,7 +128,7 @@ class HandTest {
 		} while(!hand.is4s());
 		System.out.println(hand.toString() + " " + rounds + " rounds, four of a kind. Multiplier: " + hand.getScore().getMultiplier());
 		assertTrue(hand.is4s());
-		assertEquals(7.0, hand.getScore().getMultiplier(), "Multiplier wrong");
+		assertEquals(40.0, hand.getScore().getMultiplier(), "Multiplier wrong");
 	}
 	/*
 	@Test
@@ -142,7 +142,7 @@ class HandTest {
 		} while(!hand.isStraightFlush());
 		System.out.println(hand.toString() + " " + rounds + " rounds, straight flush. Multiplier: " + hand.getScore().getMultiplier());
 		assertTrue(hand.isStraightFlush());
-		assertEquals(10.0, hand.getScore().getMultiplier(), "Multiplier wrong");
+		assertEquals(100.0, hand.getScore().getMultiplier(), "Multiplier wrong");
 	}*/
 	@Test
 	void testTwoPairs() {
@@ -155,7 +155,7 @@ class HandTest {
 		} while(!hand.isTwoPairs());
 		System.out.println(hand.toString() + " " + rounds + " rounds, two pairs. Multiplier: " + hand.getScore().getMultiplier());
 		assertTrue(hand.isTwoPairs());
-		assertEquals(2.0, hand.getScore().getMultiplier(), "Multiplier wrong");
+		assertEquals(4.0, hand.getScore().getMultiplier(), "Multiplier wrong");
 	}
 	
 	@Test
@@ -169,7 +169,7 @@ class HandTest {
 		} while(!hand.isFullHouse());
 		System.out.println(hand.toString() + " " + rounds + " rounds, fullhouse. Multiplier: " + hand.getScore().getMultiplier());
 		assertTrue(hand.isFullHouse());
-		assertEquals(5.0, hand.getScore().getMultiplier(), "Multiplier wrong");
+		assertEquals(18.0, hand.getScore().getMultiplier(), "Multiplier wrong");
 	}
 
 }
