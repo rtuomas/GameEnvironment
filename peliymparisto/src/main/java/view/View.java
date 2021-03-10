@@ -5,10 +5,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+
 import controller.Controller;
 import controller.ControllerIF;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -23,6 +26,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -31,6 +35,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
@@ -80,6 +86,7 @@ public class View extends Application implements ViewIF {
 	private ComboBox combobox;
 	LineChart<String, Number> lineChart;
 	private TableView tableViewRanks, tableViewGames;
+	private Scene mainScene;
 
 	
 	//PokerGameView variables
@@ -203,10 +210,9 @@ public class View extends Application implements ViewIF {
 			BorderPane mainView = new BorderPane();
 			mainView.setTop(navBar);
 			mainView.setCenter(mainMenu);
-			Scene mainScene = new Scene(mainView);
+			mainScene = new Scene(mainView);
 			
 			
-			mainScene.getStylesheets().add("/styles/style.css");
 			
 			createGUITransitions(primaryStage, mainView, mainMenu, pokerGame, settings, stats);
 
@@ -482,26 +488,46 @@ public class View extends Application implements ViewIF {
 	 * @return BorderPane type layout for the settings
 	 */
 	// Work in progress - Ville Riepponen
-	private BorderPane settingsBuilder() {
+private BorderPane settingsBuilder() {
+		
+		
+		
 		BorderPane settingsView = new BorderPane();
 		settingsView.setPrefSize(400, 400);
+		RadioButton radioButton1 = new RadioButton("Dark Mode");
+        RadioButton radioButton2 = new RadioButton("Light Mode");
+        ToggleGroup radioGroup = new ToggleGroup();
+        
+        radioButton1.setToggleGroup(radioGroup);
+        radioButton2.setToggleGroup(radioGroup);
+        
+        
+        HBox hbox = new HBox(radioButton1, radioButton2);
+        hbox.setAlignment(Pos.CENTER);
+        settingsView.setCenter(hbox);
+
+		Scene settingsScene = new Scene(settingsView);
 		
-		Slider volumeControl = new Slider(0, 1, 0.5);
-		volumeControl.setShowTickMarks(true);
-		volumeControl.setShowTickLabels(true);
-		volumeControl.setMajorTickUnit(0.25f);
-		volumeControl.setBlockIncrement(0.1f);
-		volumeControl.setMaxWidth(200);
-		BorderPane.setAlignment(volumeControl, Pos.CENTER);
-		BorderPane.setMargin(volumeControl, new Insets(50, 50, 50, 50));
-		
-		Button save = new Button("Tallenna");
-		
-		BorderPane.setAlignment(save, Pos.CENTER);
-		BorderPane.setMargin(save, new Insets(50, 50, 50, 50));
-		
-		settingsView.setTop(save);
-		settingsView.setCenter(volumeControl);
+		radioGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>()  
+        { 
+            public void changed(ObservableValue<? extends Toggle> ob,  
+                                                    Toggle o, Toggle n) 
+            { 
+  
+                RadioButton rb = (RadioButton)radioGroup.getSelectedToggle(); 
+  
+                if (rb != null) { 
+                    String s = rb.getText(); 
+                    
+                    
+                    if(s == "Dark Mode") {
+                    	mainScene.getRoot().getStylesheets().add("/styles/style.css");
+                    } else {
+                    	mainScene.getRoot().getStylesheets().remove("/styles/style.css");
+                    }
+                } 
+            } 
+        }); 
 		
 		return settingsView;
 	}
