@@ -120,6 +120,10 @@ public class Player implements Comparable<Player>{
 		this.createdOn = createdOn;
 	}
 	
+  public void alterCredits(Double change){
+    credits += change;
+  }
+	
 	public String toString() {
 		return this.id + " " + this.firstName + " " + this.lastName + " " + this.credits + " " + this.profileName + " " + this.email + " " + this.password + " " + this.createdOn;
 	}

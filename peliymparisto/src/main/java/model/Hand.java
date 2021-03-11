@@ -161,6 +161,14 @@ public class Hand{
 	public Card[] getSortedHand() {
 		return this.sortedHand;
 	}
+	
+  public boolean wins(){
+    return this.getScore() != HandValue.NO_WIN;
+  }
+  
+  public double worth(){
+    return this.getScore().getMultiplier();
+  }
 
 	//The player can choose which cards they want to swap to new ones once per round.
 	//Selected cards would be discarded from the hand and the rest sent to swapCards().

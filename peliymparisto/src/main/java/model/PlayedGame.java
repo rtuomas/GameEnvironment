@@ -57,6 +57,23 @@ public class PlayedGame {
 		this.playedOn = playedOn;
 	}
 	
+  public PlayedGame(Player player1, 
+                    Player player2, 
+                    String gameType, 
+                    Player winner, 
+                    double creditChange
+                   ){
+    super();
+    this.player1 = player1.getId();
+    this.player2 = player2.getId();
+    this.gametype = gameType;
+    this.winner = winner.getId();
+    this.creditChange = creditChange;
+    this.creditAfterPlayer1 = player1.getCredits();
+    this.creditAfterPlayer2 = player2.getCredits();
+  }
+
+	
 	public int getId() {
 		return id;
 	}
