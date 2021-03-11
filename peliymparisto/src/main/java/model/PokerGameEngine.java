@@ -93,7 +93,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		winner.alterCredits(creditChange - bet);
 		loser.alterCredits(-creditChange - bet);
 		
-		currentGame = new PlayedGame(player1,player2,gameType,winner,creditChange);
+		currentGame = new PlayedGame(player1,player2,gameType,winner,creditChange-bet);
 		
 		if(player1.getCredits() <= 0){
 		  player1.setCredits(initialCredits);
