@@ -76,25 +76,25 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	 * This method is ran at the end of the game to save the played game into database and update credit amounts to players.
 	 */
 	public void endGame() {
-		PlayedGame currentGame;
+    PlayedGame currentGame;
     Player winner;
     Player loser;
     
-		double creditChange = hand.worth() * bet;
-		
-		if(hand.wins()){
-		  winner = player1;
-		  loser = player2;
-		} else {
-		  winner = player2;
-		  loser = player1;
-		}
-		
-		winner.alterCredits(creditChange - bet);
-		loser.alterCredits(-creditChange - bet);
-		
-		currentGame = new PlayedGame(player1,player2,gameType,winner,creditChange-bet);
-		
+    double creditChange = hand.worth() * bet;
+    
+    if(hand.wins()){
+      winner = player1;
+      loser = player2;
+    } else {
+      winner = player2;
+      loser = player1;
+    }
+    
+    winner.alterCredits(creditChange - bet);
+    loser.alterCredits(-creditChange - bet);
+    
+    currentGame = new PlayedGame(player1,player2,gameType,winner,creditChange-bet);
+    
 		if(player1.getCredits() <= 0){
 		  player1.setCredits(initialCredits);
 		  controller.notifyCreditReset();
