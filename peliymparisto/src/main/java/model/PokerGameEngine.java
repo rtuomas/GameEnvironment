@@ -8,7 +8,7 @@ import controller.ControllerIF;
 /**
  * The game engine for the poker game. It connects all the different classes needed to run the poker game.
  * @author ---
- * @version 1.2 18.02.2021
+ * @version 1.3 11.03.2021
  */
 public class PokerGameEngine extends Thread implements ModelIF {
 	
