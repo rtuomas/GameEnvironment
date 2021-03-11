@@ -80,7 +80,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
     Player winner;
     Player loser;
     
-		double creditChange = hand.worth() * bet;
+		double creditChange = hand.worth() * bet - bet;
 		
 		if(hand.wins()){
 		  winner = player1;
@@ -90,8 +90,8 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		  loser = player1;
 		}
 		
-		winner.alterCredits(creditChange - bet);
-		loser.alterCredits(-creditChange - bet);
+		winner.alterCredits(creditChange);
+		loser.alterCredits(-creditChange);
 		
 		currentGame = new PlayedGame(player1,player2,gameType,winner,creditChange);
 		
