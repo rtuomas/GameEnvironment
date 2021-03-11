@@ -157,8 +157,8 @@ public class Hand{
 	  return this.getScore() != HandValue.NO_WIN;
 	}
 	
-	public double worth(){
-	  return this.getScore().getMultiplier();
+	public double worth(double bet){
+	  return this.getScore().getMultiplier() * bet;
 	}
 
 	public Card[] getHand() {
