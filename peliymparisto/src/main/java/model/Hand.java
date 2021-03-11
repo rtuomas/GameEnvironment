@@ -153,6 +153,13 @@ public class Hand{
 	}
 
 
+	public boolean wins(){
+	  return this.getScore() != HandValue.NO_WIN;
+	}
+	
+	public double worth(double bet){
+	  return this.getScore().getMultiplier() * bet;
+	}
 
 	public Card[] getHand() {
 		return this.hand;
