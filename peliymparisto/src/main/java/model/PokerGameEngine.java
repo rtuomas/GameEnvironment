@@ -81,7 +81,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		int p1ID = this.player1.getId();
 		int p2ID = this.player2.getId();
 		
-		double win = this.hand.getScore().getMultiplier() * bet;
+		double win = this.hand.getScore().getMultiplier() * bet - bet;
 		
 		if(this.hand.getScore() != HandValue.NO_WIN) {
 			this.winner = p1ID;
