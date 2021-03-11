@@ -28,7 +28,6 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	private Player player1;
 	private Player player2;
 	//Game variables
-	private int winner;
 	private String gameType = "poker";
 	
 	/**
@@ -77,15 +76,11 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	 * This method is ran at the end of the game to save the played game into database and update credit amounts to players.
 	 */
 	public void endGame() {
-		//specify who is winner before this method
 		PlayedGame currentGame;
-		int p1ID = this.player1.getId();
-		int p2ID = this.player2.getId();
-		
-		double creditChange = hand.worth(bet) - bet;
-		
-		Player winner;
-		Player loser;
+    Player winner;
+    Player loser;
+    
+		double creditChange = hand.worth() * bet - bet;
 		
 		if(hand.wins()){
 		  winner = player1;
@@ -99,20 +94,6 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		loser.alterCredits(-creditChange);
 		
 		currentGame = new PlayedGame(player1,player2,gameType,winner,creditChange);
-		
-		/*
-		if(this.hand.getScore() != HandValue.NO_WIN) {
-			this.winner = p1ID;
-			this.player1.setCredits(player1.getCredits() + win);
-			this.player2.setCredits(player2.getCredits() - win);
-			currentGame = new PlayedGame(p1ID, p2ID, "poker", this.winner, win, player1.getCredits(), player2.getCredits());
-		} else {
-			this.winner = p2ID;
-			this.player1.setCredits(player1.getCredits() - bet);
-			this.player2.setCredits(player2.getCredits() + bet); //in two player game this would be win instead of bet
-			currentGame = new PlayedGame(p1ID, p2ID, "poker", this.winner, bet, player1.getCredits(), player2.getCredits());
-		}
-		*/
 		
 		if(player1.getCredits() <= 0){
 		  player1.setCredits(initialCredits);
