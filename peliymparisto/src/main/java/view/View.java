@@ -212,7 +212,7 @@ public class View extends Application implements ViewIF {
 			mainView.setCenter(mainMenu);
 			mainScene = new Scene(mainView);
 			
-			
+			primaryStage.getIcons().add(new Image("/images/cards_icon.png"));
 			
 			createGUITransitions(primaryStage, mainView, mainMenu, pokerGame, settings, stats);
 
