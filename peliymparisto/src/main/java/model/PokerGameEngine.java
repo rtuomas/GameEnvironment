@@ -29,7 +29,6 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	private Player player2;
 	//Game variables
 	private int winner;
-	private String gameType = "poker";
 	
 	/**
 	 * Constructor for the poker game engine.
@@ -82,25 +81,8 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		int p1ID = this.player1.getId();
 		int p2ID = this.player2.getId();
 		
-		double creditChange = hand.worth(bet) - bet;
+		double win = this.hand.getScore().getMultiplier() * bet - bet;
 		
-		Player winner;
-		Player loser;
-		
-		if(hand.wins()){
-		  winner = player1;
-		  loser = player2;
-		} else {
-		  winner = player2;
-		  loser = player1;
-		}
-		
-		winner.alterCredits(creditChange);
-		loser.alterCredits(-creditChange);
-		
-		currentGame = new PlayedGame(player1,player2,gameType,winner,creditChange);
-		
-		/*
 		if(this.hand.getScore() != HandValue.NO_WIN) {
 			this.winner = p1ID;
 			this.player1.setCredits(player1.getCredits() + win);
@@ -112,7 +94,6 @@ public class PokerGameEngine extends Thread implements ModelIF {
 			this.player2.setCredits(player2.getCredits() + bet); //in two player game this would be win instead of bet
 			currentGame = new PlayedGame(p1ID, p2ID, "poker", this.winner, bet, player1.getCredits(), player2.getCredits());
 		}
-		*/
 		
 		if(player1.getCredits() <= 0){
 		  player1.setCredits(initialCredits);
