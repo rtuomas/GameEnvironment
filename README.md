@@ -56,6 +56,10 @@ Maven Dependencies (Project must be maven project)
 
 ********************************************
 
+SQL commands for generating a copy of the database used can be found in this repository. It is named SQL_commands.sql.
+
+********************************************
+
 Jenkins is used for integration and testing. Jenkins can be accessed here: http://10.114.32.61:8080/ (Metropolia VPN and credentials required)
 
 To easy install:
