@@ -2,6 +2,12 @@ package model;
 
 import java.util.Date;
 
+/**
+ * Additional class for played game table on statistics needed to create
+ * because of hibernates stiffness.
+ * @author Tuomas Rajala
+ * @version 2.3 10.03.2021
+ */
 public class PlayedGameTableView {
 	
 	private int id;

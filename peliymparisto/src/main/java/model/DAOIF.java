@@ -74,9 +74,15 @@ public interface DAOIF {
 	 * @return the PlayedGame class
 	 */
 	public PlayedGame getPlayedGame(int playedGameID);
-	
+	/**
+	 * get a specific Players info from database
+	 * @return ArrayList of fetched player data.
+	 */
 	public ArrayList<Player> readRankings();
-	
+	/**
+	 * get a specific played games data from database
+	 * @return List of fetched player credits and date.
+	 */
 	public List[] readCredits(int id, int timestamp);
 	/**
 	 * Searches for the given email and returns the password if found

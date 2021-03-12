@@ -1,5 +1,11 @@
 package model;
 
+/**
+ * Additional class for ranking table on statistics needed to create
+ * because of hibernates stiffness.
+ * @author Tuomas Rajala
+ * @version 2.3 9.03.2021
+ */
 public class PlayerRanking {
 	
 	private int rank;

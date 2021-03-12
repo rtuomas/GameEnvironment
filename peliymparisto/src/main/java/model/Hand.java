@@ -169,19 +169,6 @@ public class Hand{
   public double worth(){
     return this.getScore().getMultiplier();
   }
-
-	//The player can choose which cards they want to swap to new ones once per round.
-	//Selected cards would be discarded from the hand and the rest sent to swapCards().
-	//swapCards() then adds the remaining cards from the deck to fill the hand again,
-	//returning the old hand with the new cards.
-
-//	public void swapCards(Card[] sentHand) {
-//		for(int i = 0; i < HANDSIZE; i++) {
-//			if(hand[i] == null) {
-//				hand[i] = currentDeck.nextCard();
-//			}
-//		}
-//	}
 	
 	public Card[] swapCards (ArrayList<Integer> indexes) {
 		for(int i : indexes) {

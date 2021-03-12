@@ -15,7 +15,10 @@ import javafx.scene.chart.XYChart;
  * @version 3.1 9.3.2021
  */
 public class Statistics {
+	
+	/*Current players id*/
 	private int playerId;
+	/*Only one dao is made*/
 	private DAOIF dao;
 	
 	public Statistics(DAOIF dao) {
@@ -53,7 +56,7 @@ public class Statistics {
 	}
 
 	/**
-	 * Passes signed players played gamesfrom database.
+	 * Passes signed players played games from database.
 	 * @return ArrayList
 	 */
 	public ArrayList<PlayedGame> getPlayedGames() {

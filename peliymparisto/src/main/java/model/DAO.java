@@ -162,21 +162,6 @@ public class DAO implements DAOIF {
 		return null;
 	}
 	
-	/** Should make this hql command work instead
-	public Player getPlayer(String email) {
-		Player player = null;
-		try (Session session = sFactory.openSession()) {
-			String hql = "from Player where email=:email";
-			@SuppressWarnings("rawtypes")
-			Query query = session.createQuery(hql);
-			player = (Player)query.getSingleResult();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return player;
-	}
-	*/
-	
 	/**	{@inheritDoc} */
 	public Player getPlayer(String email) {
 		try (Session session = sFactory.openSession()) {
@@ -223,6 +208,7 @@ public class DAO implements DAOIF {
 		return playedGame;
 	}
 	
+	@Override
 	public ArrayList<Player> readRankings() {
 		ArrayList<Player> statsList = new ArrayList<>();
 		try (Session session = sFactory.openSession()) {
@@ -246,6 +232,7 @@ public class DAO implements DAOIF {
 		return statsList;
 	}
 	
+	@Override
 	public List[] readCredits(int id, int count) {
 		
 		ArrayList<Double> creditsList = new ArrayList<>();
