@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fi"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Hand.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">peliymparisto (12.3.2021 13.16.32)</a> &gt; <a href="../../index.html" class="el_group">peliymparisto</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">Hand.java</span></div><h1>Hand.java</h1><pre class="source lang-java linenums">package model;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+
+/**
+ * The Hand class gets the cards from the deck and works as the 
+ * main component for the game, showing the user their cards.
+ * @author Ville Riepponen
+ * @version 0.1 28.01.2021
+ */
+
+public class Hand{
+	final static int HANDSIZE = 5;
+<span class="pc" id="L16">	private Card[] hand = new Card [HANDSIZE];</span>
+<span class="pc" id="L17">	private Card[] sortedHand = new Card [HANDSIZE];</span>
+	private Deck currentDeck;
+
+<span class="fc" id="L20">	public Hand (Deck deck){</span>
+<span class="fc" id="L21">		this.currentDeck = deck;</span>
+<span class="fc" id="L22">		fillHandWithCards();</span>
+<span class="fc" id="L23">		this.sortedHand = this.hand;</span>
+<span class="fc" id="L24">		sortSortedHand();</span>
+<span class="fc" id="L25">	}</span>
+	
+	// for testinks
+<span class="nc" id="L28">	public Hand (Card [] h) {</span>
+<span class="nc" id="L29">		this.hand = h;</span>
+<span class="nc" id="L30">		this.sortedHand = this.hand;</span>
+<span class="nc" id="L31">		sortSortedHand();</span>
+<span class="nc" id="L32">	}</span>
+
+	public HandValue getScore () {
+<span class="pc bpc" id="L35" title="1 of 2 branches missed.">		if(isStraightFlush())</span>
+<span class="nc" id="L36">			return HandValue.STRAIGHT_FLUSH;</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">		else if(is4s())</span>
+<span class="fc" id="L38">			return HandValue.FOUR_OF_A_KIND;</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">		else if(isFullHouse())</span>
+<span class="fc" id="L40">			return HandValue.FULL_HOUSE;</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">		else if(isFlush())</span>
+<span class="fc" id="L42">			return HandValue.FLUSH;</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">		else if(isStraight())</span>
+<span class="fc" id="L44">			return HandValue.STRAIGHT;</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">		else if(isSet())</span>
+<span class="fc" id="L46">			return HandValue.THREE_OF_A_KIND;</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">		else if(isTwoPairs())</span>
+<span class="fc" id="L48">			return HandValue.TWO_PAIRS;</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">		else if (isAcePair())</span>
+<span class="fc" id="L50">			return HandValue.ACE_PAIR;</span>
+<span class="fc" id="L51">		else return HandValue.NO_WIN;</span>
+	}
+
+	private void fillHandWithCards(){
+<span class="fc bfc" id="L55" title="All 2 branches covered.">		for (int i = 0; i &lt; HANDSIZE; i++) {</span>
+<span class="fc" id="L56">			hand[i] = currentDeck.nextCard();</span>
+		}
+<span class="fc" id="L58">	}</span>
+
+	private void sortSortedHand() {
+<span class="fc" id="L61">		Arrays.sort(sortedHand, new Comparator&lt;Card&gt;() {</span>
+			@Override
+			public int compare(Card c1, Card c2) {
+<span class="fc" id="L64">				return c1.getValue() - c2.getValue();</span>
+			}
+		});
+<span class="fc" id="L67">	}</span>
+	
+	//meibi change checkers private?
+	
+	public boolean isAcePair() {	
+<span class="pc bpc" id="L72" title="4 of 10 branches missed.">		return(sortedHand[0].getValue() == 1 &amp;&amp; sortedHand[1].getValue() == 1 &amp;&amp; sortedHand[2].getValue() != 1 &amp;&amp; sortedHand[3].getValue() != 1 &amp;&amp; sortedHand[4].getValue() != 1);	</span>
+	}
+
+	public boolean isTwoPairs() {
+<span class="fc" id="L76">		boolean isTwoPairs = false;</span>
+<span class="pc bpc" id="L77" title="1 of 4 branches missed.">		if(sortedHand[0].getValue() == sortedHand[1].getValue() &amp;&amp; sortedHand[2].getValue() == sortedHand[3].getValue()) {</span>
+<span class="nc" id="L78">			isTwoPairs = true;</span>
+<span class="pc bpc" id="L79" title="1 of 4 branches missed.">		} else if(sortedHand[0].getValue() == sortedHand[1].getValue() &amp;&amp; sortedHand[3].getValue() == sortedHand[4].getValue()) {</span>
+<span class="nc" id="L80">			isTwoPairs = true;</span>
+<span class="pc bpc" id="L81" title="1 of 4 branches missed.">		} else if(sortedHand[1].getValue() == sortedHand[2].getValue() &amp;&amp; sortedHand[3].getValue() == sortedHand[4].getValue()) {</span>
+<span class="fc" id="L82">			isTwoPairs = true;</span>
+<span class="fc" id="L83">		} else {</span>
+<span class="fc" id="L84">			isTwoPairs = false;</span>
+		}
+
+<span class="fc" id="L87">		return isTwoPairs;</span>
+	}
+
+	public boolean isSet() {
+<span class="fc" id="L91">		boolean isSet = false;</span>
+<span class="fc" id="L92">		int c1 = sortedHand[0].getValue(), </span>
+<span class="fc" id="L93">				c2 = sortedHand[1].getValue(), </span>
+<span class="fc" id="L94">				c3 = sortedHand[2].getValue(), </span>
+<span class="fc" id="L95">				c4 = sortedHand[3].getValue(), </span>
+<span class="fc" id="L96">				c5 = sortedHand[4].getValue();</span>
+<span class="pc bpc" id="L97" title="7 of 10 branches missed.">		if(c1 == c2 &amp;&amp; c2 == c3 &amp;&amp; c4 != c1 &amp;&amp; c5 != c1 &amp;&amp; c3 != c4) {</span>
+<span class="nc" id="L98">			isSet = true;</span>
+<span class="pc bpc" id="L99" title="7 of 10 branches missed.">		} else if(c2 == c3 &amp;&amp; c3 == c4 &amp;&amp; c1 != c2 &amp;&amp; c5 != c2 &amp;&amp; c1 != c5) {</span>
+<span class="nc" id="L100">			isSet = true;</span>
+<span class="pc bpc" id="L101" title="3 of 10 branches missed.">		} else if(c3 == c4 &amp;&amp; c4 == c5 &amp;&amp; c1 != c3 &amp;&amp; c2 != c3 &amp;&amp; c1 != c2) {</span>
+<span class="fc" id="L102">			isSet = true;</span>
+<span class="fc" id="L103">		} else {</span>
+<span class="fc" id="L104">			isSet = false;</span>
+		}
+
+<span class="fc" id="L107">		return isSet;</span>
+	}
+
+	public boolean isStraight(){
+<span class="fc" id="L111">		return allCardsAreConsecutiveIn(valueSortedHand());</span>
+	}
+
+	public boolean isFlush(){
+<span class="fc" id="L115">		return firstAndLastCardAreSameSuitIn(suitSortedHand());</span>
+	}
+
+	public boolean isFullHouse() {
+<span class="fc" id="L119">		boolean isFullHouse = false;</span>
+<span class="fc" id="L120">		int c1 = sortedHand[0].getValue(), </span>
+<span class="fc" id="L121">				c2 = sortedHand[1].getValue(), </span>
+<span class="fc" id="L122">				c3 = sortedHand[2].getValue(), </span>
+<span class="fc" id="L123">				c4 = sortedHand[3].getValue(), </span>
+<span class="fc" id="L124">				c5 = sortedHand[4].getValue();</span>
+<span class="fc bfc" id="L125" title="All 6 branches covered.">		if(c1 == c2 &amp;&amp; c2 == c3 &amp;&amp; c4 == c5) {</span>
+<span class="fc" id="L126">			isFullHouse = true;</span>
+<span class="pc bpc" id="L127" title="1 of 6 branches missed.">		} else if(c1 == c2 &amp;&amp; c3 == c4 &amp;&amp; c4 == c5) {</span>
+<span class="nc" id="L128">			isFullHouse = true;</span>
+<span class="nc" id="L129">		} else {</span>
+<span class="fc" id="L130">			isFullHouse = false;</span>
+		}
+
+<span class="fc" id="L133">		return isFullHouse;</span>
+	}
+
+	public boolean is4s() {
+
+		boolean a1, a2;
+
+<span class="pc bfc" id="L140" title="All 2 branches covered.">		a1 = sortedHand[0].getValue() == sortedHand[1].getValue() &amp;&amp;</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">				sortedHand[1].getValue() == sortedHand[2].getValue() &amp;&amp;</span>
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">				sortedHand[2].getValue() == sortedHand[3].getValue();</span>
+
+<span class="fc bfc" id="L144" title="All 2 branches covered.">		a2 = sortedHand[1].getValue() == sortedHand[2].getValue() &amp;&amp;</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">				sortedHand[2].getValue() == sortedHand[3].getValue() &amp;&amp;</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">				sortedHand[3].getValue() == sortedHand[4].getValue();</span>
+
+<span class="pc bpc" id="L148" title="1 of 4 branches missed.">		return( a1 || a2 );</span>
+	}
+	
+	public boolean isStraightFlush(){
+<span class="pc bpc" id="L152" title="1 of 4 branches missed.">		return isStraight() &amp;&amp; isFlush();</span>
+	}
+
+
+
+	public Card[] getHand() {
+<span class="nc" id="L158">		return this.hand;</span>
+	}
+
+	public Card[] getSortedHand() {
+<span class="fc" id="L162">		return this.sortedHand;</span>
+	}
+	
+  public boolean wins(){
+<span class="nc bnc" id="L166" title="All 2 branches missed.">    return this.getScore() != HandValue.NO_WIN;</span>
+  }
+  
+  public double worth(){
+<span class="nc" id="L170">    return this.getScore().getMultiplier();</span>
+  }
+	
+	public Card[] swapCards (ArrayList&lt;Integer&gt; indexes) {
+<span class="nc bnc" id="L174" title="All 2 branches missed.">		for(int i : indexes) {</span>
+<span class="nc" id="L175">			this.hand[i] = currentDeck.nextCard();</span>
+		}
+<span class="nc" id="L177">		return this.hand;</span>
+	}
+
+	public String toString() {
+<span class="fc" id="L181">		String tempString = &quot;&quot;;</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">		for(int i = 0; i &lt; HANDSIZE; i++) {</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">			if(i != 4) {</span>
+<span class="fc" id="L184">				tempString += hand[i].toString() + &quot;, &quot;;</span>
+<span class="fc" id="L185">			} else {</span>
+<span class="fc" id="L186">				tempString += hand[i].toString();</span>
+			}	
+		}
+<span class="fc" id="L189">		return tempString;</span>
+	}
+
+
+	private Card[] valueSortedHand(){
+<span class="fc" id="L194">		sortedHand = hand.clone();</span>
+<span class="fc" id="L195">		Arrays.sort(sortedHand,Comparator.comparing(Card::getValue));</span>
+<span class="fc" id="L196">		return sortedHand;</span>
+	}
+
+	private Card[] suitSortedHand(){
+<span class="fc" id="L200">		sortedHand = hand.clone();</span>
+<span class="fc" id="L201">		Arrays.sort(sortedHand,Comparator.comparing(Card::getSuit));</span>
+<span class="fc" id="L202">		return sortedHand;</span>
+	}
+
+	private boolean allCardsAreConsecutiveIn(Card[] hand){
+<span class="fc" id="L206">		boolean straight = true;</span>
+<span class="fc" id="L207">		int start = 1;</span>
+<span class="fc bfc" id="L208" title="All 2 branches covered.">		if(possiblyAceHighStraight()){</span>
+<span class="fc" id="L209">			start = 2;</span>
+		}
+<span class="fc bfc" id="L211" title="All 2 branches covered.">		for(int i=start;i&lt;hand.length;i++){</span>
+<span class="fc bfc" id="L212" title="All 2 branches covered.">			if(cardsAreNotConsecutive(hand[i],hand[i-1])){</span>
+<span class="fc" id="L213">				straight = false;</span>
+<span class="fc" id="L214">				break;</span>
+			}
+		}
+<span class="fc" id="L217">		return straight;</span>
+	}
+
+	private boolean possiblyAceHighStraight(){
+<span class="fc bfc" id="L221" title="All 4 branches covered.">		return hasAce() &amp;&amp; secondValueIs10();</span>
+	}
+
+	private boolean hasAce(){
+<span class="fc bfc" id="L225" title="All 2 branches covered.">		return sortedHand[0].getValue() == 1;</span>
+	}
+
+	private boolean secondValueIs10(){
+<span class="fc bfc" id="L229" title="All 2 branches covered.">		return sortedHand[1].getValue() == 10;</span>
+	}
+
+	private boolean cardsAreNotConsecutive(Card first, Card second){
+<span class="fc bfc" id="L233" title="All 2 branches covered.">		return first.getValue() - second.getValue() != 1;</span>
+	}
+
+	private boolean firstAndLastCardAreSameSuitIn(Card[] hand){
+<span class="fc bfc" id="L237" title="All 2 branches covered.">		return hand[0].getSuit() == hand[hand.length-1].getSuit();</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span>peliymparisto (12.3.2021 13.16.32)</div></body></html>

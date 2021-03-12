@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fi"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>DAO.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">peliymparisto (12.3.2021 13.16.32)</a> &gt; <a href="../../index.html" class="el_group">peliymparisto</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">DAO.java</span></div><h1>DAO.java</h1><pre class="source lang-java linenums">package model;
+/*
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Statement;
+import java.util.ArrayList;
+*/
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
+
+/**
+ * The Data Access Object to handle database connections, uses hibernate
+ * @author Aki Koppinen, Tuomas Rajala
+ * @version 1.6 05.03.2021
+ */
+public class DAO implements DAOIF {
+	
+	/**
+	 * Session factory needed for handling the database
+	 */
+<span class="nc" id="L31">	private SessionFactory sFactory = null;</span>
+	
+	/**
+	 * The constructor for DAO class which tries to create a connection to the database
+	 * Uses information from hibernate.cfx.xml document found in src/main/recources file
+	 */
+<span class="nc" id="L37">	public DAO() {</span>
+		try {
+<span class="nc" id="L39">			System.out.println(&quot;Connecting to database...&quot;);</span>
+<span class="nc" id="L40">			sFactory = new Configuration().configure().buildSessionFactory();</span>
+<span class="nc" id="L41">			System.out.println(&quot;Connection OK&quot;);</span>
+<span class="nc" id="L42">		} catch (Exception e) {</span>
+<span class="nc" id="L43">			System.err.println(&quot;Creating the session factory failed: &quot; + e.getMessage());</span>
+<span class="nc" id="L44">			System.exit(-1);</span>
+		}
+<span class="nc" id="L46">	}</span>
+	
+	@Override
+	public void finalize() {
+		try {
+<span class="nc bnc" id="L51" title="All 2 branches missed.">			if (sFactory != null) {</span>
+<span class="nc" id="L52">				sFactory.close();</span>
+			}
+<span class="nc" id="L54">		} catch (Exception e) {</span>
+<span class="nc" id="L55">			System.err.println(&quot;Closing the session factory failed: &quot; + e.getMessage());</span>
+		}
+<span class="nc" id="L57">	}</span>
+	
+	/**	{@inheritDoc} */
+	@Override
+	public boolean createPlayedGame(PlayedGame newPlayedGame) {
+<span class="nc" id="L62">		Transaction transact = null;</span>
+<span class="nc" id="L63">		try (Session session = sFactory.openSession()) {</span>
+<span class="nc" id="L64">			transact = session.beginTransaction();</span>
+<span class="nc" id="L65">			PlayedGame playedGameToBeSaved = newPlayedGame;</span>
+<span class="nc" id="L66">			session.saveOrUpdate(playedGameToBeSaved);</span>
+<span class="nc" id="L67">			transact.commit();</span>
+<span class="nc" id="L68">		} catch(Exception e) {</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">			if (transact != null) {</span>
+<span class="nc" id="L70">				transact.rollback();</span>
+			}
+<span class="nc" id="L72">			e.printStackTrace();</span>
+<span class="nc" id="L73">			return false;</span>
+		}
+<span class="nc" id="L75">		return true;</span>
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public boolean createPlayer(Player newPlayer) {
+<span class="nc" id="L81">		Transaction transact = null;</span>
+<span class="nc" id="L82">		try (Session session = sFactory.openSession()) {</span>
+<span class="nc" id="L83">			transact = session.beginTransaction();</span>
+<span class="nc" id="L84">			Player playerToBeSaved = newPlayer;</span>
+<span class="nc" id="L85">			session.saveOrUpdate(playerToBeSaved);</span>
+<span class="nc" id="L86">			transact.commit();</span>
+<span class="nc" id="L87">		} catch(Exception e) {</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">			if (transact != null) {</span>
+<span class="nc" id="L89">				transact.rollback();</span>
+			}
+<span class="nc" id="L91">			e.printStackTrace();</span>
+<span class="nc" id="L92">			return false;</span>
+		}
+<span class="nc" id="L94">		return true;</span>
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public PlayedGame[] readPlayedGames() {
+<span class="nc" id="L100">		ArrayList&lt;PlayedGame&gt; playedGamesList = new ArrayList&lt;&gt;();</span>
+		
+<span class="nc" id="L102">		try (Session session = sFactory.openSession()) {</span>
+<span class="nc" id="L103">			String hql = &quot;from PlayedGame&quot;;</span>
+			@SuppressWarnings(&quot;rawtypes&quot;)
+<span class="nc" id="L105">			Query query = session.createQuery(hql);</span>
+			@SuppressWarnings(&quot;unchecked&quot;)
+<span class="nc" id="L107">			List&lt;PlayedGame&gt; result = query.list();</span>
+			
+<span class="nc bnc" id="L109" title="All 2 branches missed.">			for (PlayedGame a: result) {</span>
+<span class="nc" id="L110">				playedGamesList.add(a);</span>
+			}
+			
+<span class="nc" id="L113">		} catch (Exception e) {</span>
+<span class="nc" id="L114">			e.printStackTrace();</span>
+		}
+<span class="nc" id="L116">		PlayedGame[] playedGamesArray = new PlayedGame[playedGamesList.size()];</span>
+		
+<span class="nc" id="L118">		return (PlayedGame[])playedGamesList.toArray(playedGamesArray);</span>
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public Player[] readPlayers() {
+<span class="nc" id="L124">		ArrayList&lt;Player&gt; playersList = new ArrayList&lt;&gt;();</span>
+		
+<span class="nc" id="L126">		try (Session session = sFactory.openSession()) {</span>
+<span class="nc" id="L127">			String hql = &quot;from Player&quot;;</span>
+			@SuppressWarnings(&quot;rawtypes&quot;)
+<span class="nc" id="L129">			Query query = session.createQuery(hql);</span>
+			@SuppressWarnings(&quot;unchecked&quot;)
+<span class="nc" id="L131">			List&lt;Player&gt; result = query.list();</span>
+			
+<span class="nc bnc" id="L133" title="All 2 branches missed.">			for (Player a: result) {</span>
+<span class="nc" id="L134">				playersList.add(a);</span>
+			}
+			
+<span class="nc" id="L137">		} catch (Exception e) {</span>
+<span class="nc" id="L138">			e.printStackTrace();</span>
+		}
+<span class="nc" id="L140">		Player[] playersArray = new Player[playersList.size()];</span>
+		
+<span class="nc" id="L142">		return (Player[])playersList.toArray(playersArray);</span>
+	}
+	
+	/**	{@inheritDoc} */
+	public String searchEmail(String email) {
+<span class="nc" id="L147">		try (Session session = sFactory.openSession()) {</span>
+<span class="nc" id="L148">			String hql = &quot;from Player&quot;;</span>
+			@SuppressWarnings(&quot;rawtypes&quot;)
+<span class="nc" id="L150">			Query query = session.createQuery(hql);</span>
+			@SuppressWarnings(&quot;unchecked&quot;)
+<span class="nc" id="L152">			List&lt;Player&gt; result = query.list();</span>
+			
+<span class="nc bnc" id="L154" title="All 2 branches missed.">			for (Player a: result) {</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">				if (a.getEmail().equals(email)) {</span>
+<span class="nc" id="L156">					return a.getPassword();</span>
+				}
+			}
+<span class="nc" id="L159">		} catch (Exception e) {</span>
+<span class="nc" id="L160">			e.printStackTrace();</span>
+		}
+<span class="nc" id="L162">		return null;</span>
+	}
+	
+	/**	{@inheritDoc} */
+	public Player getPlayer(String email) {
+<span class="nc" id="L167">		try (Session session = sFactory.openSession()) {</span>
+<span class="nc" id="L168">			String hql = &quot;from Player&quot;;</span>
+			@SuppressWarnings(&quot;rawtypes&quot;)
+<span class="nc" id="L170">			Query query = session.createQuery(hql);</span>
+			@SuppressWarnings(&quot;unchecked&quot;)
+<span class="nc" id="L172">			List&lt;Player&gt; result = query.list();</span>
+			
+<span class="nc bnc" id="L174" title="All 2 branches missed.">			for (Player a: result) {</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">				if (a.getEmail().equals(email)) {</span>
+<span class="nc" id="L176">					return a;</span>
+				}
+			}
+<span class="nc" id="L179">		} catch (Exception e) {</span>
+<span class="nc" id="L180">			e.printStackTrace();</span>
+		}
+<span class="nc" id="L182">		return null;</span>
+	}
+	
+	/**	{@inheritDoc} */
+	public Player getPlayer(int playerID) {
+<span class="nc" id="L187">		Player player = new Player();</span>
+<span class="nc" id="L188">		try (Session session = sFactory.openSession()) {</span>
+<span class="nc" id="L189">			session.beginTransaction();</span>
+<span class="nc" id="L190">			player = (Player) session.get(Player.class, playerID);</span>
+<span class="nc" id="L191">			session.getTransaction().commit();</span>
+<span class="nc" id="L192">		} catch (Exception e) {</span>
+<span class="nc" id="L193">			e.printStackTrace();</span>
+		}
+<span class="nc" id="L195">		return player;</span>
+	}
+	
+	/**	{@inheritDoc} */
+	public PlayedGame getPlayedGame(int playedGameID) {
+<span class="nc" id="L200">		PlayedGame playedGame = new PlayedGame();</span>
+<span class="nc" id="L201">		try (Session session = sFactory.openSession()) {</span>
+<span class="nc" id="L202">			session.beginTransaction();</span>
+<span class="nc" id="L203">			playedGame = (PlayedGame) session.get(PlayedGame.class, playedGameID);</span>
+<span class="nc" id="L204">			session.getTransaction().commit();</span>
+<span class="nc" id="L205">		} catch (Exception e) {</span>
+<span class="nc" id="L206">			e.printStackTrace();</span>
+		}
+<span class="nc" id="L208">		return playedGame;</span>
+	}
+	
+	@Override
+	public ArrayList&lt;Player&gt; readRankings() {
+<span class="nc" id="L213">		ArrayList&lt;Player&gt; statsList = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L214">		try (Session session = sFactory.openSession()) {</span>
+			
+<span class="nc" id="L216">			String hql = &quot;from Player WHERE NOT id='1000' AND NOT id='1001'&quot;;</span>
+			
+			@SuppressWarnings(&quot;rawtypes&quot;)
+<span class="nc" id="L219">			Query query = session.createQuery(hql);</span>
+			@SuppressWarnings(&quot;unchecked&quot;)
+<span class="nc" id="L221">			List&lt;Player&gt; result = query.list();</span>
+<span class="nc" id="L222">			Collections.sort(result);</span>
+
+<span class="nc bnc" id="L224" title="All 2 branches missed.">			for (Player a: result) {</span>
+<span class="nc" id="L225">				statsList.add(a);</span>
+			}
+			
+			
+<span class="nc" id="L229">		} catch (Exception e) {</span>
+<span class="nc" id="L230">			e.printStackTrace();</span>
+		}
+<span class="nc" id="L232">		return statsList;</span>
+	}
+	
+	@Override
+	public List[] readCredits(int id, int count) {
+		
+<span class="nc" id="L238">		ArrayList&lt;Double&gt; creditsList = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L239">		ArrayList&lt;String&gt; datesList = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L240">		String hql = &quot;from PlayedGame where player1 = :id order by id desc&quot;;</span>
+		
+<span class="nc" id="L242">		try (Session session = sFactory.openSession()) {</span>
+			
+			@SuppressWarnings(&quot;rawtypes&quot;)
+<span class="nc" id="L245">			Query query = session.createQuery(hql).setParameter(&quot;id&quot;, id).setMaxResults(count);</span>
+			@SuppressWarnings(&quot;unchecked&quot;)
+<span class="nc" id="L247">			List&lt;PlayedGame&gt; result = query.list();</span>
+			
+<span class="nc bnc" id="L249" title="All 2 branches missed.">			if(count==1000) creditsList.add(100.0);</span>
+
+<span class="nc bnc" id="L251" title="All 2 branches missed.">			for (PlayedGame a: result) {</span>
+<span class="nc" id="L252">				creditsList.add(a.getCreditAfterPlayer1());</span>
+<span class="nc" id="L253">				datesList.add((String) a.getPlayedOn().toString());</span>
+			}
+<span class="nc" id="L255">			Collections.reverse(creditsList);</span>
+<span class="nc" id="L256">			Collections.reverse(datesList);</span>
+<span class="nc" id="L257">		} catch (Exception e) {</span>
+<span class="nc" id="L258">			e.printStackTrace();</span>
+		}
+<span class="nc" id="L260">		return new List[] {datesList, creditsList};</span>
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public boolean updatePlayer(Player player) {
+<span class="nc" id="L266">		Transaction transact = null;</span>
+<span class="nc" id="L267">		try (Session session = sFactory.openSession()) {</span>
+<span class="nc" id="L268">			transact = session.beginTransaction();</span>
+<span class="nc" id="L269">			session.update(player);</span>
+<span class="nc" id="L270">			transact.commit();</span>
+<span class="nc" id="L271">		} catch(Exception e) {</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">			if (transact != null) {</span>
+<span class="nc" id="L273">				transact.rollback();</span>
+			}
+<span class="nc" id="L275">			e.printStackTrace();</span>
+<span class="nc" id="L276">			return false;</span>
+		}
+<span class="nc" id="L278">		return true;</span>
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public boolean updatePlayedGame(PlayedGame playedGame) {
+<span class="nc" id="L284">		Transaction transact = null;</span>
+<span class="nc" id="L285">		try (Session session = sFactory.openSession()) {</span>
+<span class="nc" id="L286">			transact = session.beginTransaction();</span>
+<span class="nc" id="L287">			session.update(playedGame);</span>
+<span class="nc" id="L288">			transact.commit();</span>
+<span class="nc" id="L289">		} catch(Exception e) {</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">			if (transact != null) {</span>
+<span class="nc" id="L291">				transact.rollback();</span>
+			}
+<span class="nc" id="L293">			e.printStackTrace();</span>
+<span class="nc" id="L294">			return false;</span>
+		}
+<span class="nc" id="L296">		return true;</span>
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public boolean deleteAllPlayers() {
+		// TODO Auto-generated method stub
+<span class="nc" id="L303">		return false;</span>
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public boolean deleteAllPlayedGames() {
+<span class="nc" id="L309">		Transaction transact = null;</span>
+<span class="nc" id="L310">		try (Session session = sFactory.openSession()) {</span>
+<span class="nc" id="L311">			transact = session.beginTransaction();</span>
+<span class="nc" id="L312">			String hql = &quot;delete from PlayedGame&quot;;</span>
+			@SuppressWarnings(&quot;rawtypes&quot;)
+<span class="nc" id="L314">			Query query = session.createQuery(hql);</span>
+<span class="nc" id="L315">			int rows = query.executeUpdate();</span>
+<span class="nc" id="L316">			System.out.println(&quot;Delete successful, &quot; + rows + &quot; rows were deleted&quot;);</span>
+<span class="nc" id="L317">			transact.commit();</span>
+<span class="nc" id="L318">		} catch (Exception e) {</span>
+<span class="nc bnc" id="L319" title="All 2 branches missed.">			if (transact != null) {</span>
+<span class="nc" id="L320">				transact.rollback();</span>
+			}
+<span class="nc" id="L322">			e.printStackTrace();</span>
+<span class="nc" id="L323">			return false;</span>
+		}
+<span class="nc" id="L325">		return true;</span>
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public boolean deletePlayer(int playerID) {
+<span class="nc" id="L331">		Transaction transact = null;</span>
+<span class="nc" id="L332">		try (Session session = sFactory.openSession()) {</span>
+<span class="nc" id="L333">			transact = session.beginTransaction();</span>
+<span class="nc" id="L334">			String hql = &quot;delete from Player where id = :ID&quot;;</span>
+<span class="nc" id="L335">			session.createQuery(hql).setParameter(&quot;ID&quot;, playerID).executeUpdate();</span>
+<span class="nc" id="L336">			transact.commit();</span>
+<span class="nc" id="L337">		} catch(Exception e) {</span>
+<span class="nc bnc" id="L338" title="All 2 branches missed.">			if (transact != null) {</span>
+<span class="nc" id="L339">				transact.rollback();</span>
+			}
+<span class="nc" id="L341">			e.printStackTrace();</span>
+<span class="nc" id="L342">			return false;</span>
+		}
+<span class="nc" id="L344">		return true;</span>
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public boolean deletePlayedGame(int playedGameID) {
+<span class="nc" id="L350">		Transaction transact = null;</span>
+<span class="nc" id="L351">		try (Session session = sFactory.openSession()) {</span>
+<span class="nc" id="L352">			transact = session.beginTransaction();</span>
+<span class="nc" id="L353">			String hql = &quot;delete from PlayedGame where id = :ID&quot;;</span>
+<span class="nc" id="L354">			session.createQuery(hql).setParameter(&quot;ID&quot;, playedGameID).executeUpdate();</span>
+<span class="nc" id="L355">			transact.commit();</span>
+<span class="nc" id="L356">		} catch(Exception e) {</span>
+<span class="nc bnc" id="L357" title="All 2 branches missed.">			if (transact != null) {</span>
+<span class="nc" id="L358">				transact.rollback();</span>
+			}
+<span class="nc" id="L360">			e.printStackTrace();</span>
+<span class="nc" id="L361">			return false;</span>
+		}
+<span class="nc" id="L363">		return true;</span>
+	}
+
+	@Override
+	public ArrayList&lt;PlayedGame&gt; readPlayedGames(int playerId) {
+<span class="nc" id="L368">		ArrayList&lt;PlayedGame&gt; playedGames = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L369">		String hql = &quot;from PlayedGame where player1 = :id&quot;;</span>
+		
+<span class="nc" id="L371">		try (Session session = sFactory.openSession()) {</span>
+			
+			@SuppressWarnings(&quot;rawtypes&quot;)
+<span class="nc" id="L374">			Query query = session.createQuery(hql).setParameter(&quot;id&quot;, playerId);</span>
+			@SuppressWarnings(&quot;unchecked&quot;)
+<span class="nc" id="L376">			List&lt;PlayedGame&gt; result = query.list();</span>
+<span class="nc bnc" id="L377" title="All 2 branches missed.">			for (PlayedGame a: result) {</span>
+<span class="nc" id="L378">				playedGames.add(a);</span>
+			}
+			
+			
+<span class="nc" id="L382">		} catch (Exception e) {</span>
+<span class="nc" id="L383">			e.printStackTrace();</span>
+		}
+<span class="nc" id="L385">		return playedGames;</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span>peliymparisto (12.3.2021 13.16.32)</div></body></html>

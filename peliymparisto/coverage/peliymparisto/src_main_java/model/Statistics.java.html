@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fi"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Statistics.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">peliymparisto (12.3.2021 13.16.32)</a> &gt; <a href="../../index.html" class="el_group">peliymparisto</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">Statistics.java</span></div><h1>Statistics.java</h1><pre class="source lang-java linenums">package model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javafx.scene.chart.Axis;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+
+/**
+ * This class is responsible for creating and passing statistics in statistics view.
+ * @author Tuomas Rajala
+ * @version 3.1 9.3.2021
+ */
+public class Statistics {
+	
+	/*Current players id*/
+	private int playerId;
+	/*Only one dao is made*/
+	private DAOIF dao;
+	
+<span class="nc" id="L24">	public Statistics(DAOIF dao) {</span>
+<span class="nc" id="L25">		this.dao = dao;</span>
+<span class="nc" id="L26">	}</span>
+
+	/**
+	 * Fetches all necessary data from database, creates LineChart object, fills it and returns it.
+	 * @param a integer for counting how many results is fetched from database.
+	 * @return LineChart object.
+	 */
+	public LineChart&lt;String, Number&gt; getLineChart(int count) {
+<span class="nc" id="L34">		List[] creditsList = this.dao.readCredits(this.playerId, count);</span>
+<span class="nc" id="L35">		final Axis&lt;String&gt; xAxis = new CategoryAxis();</span>
+<span class="nc" id="L36">        final NumberAxis yAxis = new NumberAxis();</span>
+<span class="nc" id="L37">        xAxis.setLabel(&quot;Päivämäärä&quot;);</span>
+<span class="nc" id="L38">        final LineChart&lt;String,Number&gt; lineChart = </span>
+<span class="nc" id="L39">                new LineChart&lt;String,Number&gt;(xAxis,yAxis); //creating the chart</span>
+<span class="nc" id="L40">        lineChart.setTitle(&quot;Saldoni&quot;);</span>
+<span class="nc" id="L41">        XYChart.Series series = new XYChart.Series();</span>
+<span class="nc" id="L42">        series.setName(&quot;Yllä näet saldosi historiallisen kehityksen&quot;);</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        for(int i=0;i&lt;creditsList[0].size();i++) {</span>
+<span class="nc" id="L44">        	series.getData().add(new XYChart.Data(creditsList[0].get(i), creditsList[1].get(i)));</span>
+        }
+<span class="nc" id="L46">        lineChart.getData().add(series);</span>
+<span class="nc" id="L47">        return lineChart;</span>
+	}
+	
+	/**
+	 * Passes ranking data
+	 * @return ArrayList. Data from database.
+	 */
+	public ArrayList&lt;Player&gt; getRanking() {
+<span class="nc" id="L55">		return this.dao.readRankings();</span>
+	}
+
+	/**
+	 * Passes signed players played games from database.
+	 * @return ArrayList
+	 */
+	public ArrayList&lt;PlayedGame&gt; getPlayedGames() {
+<span class="nc" id="L63">		return this.dao.readPlayedGames(this.playerId);</span>
+	}
+
+	/**
+	 * Sets new players id.
+	 * @param integer. players new id.
+	 */
+	public void setPlayerId(int id) {
+<span class="nc" id="L71">		this.playerId = id;</span>
+<span class="nc" id="L72">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span>peliymparisto (12.3.2021 13.16.32)</div></body></html>

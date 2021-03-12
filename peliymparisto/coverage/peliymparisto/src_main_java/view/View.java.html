@@ -1,0 +1,1298 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fi"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>View.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">peliymparisto (12.3.2021 13.16.32)</a> &gt; <a href="../../index.html" class="el_group">peliymparisto</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">view</a> &gt; <span class="el_source">View.java</span></div><h1>View.java</h1><pre class="source lang-java linenums">package view;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+
+import controller.Controller;
+import controller.ControllerIF;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Slider;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabClosingPolicy;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import model.HandValue;
+import model.PlayedGame;
+import model.PlayedGameTableView;
+import model.Player;
+import model.PlayerRanking;
+
+/**
+ * The Graphical User Interface built with JavaFX
+ * @author ---
+ * @version 1.7 09.03.2021
+ */
+<span class="nc" id="L69">public class View extends Application implements ViewIF {</span>
+	
+	//Normal variables here --&gt;
+	/** Controller which transfers info per mvc structure */
+	private ControllerIF controller;
+	private Player player;
+	
+	//GUI components here --&gt;
+	/** Button to enter the poker game view */
+	private Button enterPokerGame;
+	/** Button to enter the settings view */
+	private Button enterSettings;
+	/** Button to enter the stats view */
+	private Button enterStats;
+	/** Button to close the program */
+	private Button exitProgram;
+	private Tab ranking, creditDevelopment, playedGames;
+	private ComboBox combobox;
+	LineChart&lt;String, Number&gt; lineChart;
+	private TableView tableViewRanks, tableViewGames;
+	private Scene mainScene;
+
+	
+	//PokerGameView variables
+	private Text pokerGameCredits;
+	private Text pokerGameBet;
+	private GridPane cardPane;
+<span class="nc" id="L96">	private ArrayList&lt;Integer&gt; cardsToSwapIndexes = new ArrayList&lt;Integer&gt;();</span>
+<span class="nc" id="L97">	private boolean gameOn = false;</span>
+	private Text notification;
+<span class="nc" id="L99">	private StackPane [] imageStacks = new StackPane [5];</span>
+<span class="nc" id="L100">	private ImageView [] cardViews = new ImageView [5];</span>
+<span class="nc" id="L101">	private ImageView [] lockViews = new ImageView [5];</span>
+<span class="nc" id="L102">	private List &lt;Text&gt; winTableTexts = new ArrayList&lt;Text&gt;(); </span>
+
+	//navBar components
+	/** Button to go to main menu*/
+	private Button homeButton;
+	/** Button to open the register pop-up*/
+	private Button registerButton;
+	/** Text guide for toolbar*/
+	private Label signInLabel;
+	/** Input field for the user's email*/
+	private TextField emailInput;
+	/** Input field for the user's password*/
+	private PasswordField passwordInput;
+	/** Button to try signing in*/
+	private Button signInButton;
+	/**Text telling the amount of user's credits*/
+	private Label creditView;
+	private MenuButton playerMenu;
+	/** Button to show users information*/
+	private MenuItem playerInfoMI;
+	/** Button for the user to log out*/
+	private MenuItem logOutMI;
+	/** Button for the not logged in user to get info about forgotten password*/
+	private MenuItem logInProblemMI;
+	/** Button to show information about the program*/
+	private MenuItem infoMI;
+	/** Button to exit the program*/
+	private MenuItem exitMI;
+	
+	//registerform components
+	/** Input field for user's first name in the registration window */
+	private TextField firstNameRegisterInput;
+	/** Input field for user's last name in the registration window */
+	private TextField lastNameRegisterInput;
+	/** Input field for user's profile name in the registration window */
+	private TextField profileNameRegisterInput;
+	/** Input field for user's email in the registration window */
+	private TextField emailRegisterInput;
+	/** Input field for user's chosen password in the registration window */
+	private PasswordField passwordRegisterInput;
+	/** Input field for user's chosen password for the second time in the registration window */
+	private PasswordField passwordRegisterVerifyInput;
+	/** Choice box for user's choice if he wants to transfer accumulated credits in the registration window */
+	private CheckBox creditTransferRegisterInput;
+	/** Button to confirm registration in the registration window */
+	private Button confirmRegisterButton;
+	/** Button to cancel registration in the registration window */
+	private Button cancelRegisterButton;
+	
+	//playerinformation components
+	/** Button to save changes to player information in player info window */
+	private Button savePlayerInfoButton;
+	/** Button to cancel changes to player information in player info window */
+	private Button cancelPlayerInfoButton;
+	/** Button to open editing for player profile name in player info window */
+	private Button editProfileNameButton;
+	/** Button to open editing for player password in player info window */
+	private Button editPasswordButton;
+	/** Input field for user's new profile name in player info window */
+	private TextField newProfileNameInput;
+	/** Button to accept changes to profile name in profile name editing */
+	private Button acceptPNEditsButton;
+	/** Button to cancel changes to profile name in profile name editing */
+	private Button cancelPNEditsButton;
+	/** Input field for user's new password in player info window */
+	private PasswordField newPasswordInput;
+	/** Button to accept changes to password in password editing */
+	private Button acceptPSEditsButton;
+	/** Button to cancel changes to password in password editing */
+	private Button cancelPSEditsButton;
+
+
+	public static void main(String[] args) {
+<span class="nc" id="L175">		launch(args);</span>
+<span class="nc" id="L176">	}</span>
+	
+	/**
+	 * Setting starting values
+	 */
+	@Override
+	public void init(){
+		//setting the chosen controller
+<span class="nc" id="L184">		controller = new Controller(this);</span>
+		//setting a default player (Tester)
+<span class="nc" id="L186">		controller.getDefaultPlayer();</span>
+<span class="nc" id="L187">	}</span>
+
+	@Override
+	public void start(Stage primaryStage) {
+		try {
+			
+			// this will handle the safe closing of the program
+<span class="nc" id="L194">			primaryStage.setOnCloseRequest(new EventHandler&lt;WindowEvent&gt;() {</span>
+			    @Override
+			    public void handle(WindowEvent t) {
+<span class="nc" id="L197">			        Platform.exit();</span>
+<span class="nc" id="L198">			        System.exit(0);</span>
+<span class="nc" id="L199">			    }</span>
+			});
+			
+<span class="nc" id="L202">			primaryStage.setTitle(&quot;GameEnvironment&quot;);</span>
+
+<span class="nc" id="L204">			BorderPane mainMenu = mainMenuBuilder();</span>
+<span class="nc" id="L205">			AnchorPane pokerGame = pokerGameBuilder();</span>
+<span class="nc" id="L206">			BorderPane settings = settingsBuilder();</span>
+<span class="nc" id="L207">			BorderPane stats = statsBuilder();</span>
+<span class="nc" id="L208">			HBox navBar = navBarBuilder();</span>
+			
+<span class="nc" id="L210">			BorderPane mainView = new BorderPane();</span>
+<span class="nc" id="L211">			mainView.setTop(navBar);</span>
+<span class="nc" id="L212">			mainView.setCenter(mainMenu);</span>
+<span class="nc" id="L213">			mainScene = new Scene(mainView);</span>
+			
+<span class="nc" id="L215">			primaryStage.getIcons().add(new Image(&quot;/images/cards_icon.png&quot;));</span>
+			
+<span class="nc" id="L217">			createGUITransitions(primaryStage, mainView, mainMenu, pokerGame, settings, stats);</span>
+
+<span class="nc" id="L219">			primaryStage.setScene(mainScene);</span>
+<span class="nc" id="L220">	        primaryStage.show();</span>
+			
+<span class="nc" id="L222">		} catch (Exception e) {</span>
+<span class="nc" id="L223">			e.printStackTrace();</span>
+		}
+<span class="nc" id="L225">	}</span>
+	
+	/**
+	 * Contains the GUI for main menu
+	 * @return BorderPane type layout for the main menu
+	 */
+	private BorderPane mainMenuBuilder() {
+<span class="nc" id="L232">		Image aceCards = new Image(&quot;/images/aces.png&quot;, 500, 300, false, false);</span>
+<span class="nc" id="L233">		ImageView aceView = new ImageView(aceCards);</span>
+		
+<span class="nc" id="L235">		BorderPane mainMenuView = new BorderPane();</span>
+		//mainMenuView.setPrefSize(400, 400);
+<span class="nc" id="L237">		VBox napit = new VBox();</span>
+<span class="nc" id="L238">		napit.setAlignment(Pos.CENTER);</span>
+<span class="nc" id="L239">		napit.setPadding(new Insets(10, 10, 10, 10));</span>
+<span class="nc" id="L240">		napit.setSpacing(10);</span>
+<span class="nc" id="L241">		napit.setPrefWidth(100);</span>
+<span class="nc" id="L242">		enterPokerGame = new Button(&quot;Pokeri&quot;);</span>
+<span class="nc" id="L243">		enterPokerGame.setMinWidth(napit.getPrefWidth());</span>
+<span class="nc" id="L244">		enterSettings = new Button(&quot;Asetukset&quot;);</span>
+<span class="nc" id="L245">		enterSettings.setMinWidth(napit.getPrefWidth());</span>
+<span class="nc" id="L246">		enterStats = new Button(&quot;Tilastot&quot;);</span>
+<span class="nc" id="L247">		enterStats.setMinWidth(napit.getPrefWidth());</span>
+<span class="nc" id="L248">		exitProgram = new Button(&quot;Lopeta&quot;);</span>
+<span class="nc" id="L249">		exitProgram.setMinWidth(napit.getPrefWidth());</span>
+<span class="nc" id="L250">		napit.getChildren().addAll(aceView, enterPokerGame, enterSettings, enterStats, exitProgram);</span>
+		
+<span class="nc" id="L252">		mainMenuView.setCenter(napit);</span>
+<span class="nc" id="L253">		return mainMenuView;</span>
+	}
+	
+	/**
+	 * Contains the navigation toolbar in the top of the program view
+	 * @return HBox type assortment of buttons and labels for the toolbar
+	 */
+	private HBox navBarBuilder() {
+<span class="nc" id="L261">		Image user = new Image(&quot;/images/user.png&quot;, 20, 20, false, false);</span>
+<span class="nc" id="L262">		Image settings = new Image(&quot;/images/info.png&quot;, 20, 20, false, false);</span>
+<span class="nc" id="L263">		Image home = new Image(&quot;/images/home.png&quot;, 20, 20, false, false);</span>
+		
+<span class="nc" id="L265">		HBox navBar = new HBox();</span>
+		
+<span class="nc" id="L267">		homeButton = new Button();</span>
+<span class="nc" id="L268">		homeButton.setGraphic(new ImageView(home));</span>
+		
+<span class="nc" id="L270">		registerButton = new Button(&quot;Rekisteröidy&quot;);</span>
+<span class="nc" id="L271">		signInLabel = new Label(&quot;tai kirjaudu: &quot;);</span>
+		
+<span class="nc" id="L273">		emailInput = new TextField();</span>
+<span class="nc" id="L274">		emailInput.setPromptText(&quot;Syötä sähköposti&quot;);</span>
+<span class="nc" id="L275">		passwordInput = new PasswordField();</span>
+<span class="nc" id="L276">		passwordInput.setPromptText(&quot;Syötä salasana&quot;);</span>
+<span class="nc" id="L277">		signInButton = new Button(&quot;Kirjaudu&quot;);</span>
+		
+<span class="nc" id="L279">		Label creditLabel = new Label(&quot;Saldo: &quot;);</span>
+<span class="nc" id="L280">		creditView = new Label(String.valueOf(this.player.getCredits()));</span>
+<span class="nc" id="L281">		creditView.setStyle(&quot;-fx-font-weight: bold; -fx-border-color: black; -fx-background-color: #c4d8de;&quot;);</span>
+<span class="nc" id="L282">		creditView.setPadding(new Insets(4, 4, 4, 4));</span>
+
+<span class="nc" id="L284">		playerMenu = new MenuButton(&quot;Ei kirjautunut&quot;);</span>
+<span class="nc" id="L285">		playerMenu.setGraphic(new ImageView(user));</span>
+<span class="nc" id="L286">		playerInfoMI = new MenuItem(&quot;Näytä pelaajatiedot&quot;);</span>
+<span class="nc" id="L287">		logOutMI = new MenuItem(&quot;Kirjaudu ulos&quot;);</span>
+<span class="nc" id="L288">		logInProblemMI = new MenuItem(&quot;Unohditko salasanasi&quot;);</span>
+<span class="nc" id="L289">		playerMenu.getItems().addAll(playerInfoMI, logOutMI, logInProblemMI);</span>
+<span class="nc" id="L290">		logOutMI.setVisible(false);</span>
+<span class="nc" id="L291">		playerInfoMI.setVisible(false);</span>
+<span class="nc" id="L292">		MenuButton menu2 = new MenuButton();</span>
+<span class="nc" id="L293">		menu2.setGraphic(new ImageView(settings));</span>
+<span class="nc" id="L294">		infoMI = new MenuItem(&quot;Lisätietoja ohjelmasta&quot;);</span>
+<span class="nc" id="L295">		exitMI = new MenuItem(&quot;Lopeta ohjelma&quot;);</span>
+<span class="nc" id="L296">		menu2.getItems().addAll(infoMI, exitMI);</span>
+		
+<span class="nc" id="L298">		navBar.getChildren().addAll(homeButton, registerButton, signInLabel, emailInput, passwordInput, signInButton, </span>
+<span class="nc" id="L299">				creditLabel, creditView, playerMenu, menu2);</span>
+<span class="nc" id="L300">		navBar.setAlignment(Pos.CENTER);</span>
+<span class="nc" id="L301">		navBar.setPadding(new Insets(5, 5, 5, 5));</span>
+<span class="nc" id="L302">		HBox.setMargin(registerButton, new Insets(0, 10, 0, 10));</span>
+<span class="nc" id="L303">		HBox.setMargin(signInLabel, new Insets(0, 10, 0, 0));</span>
+<span class="nc" id="L304">		HBox.setMargin(signInButton, new Insets(0, 10, 0, 0));</span>
+<span class="nc" id="L305">		HBox.setMargin(playerMenu, new Insets(0, 10, 0, 10));</span>
+<span class="nc" id="L306">		return navBar;</span>
+	}
+	
+	/**
+	 * Contains the GUI for poker game
+	 * @return AnchorPane type layout for the poker game
+	 */
+	private AnchorPane pokerGameBuilder() {
+<span class="nc" id="L314">		Collections.addAll(cardsToSwapIndexes,0,1,2,3,4);</span>
+		
+		//Notification text under cards
+<span class="nc" id="L317">		notification = new Text(&quot;Valitse panos ja paina pelaa&quot;);</span>
+<span class="nc" id="L318">		AnchorPane.setBottomAnchor(notification, 70.0);</span>
+<span class="nc" id="L319">		notification.setLayoutX(270);</span>
+<span class="nc" id="L320">		notification.setFont(Font.font(24));</span>
+		
+		// Top left corner image
+<span class="nc" id="L323">		ImageView topLeftImg = new ImageView(new Image(&quot;/images/pokergame_top_left.png&quot;, 110, 125.4 , true, true));</span>
+<span class="nc" id="L324">		AnchorPane.setLeftAnchor(topLeftImg, 13.0);</span>
+<span class="nc" id="L325">		AnchorPane.setTopAnchor(topLeftImg, 5.0);</span>
+		
+		
+		// gamble button placement
+<span class="nc" id="L329">		Button gamble = new Button (&quot;Tuplaa&quot;);</span>
+<span class="nc" id="L330">		gamble.setPrefHeight(58.0);</span>
+<span class="nc" id="L331">		gamble.setPrefWidth(98.0);</span>
+<span class="nc" id="L332">		AnchorPane.setBottomAnchor(gamble, 11.39);</span>
+<span class="nc" id="L333">		AnchorPane.setRightAnchor(gamble, 135.0);</span>
+		
+		// play button placement
+<span class="nc" id="L336">		Button play = new Button(&quot;Pelaa&quot;);</span>
+<span class="nc" id="L337">		play.setPrefHeight(58.0);</span>
+<span class="nc" id="L338">		play.setPrefWidth(98.0);</span>
+<span class="nc" id="L339">		AnchorPane.setBottomAnchor(play, 11.39);</span>
+<span class="nc" id="L340">		AnchorPane.setRightAnchor(play, 14.59);</span>
+		
+		// bet increment button placement
+<span class="nc" id="L343">		Button plus = new Button(&quot;+&quot;);</span>
+<span class="nc" id="L344">		plus.setPrefSize(30, 30);</span>
+<span class="nc" id="L345">		AnchorPane.setBottomAnchor(plus, 24.4);</span>
+<span class="nc" id="L346">		AnchorPane.setLeftAnchor(plus, 470.0);</span>
+<span class="nc" id="L347">		plus.setOnAction(e -&gt; {</span>
+<span class="nc" id="L348">			setPokerGameBet(controller.getBetIncrement());</span>
+<span class="nc" id="L349">		});</span>
+			
+		// bet decrement button placement
+<span class="nc" id="L352">		Button minus = new Button(&quot;-&quot;);</span>
+<span class="nc" id="L353">		minus.setPrefSize(30, 30);</span>
+<span class="nc" id="L354">		AnchorPane.setBottomAnchor(minus, 24.4);</span>
+<span class="nc" id="L355">		AnchorPane.setLeftAnchor(minus, 340.0);</span>
+<span class="nc" id="L356">		minus.setOnAction(e -&gt; {</span>
+<span class="nc" id="L357">			setPokerGameBet(controller.getBetDecrement());</span>
+<span class="nc" id="L358">		});</span>
+		
+		
+		// Gridpane for wintable
+<span class="nc" id="L362">		GridPane wintable = new GridPane();</span>
+<span class="nc" id="L363">		wintable.setGridLinesVisible(true);</span>
+<span class="nc" id="L364">		AnchorPane.setTopAnchor(wintable, 0.0);</span>
+<span class="nc" id="L365">		AnchorPane.setRightAnchor(wintable, 13.0);</span>
+		
+<span class="nc bnc" id="L367" title="All 2 branches missed.">		for(int i = 0; i &lt; 4; i++) {</span>
+<span class="nc" id="L368">			RowConstraints row = new RowConstraints(33);</span>
+<span class="nc" id="L369">			wintable.getRowConstraints().add(row);</span>
+		}
+		
+<span class="nc bnc" id="L372" title="All 2 branches missed.">		for(int i = 0; i &lt; 2; i++) {</span>
+<span class="nc" id="L373">			ColumnConstraints column = new ColumnConstraints();</span>
+<span class="nc" id="L374">			column.setPrefWidth(135.0);</span>
+<span class="nc" id="L375">			wintable.getColumnConstraints().add(column);</span>
+		}
+		
+		// Texts for wintable
+<span class="nc" id="L379">		Text acepair = new Text();</span>
+<span class="nc" id="L380">		Text pair = new Text();</span>
+<span class="nc" id="L381">		Text threeofkind = new Text();</span>
+<span class="nc" id="L382">		Text straight = new Text();</span>
+<span class="nc" id="L383">		Text flush = new Text();</span>
+<span class="nc" id="L384">		Text fullhouse = new Text();</span>
+<span class="nc" id="L385">		Text fourofkind = new Text();</span>
+<span class="nc" id="L386">		Text straightflush = new Text();</span>
+<span class="nc" id="L387">		Collections.addAll(winTableTexts, acepair, pair, threeofkind, straight, flush, fullhouse, fourofkind, straightflush);</span>
+<span class="nc bnc" id="L388" title="All 2 branches missed.">		for(Text t : winTableTexts) {</span>
+<span class="nc" id="L389">			t.setFont(Font.font(16));</span>
+<span class="nc" id="L390">			wintable.setMargin(t, new Insets(5,5,5,5));</span>
+		}
+		
+<span class="nc" id="L393">		wintable.add(acepair, 0, 3);</span>
+<span class="nc" id="L394">		wintable.add(pair, 1, 3);</span>
+<span class="nc" id="L395">		wintable.add(threeofkind, 0, 2);</span>
+<span class="nc" id="L396">		wintable.add(straight, 1, 2);</span>
+<span class="nc" id="L397">		wintable.add(flush, 0, 1);</span>
+<span class="nc" id="L398">		wintable.add(fullhouse, 1, 1);</span>
+<span class="nc" id="L399">		wintable.add(fourofkind, 0, 0);</span>
+<span class="nc" id="L400">		wintable.add(straightflush, 1, 0);</span>
+		
+		// credits &amp; bet placements
+<span class="nc" id="L403">		pokerGameCredits = new Text();</span>
+<span class="nc" id="L404">		pokerGameCredits.setFont(Font.font(16));</span>
+<span class="nc" id="L405">		pokerGameBet = new Text();</span>
+<span class="nc" id="L406">		pokerGameBet.setFont(Font.font(16));</span>
+<span class="nc" id="L407">		setPokerGamePlayerCredits();</span>
+<span class="nc" id="L408">		AnchorPane.setBottomAnchor(pokerGameCredits, 30.0);</span>
+<span class="nc" id="L409">		AnchorPane.setLeftAnchor(pokerGameCredits, 36.0);</span>
+<span class="nc" id="L410">		setPokerGameBet(controller.getBet());</span>
+<span class="nc" id="L411">		AnchorPane.setBottomAnchor(pokerGameBet, 30.0);</span>
+<span class="nc" id="L412">		AnchorPane.setLeftAnchor(pokerGameBet, 385.0);</span>
+		
+		// Gridpane for card images
+<span class="nc" id="L415">		cardPane = new GridPane ();</span>
+<span class="nc" id="L416">		cardPane.setPrefHeight(166.0);</span>
+<span class="nc" id="L417">		cardPane.setPrefWidth(579.0);</span>
+<span class="nc" id="L418">		AnchorPane.setTopAnchor(cardPane, 140.0);</span>
+<span class="nc" id="L419">		AnchorPane.setRightAnchor(cardPane, 10.0);</span>
+<span class="nc" id="L420">		AnchorPane.setLeftAnchor(cardPane, 10.0);</span>
+<span class="nc" id="L421">		AnchorPane.setBottomAnchor(cardPane, 105.0);</span>
+		
+<span class="nc" id="L423">		RowConstraints cardRow = new RowConstraints();</span>
+<span class="nc" id="L424">		cardRow.setPrefHeight(30.0);</span>
+<span class="nc" id="L425">		cardRow.setMinHeight(10.0);</span>
+<span class="nc" id="L426">		cardRow.setVgrow(Priority.ALWAYS);</span>
+<span class="nc" id="L427">		cardRow.setFillHeight(true);</span>
+<span class="nc" id="L428">		cardPane.getRowConstraints().add(cardRow);</span>
+		
+	 
+<span class="nc bnc" id="L431" title="All 2 branches missed.">		for(int i = 0; i &lt; 5; i++) {</span>
+<span class="nc" id="L432">			ColumnConstraints column = new ColumnConstraints();</span>
+<span class="nc" id="L433">			column.setHgrow(Priority.ALWAYS);</span>
+<span class="nc" id="L434">			column.setPrefWidth(100.0);</span>
+<span class="nc" id="L435">			column.setMinWidth(10.0);</span>
+<span class="nc" id="L436">			column.setFillWidth(true);</span>
+<span class="nc" id="L437">			cardPane.getColumnConstraints().add(column);</span>
+		}
+		
+		
+		
+		// Initial card images
+<span class="nc bnc" id="L443" title="All 2 branches missed.">		for(int i = 0; i &lt; imageStacks.length ; i++) {</span>
+<span class="nc" id="L444">			imageStacks[i] = new StackPane();</span>
+<span class="nc" id="L445">			imageStacks[i].setMinHeight(0);</span>
+<span class="nc" id="L446">			imageStacks[i].setMinWidth(0);</span>
+<span class="nc" id="L447">			imageStacks[i].setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);</span>
+<span class="nc" id="L448">			cardViews[i] = new ImageView(new Image(&quot;/images/green_back.png&quot;));</span>
+<span class="nc" id="L449">			cardViews[i].fitWidthProperty().bind(imageStacks[i].widthProperty());</span>
+<span class="nc" id="L450">			cardViews[i].fitHeightProperty().bind(imageStacks[i].heightProperty());</span>
+<span class="nc" id="L451">			imageStacks[i].getChildren().add(cardViews[i]);</span>
+<span class="nc" id="L452">			lockViews[i] = new ImageView(new Image(&quot;/images/lukko.png&quot;, 75, 75, true, true));</span>
+<span class="nc" id="L453">			imageStacks[i].getChildren().add(lockViews[i]);</span>
+<span class="nc" id="L454">			lockViews[i].setVisible(false);</span>
+<span class="nc" id="L455">			cardPane.add(imageStacks[i], i, 0);</span>
+		}
+		
+		
+		//Sets the whole AnchorPane with elements
+<span class="nc" id="L460">		AnchorPane pokerGameView = new AnchorPane(play, gamble, plus, minus, pokerGameCredits, pokerGameBet,</span>
+<span class="nc" id="L461">				wintable, cardPane, notification, topLeftImg);</span>
+		
+<span class="nc" id="L463">		play.setOnAction(e -&gt; {</span>
+<span class="nc bnc" id="L464" title="All 2 branches missed.">			for(ImageView v : cardViews) {</span>
+<span class="nc" id="L465">				v.setOpacity(1);</span>
+			}
+<span class="nc" id="L467">			cardPane.setStyle(null);</span>
+<span class="nc bnc" id="L468" title="All 2 branches missed.">			if(!gameOn) {</span>
+<span class="nc" id="L469">			controller.startPokerGame();</span>
+<span class="nc" id="L470">			play.setText(&quot;Jako&quot;);</span>
+<span class="nc" id="L471">			plus.setVisible(false);</span>
+<span class="nc" id="L472">			minus.setVisible(false);</span>
+<span class="nc" id="L473">			setNotification(&quot;Valitse kortit jotka haluat lukita ja paina jako&quot;);</span>
+<span class="nc" id="L474">			} else {</span>
+<span class="nc" id="L475">			setSwappedCards();</span>
+<span class="nc" id="L476">			plus.setVisible(true);</span>
+<span class="nc" id="L477">			minus.setVisible(true);</span>
+<span class="nc" id="L478">			play.setText(&quot;Pelaa&quot;);</span>
+			}
+<span class="nc bnc" id="L480" title="All 2 branches missed.">			gameOn = !gameOn;</span>
+<span class="nc" id="L481">		});</span>
+		
+<span class="nc" id="L483">		return pokerGameView;</span>
+	}
+	
+	/**
+	 * Contains the GUI for settings
+	 * @return BorderPane type layout for the settings
+	 */
+	// Work in progress - Ville Riepponen
+private BorderPane settingsBuilder() {
+		
+		
+		
+<span class="nc" id="L495">		BorderPane settingsView = new BorderPane();</span>
+<span class="nc" id="L496">		settingsView.setPrefSize(400, 400);</span>
+<span class="nc" id="L497">		RadioButton radioButton1 = new RadioButton(&quot;Dark Mode&quot;);</span>
+<span class="nc" id="L498">        RadioButton radioButton2 = new RadioButton(&quot;Light Mode&quot;);</span>
+<span class="nc" id="L499">        ToggleGroup radioGroup = new ToggleGroup();</span>
+        
+<span class="nc" id="L501">        radioButton1.setToggleGroup(radioGroup);</span>
+<span class="nc" id="L502">        radioButton2.setToggleGroup(radioGroup);</span>
+        
+        
+<span class="nc" id="L505">        HBox hbox = new HBox(radioButton1, radioButton2);</span>
+<span class="nc" id="L506">        hbox.setAlignment(Pos.CENTER);</span>
+<span class="nc" id="L507">        settingsView.setCenter(hbox);</span>
+
+<span class="nc" id="L509">		Scene settingsScene = new Scene(settingsView);</span>
+		
+<span class="nc" id="L511">		radioGroup.selectedToggleProperty().addListener(new ChangeListener&lt;Toggle&gt;()  </span>
+        { 
+            public void changed(ObservableValue&lt;? extends Toggle&gt; ob,  
+                                                    Toggle o, Toggle n) 
+            { 
+  
+<span class="nc" id="L517">                RadioButton rb = (RadioButton)radioGroup.getSelectedToggle(); </span>
+  
+<span class="nc bnc" id="L519" title="All 2 branches missed.">                if (rb != null) { </span>
+<span class="nc" id="L520">                    String s = rb.getText(); </span>
+                    
+                    
+<span class="nc bnc" id="L523" title="All 2 branches missed.">                    if(s == &quot;Dark Mode&quot;) {</span>
+<span class="nc" id="L524">                    	mainScene.getRoot().getStylesheets().add(&quot;/styles/style.css&quot;);</span>
+<span class="nc" id="L525">                    } else {</span>
+<span class="nc" id="L526">                    	mainScene.getRoot().getStylesheets().remove(&quot;/styles/style.css&quot;);</span>
+                    }
+                } 
+<span class="nc" id="L529">            } </span>
+        }); 
+		
+<span class="nc" id="L532">		return settingsView;</span>
+	}
+	
+	/**
+	 * Contains the GUI for stats
+	 * @return BorderPane type layout for the stats
+	 */
+	private BorderPane statsBuilder() {
+<span class="nc" id="L540">		BorderPane statsView = new BorderPane();</span>
+		
+<span class="nc" id="L542">		TabPane tabPane = new TabPane();</span>
+<span class="nc" id="L543">		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);</span>
+		
+<span class="nc" id="L545">		creditDevelopment = new Tab(&quot;Saldo&quot;, new Label(&quot;Tämä välilehti näyttää saldosi.&quot;));</span>
+<span class="nc" id="L546">		ImageView growth = new ImageView(new Image(&quot;/images/growthtab.png&quot;, 25, 22, false, false));</span>
+<span class="nc" id="L547">		creditDevelopment.setGraphic(growth);</span>
+<span class="nc" id="L548">		combobox = new ComboBox();</span>
+<span class="nc" id="L549">		combobox.getItems().add(&quot;KAIKKI&quot;);</span>
+<span class="nc" id="L550">		combobox.getItems().add(&quot;Viimeiset 10&quot;);</span>
+<span class="nc" id="L551">		combobox.getItems().add(&quot;Viimeiset 50&quot;);</span>
+<span class="nc" id="L552">		combobox.getSelectionModel().select(0);</span>
+<span class="nc" id="L553">		combobox.getSelectionModel().selectedItemProperty().addListener( (options, oldValue, newValue) -&gt; {</span>
+<span class="nc" id="L554">	           fillStatistics((String) newValue);</span>
+<span class="nc" id="L555">	    	}</span>
+	    );
+<span class="nc" id="L557">		BorderPane creditsPane = new BorderPane();</span>
+<span class="nc" id="L558">		creditsPane.setTop(combobox);</span>
+<span class="nc" id="L559">		creditsPane.setCenter(lineChart);</span>
+<span class="nc" id="L560">		creditDevelopment.setContent(creditsPane);</span>
+		
+		
+		
+		
+		
+<span class="nc" id="L566">		playedGames = new Tab(&quot;Pelihistoria&quot;  , new Label(&quot;Pelatut pelit&quot;));</span>
+<span class="nc" id="L567">        ImageView played = new ImageView(new Image(&quot;/images/playedGame.png&quot;, 25, 22, false, false));</span>
+<span class="nc" id="L568">        playedGames.setGraphic(played);</span>
+        
+<span class="nc" id="L570">        tableViewGames = new TableView();</span>
+<span class="nc" id="L571">        TableColumn&lt;PlayedGameTableView, String&gt; playedCountColumn = new TableColumn&lt;&gt;(&quot;#&quot;);</span>
+<span class="nc" id="L572">        playedCountColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;rank&quot;));</span>
+<span class="nc" id="L573">        TableColumn&lt;PlayedGameTableView, String&gt; playedSaldoColumn = new TableColumn&lt;&gt;(&quot;Saldo&quot;);</span>
+<span class="nc" id="L574">        playedSaldoColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;creditAfter&quot;));</span>
+<span class="nc" id="L575">        TableColumn&lt;PlayedGameTableView, String&gt; playedChangeColumn = new TableColumn&lt;&gt;(&quot;Saldon muutos&quot;);</span>
+<span class="nc" id="L576">        playedChangeColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;creditChange&quot;));</span>
+<span class="nc" id="L577">        TableColumn&lt;PlayedGameTableView, String&gt; playedWinColumn = new TableColumn&lt;&gt;(&quot;Voitto/Häviö&quot;);</span>
+<span class="nc" id="L578">        playedWinColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;winloss&quot;));</span>
+<span class="nc" id="L579">        TableColumn&lt;PlayedGameTableView, String&gt; playedDateColumn = new TableColumn&lt;&gt;(&quot;Pelattu&quot;);</span>
+<span class="nc" id="L580">        playedDateColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;playedOn&quot;));</span>
+        
+<span class="nc" id="L582">        tableViewGames.getColumns().add(playedCountColumn);</span>
+<span class="nc" id="L583">        tableViewGames.getColumns().add(playedSaldoColumn);</span>
+<span class="nc" id="L584">        tableViewGames.getColumns().add(playedChangeColumn);</span>
+<span class="nc" id="L585">        tableViewGames.getColumns().add(playedWinColumn);</span>
+<span class="nc" id="L586">        tableViewGames.getColumns().add(playedDateColumn);</span>
+        
+        
+<span class="nc" id="L589">        playedGames.setContent(tableViewGames);</span>
+ 
+        
+        
+		
+<span class="nc" id="L594">        ranking = new Tab(&quot;Sijoitukset&quot;  , new Label(&quot;Oletko paras?&quot;));</span>
+<span class="nc" id="L595">        ImageView rank = new ImageView(new Image(&quot;/images/rankingtab.png&quot;, 25, 22, false, false));</span>
+<span class="nc" id="L596">        ranking.setGraphic(rank);</span>
+<span class="nc" id="L597">        tableViewRanks = new TableView();</span>
+<span class="nc" id="L598">        TableColumn&lt;PlayerRanking, String&gt; playerRankColumn = new TableColumn&lt;&gt;(&quot;Sijoitus&quot;);</span>
+<span class="nc" id="L599">        playerRankColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;rank&quot;));</span>
+<span class="nc" id="L600">        TableColumn&lt;PlayerRanking, String&gt; playerCreditsColumn = new TableColumn&lt;&gt;(&quot;Saldo&quot;);</span>
+<span class="nc" id="L601">        playerCreditsColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;credits&quot;));</span>
+<span class="nc" id="L602">        TableColumn&lt;PlayerRanking, String&gt; playernicknameColumn = new TableColumn&lt;&gt;(&quot;Pelaaja&quot;);</span>
+<span class="nc" id="L603">        playernicknameColumn.setCellValueFactory(new PropertyValueFactory&lt;&gt;(&quot;profileName&quot;));</span>
+<span class="nc" id="L604">        tableViewRanks.getColumns().add(playerRankColumn);</span>
+<span class="nc" id="L605">        tableViewRanks.getColumns().add(playerCreditsColumn);</span>
+<span class="nc" id="L606">        tableViewRanks.getColumns().add(playernicknameColumn);</span>
+<span class="nc" id="L607">        ranking.setContent(tableViewRanks);</span>
+        
+        
+<span class="nc" id="L610">        tabPane.getTabs().add(ranking);</span>
+<span class="nc" id="L611">        tabPane.getTabs().add(creditDevelopment);</span>
+<span class="nc" id="L612">        tabPane.getTabs().add(playedGames);</span>
+        
+        
+<span class="nc" id="L615">        creditDevelopment.setDisable(true);</span>
+<span class="nc" id="L616">        playedGames.setDisable(true);</span>
+        
+<span class="nc" id="L618">		statsView.setPrefSize(500, 500);</span>
+<span class="nc" id="L619">		statsView.setCenter(tabPane);</span>
+<span class="nc" id="L620">		return statsView;</span>
+	}
+	
+	/**
+	 * This shows a window prompting the user to input their information for registration
+	 * @param primaryStage this variable is used to link the new stage to the primaryStage
+	 */
+	private void showRegisterDialog(Stage primaryStage) {
+<span class="nc" id="L628">		Stage rDialog = new Stage();</span>
+<span class="nc" id="L629">		rDialog.initModality(Modality.APPLICATION_MODAL);</span>
+<span class="nc" id="L630">		rDialog.initOwner(primaryStage);</span>
+<span class="nc" id="L631">		rDialog.setTitle(&quot;Rekisteröitymislomake&quot;);</span>
+<span class="nc" id="L632">		VBox rHeadline = new VBox();</span>
+<span class="nc" id="L633">		GridPane rGridPane = new GridPane();</span>
+<span class="nc" id="L634">		HBox rButtons = new HBox();</span>
+        
+<span class="nc" id="L636">		firstNameRegisterInput = new TextField();</span>
+<span class="nc" id="L637">		firstNameRegisterInput.setPromptText(&quot;Syötä etunimi&quot;);</span>
+<span class="nc" id="L638">		lastNameRegisterInput = new TextField();</span>
+<span class="nc" id="L639">		lastNameRegisterInput.setPromptText(&quot;Syötä sukunimi&quot;);</span>
+<span class="nc" id="L640">		profileNameRegisterInput = new TextField();</span>
+<span class="nc" id="L641">		profileNameRegisterInput.setPromptText(&quot;Valitse pelaajanimi&quot;);</span>
+<span class="nc" id="L642">		emailRegisterInput = new TextField();</span>
+<span class="nc" id="L643">		emailRegisterInput.setPromptText(&quot;Syötä sähköposti&quot;);</span>
+<span class="nc" id="L644">		passwordRegisterInput = new PasswordField();</span>
+<span class="nc" id="L645">		passwordRegisterInput.setPromptText(&quot;Valitse salasana&quot;);</span>
+<span class="nc" id="L646">		passwordRegisterVerifyInput = new PasswordField();</span>
+<span class="nc" id="L647">		passwordRegisterVerifyInput.setPromptText(&quot;Syötä salasana uudestaan&quot;);</span>
+<span class="nc" id="L648">		creditTransferRegisterInput = new CheckBox(&quot;Vie testikäyttäjänä kerätty saldo\nuudelle tilille (min. 100 krediittiä)&quot;);</span>
+<span class="nc" id="L649">		confirmRegisterButton = new Button(&quot;Rekisteröidy&quot;);</span>
+<span class="nc" id="L650">		cancelRegisterButton = new Button(&quot;Peruuta&quot;);</span>
+		
+<span class="nc" id="L652">		rHeadline.getChildren().add(new Label(&quot;Luo tili&quot;));</span>
+<span class="nc" id="L653">		rHeadline.setPadding(new Insets(10, 10, 10, 10));</span>
+<span class="nc" id="L654">		rHeadline.setAlignment(Pos.CENTER);</span>
+		
+<span class="nc" id="L656">		rGridPane.add(firstNameRegisterInput, 0, 0);</span>
+<span class="nc" id="L657">		rGridPane.add(lastNameRegisterInput, 1, 0);</span>
+<span class="nc" id="L658">		rGridPane.add(profileNameRegisterInput, 0, 1);</span>
+<span class="nc" id="L659">		rGridPane.add(new Label(&quot;Tämä nimi näytetään muille pelaajille&quot;), 1, 1);</span>
+<span class="nc" id="L660">		rGridPane.add(emailRegisterInput, 0, 2, 2, 1);</span>
+<span class="nc" id="L661">		rGridPane.add(passwordRegisterInput, 0, 3, 2, 1);</span>
+<span class="nc" id="L662">		rGridPane.add(passwordRegisterVerifyInput, 0, 4, 2, 1);</span>
+<span class="nc" id="L663">		rGridPane.add(creditTransferRegisterInput, 0, 5);</span>
+<span class="nc" id="L664">		rGridPane.setPadding(new Insets(10,10,10,10));</span>
+<span class="nc" id="L665">		rGridPane.setHgap(5);</span>
+<span class="nc" id="L666">		rGridPane.setVgap(10);</span>
+<span class="nc" id="L667">		rGridPane.setAlignment(Pos.CENTER);</span>
+
+<span class="nc" id="L669">		rButtons.getChildren().addAll(confirmRegisterButton, cancelRegisterButton);</span>
+<span class="nc" id="L670">		rButtons.setPadding(new Insets(10, 10, 10, 10));</span>
+<span class="nc" id="L671">		rButtons.setSpacing(10);</span>
+<span class="nc" id="L672">		rButtons.setAlignment(Pos.CENTER);</span>
+
+<span class="nc" id="L674">		BorderPane rDialogView = new BorderPane();</span>
+<span class="nc" id="L675">		rDialogView.setTop(rHeadline);</span>
+<span class="nc" id="L676">		rDialogView.setCenter(rGridPane);</span>
+<span class="nc" id="L677">		rDialogView.setBottom(rButtons);</span>
+		
+<span class="nc" id="L679">        Scene rDialogScene = new Scene(rDialogView); //100,100</span>
+<span class="nc" id="L680">        rDialog.setScene(rDialogScene);</span>
+<span class="nc" id="L681">        rDialog.show();</span>
+        
+        //Actions
+        //-----&gt;
+        //These actions have the functionality for the confirm and cancel buttons in Registration window
+        //controller handles saving the information to database, it then calls handleRegistrationSuccess method in View
+<span class="nc" id="L687">      	confirmRegisterButton.setOnAction(e -&gt; controller.attemptRegistration());</span>
+      	//This method closes the window
+<span class="nc" id="L689">      	cancelRegisterButton.setOnAction(e -&gt; {</span>
+<span class="nc" id="L690">      		Stage stage = (Stage)cancelRegisterButton.getScene().getWindow();</span>
+<span class="nc" id="L691">      		stage.close();</span>
+<span class="nc" id="L692">      	});</span>
+<span class="nc" id="L693">	}</span>
+	
+	/**
+	 * This shows a window showing users their information and lets them change password and user name
+	 * @param primaryStage this variable is used to link the new stage to the primaryStage
+	 */
+	private void showPlayerInfoDialog(Stage primaryStage) {
+<span class="nc" id="L700">		Image edit = new Image(&quot;/images/edit.png&quot;, 20, 20, false, false);</span>
+<span class="nc" id="L701">		Image accept = new Image(&quot;/images/accept.png&quot;, 20, 20, false, false);</span>
+<span class="nc" id="L702">		Image cancel = new Image(&quot;/images/cancel.png&quot;, 20, 20, false, false);</span>
+		
+<span class="nc" id="L704">		Stage pIDialog = new Stage();</span>
+<span class="nc" id="L705">		pIDialog.initModality(Modality.APPLICATION_MODAL);</span>
+<span class="nc" id="L706">		pIDialog.initOwner(primaryStage);</span>
+<span class="nc" id="L707">		pIDialog.setTitle(&quot;Pelaajatiedot&quot;);</span>
+<span class="nc" id="L708">		VBox pIHeadline = new VBox();</span>
+<span class="nc" id="L709">		GridPane pIGridPane = new GridPane();</span>
+<span class="nc" id="L710">		HBox pIButtons = new HBox();</span>
+		
+<span class="nc" id="L712">		Label playerWholeName = new Label(this.player.getFirstName() + &quot; &quot; + this.player.getLastName());</span>
+<span class="nc" id="L713">		Label playerJoinDate = new Label(String.valueOf(this.player.getCreatedOn()));</span>
+<span class="nc" id="L714">		Label playerEmail = new Label(this.player.getEmail());</span>
+<span class="nc" id="L715">		Label playerProfileName = new Label(this.player.getProfileName());</span>
+<span class="nc" id="L716">		Label playerPassword = new Label(this.player.getPassword());</span>
+<span class="nc" id="L717">		editProfileNameButton = new Button();</span>
+<span class="nc" id="L718">		editProfileNameButton.setGraphic(new ImageView(edit));</span>
+<span class="nc" id="L719">		editPasswordButton = new Button();</span>
+<span class="nc" id="L720">		editPasswordButton.setGraphic(new ImageView(edit));</span>
+<span class="nc" id="L721">		savePlayerInfoButton = new Button(&quot;Tallenna&quot;);</span>
+<span class="nc" id="L722">		cancelPlayerInfoButton = new Button(&quot;Peruuta&quot;);</span>
+		
+<span class="nc" id="L724">		pIHeadline.getChildren().add(new Label(&quot;Pelaajatiedot&quot;));</span>
+<span class="nc" id="L725">		pIHeadline.setPadding(new Insets(10, 10, 10, 10));</span>
+<span class="nc" id="L726">		pIHeadline.setAlignment(Pos.CENTER);</span>
+		
+<span class="nc" id="L728">		pIGridPane.add(new Label(&quot;Nimi:&quot;), 0, 0);</span>
+<span class="nc" id="L729">		pIGridPane.add(playerWholeName, 1, 0);</span>
+<span class="nc" id="L730">		pIGridPane.add(new Label(&quot;Liittynyt:&quot;), 0, 1);</span>
+<span class="nc" id="L731">		pIGridPane.add(playerJoinDate, 1, 1);</span>
+<span class="nc" id="L732">		pIGridPane.add(new Label(&quot;Sähköposti:&quot;), 0, 2);</span>
+<span class="nc" id="L733">		pIGridPane.add(playerEmail, 1, 2);</span>
+<span class="nc" id="L734">		pIGridPane.add(new Label(&quot;Nimimerkki:&quot;), 0, 3);</span>
+<span class="nc" id="L735">		pIGridPane.add(playerProfileName, 1, 3);</span>
+<span class="nc" id="L736">		pIGridPane.add(editProfileNameButton, 2, 3);</span>
+<span class="nc" id="L737">		pIGridPane.add(new Label(&quot;Salasana:&quot;), 0, 4);</span>
+<span class="nc" id="L738">		Label pwPlaceholder = new Label(&quot;********&quot;);</span>
+<span class="nc" id="L739">		pIGridPane.add(pwPlaceholder, 1, 4);</span>
+<span class="nc" id="L740">		pIGridPane.add(editPasswordButton, 2, 4);</span>
+<span class="nc" id="L741">		pIGridPane.setPadding(new Insets(10,10,10,10));</span>
+<span class="nc" id="L742">		pIGridPane.setHgap(5);</span>
+<span class="nc" id="L743">		pIGridPane.setVgap(5);</span>
+<span class="nc" id="L744">		pIGridPane.setAlignment(Pos.CENTER);</span>
+		
+<span class="nc" id="L746">		pIButtons.getChildren().addAll(savePlayerInfoButton, cancelPlayerInfoButton);</span>
+<span class="nc" id="L747">		pIButtons.setPadding(new Insets(10, 10, 10, 10));</span>
+<span class="nc" id="L748">		pIButtons.setSpacing(10);</span>
+<span class="nc" id="L749">		pIButtons.setAlignment(Pos.CENTER);</span>
+		
+<span class="nc" id="L751">		BorderPane pIDialogView = new BorderPane();</span>
+<span class="nc" id="L752">		pIDialogView.setTop(pIHeadline);</span>
+<span class="nc" id="L753">		pIDialogView.setCenter(pIGridPane);</span>
+<span class="nc" id="L754">		pIDialogView.setBottom(pIButtons);</span>
+		
+<span class="nc" id="L756">        Scene pIDialogScene = new Scene(pIDialogView); //100,100</span>
+<span class="nc" id="L757">        pIDialog.setScene(pIDialogScene);</span>
+<span class="nc" id="L758">        pIDialog.show();</span>
+        
+        //Actions
+        //------&gt;
+        //This action opens a TextField where the user can input a new user name. It also opens 2 new actions which are accept and cancel.
+<span class="nc" id="L763">        editProfileNameButton.setOnAction(e -&gt; {</span>
+<span class="nc" id="L764">        	newProfileNameInput = new TextField();</span>
+<span class="nc" id="L765">        	newProfileNameInput.setPromptText(&quot;Syötä uusi pelaajanimi&quot;);</span>
+<span class="nc" id="L766">        	acceptPNEditsButton = new Button();</span>
+<span class="nc" id="L767">        	acceptPNEditsButton.setGraphic(new ImageView(accept));</span>
+<span class="nc" id="L768">        	cancelPNEditsButton = new Button();</span>
+<span class="nc" id="L769">        	cancelPNEditsButton.setGraphic(new ImageView(cancel));</span>
+<span class="nc" id="L770">        	pIGridPane.getChildren().remove(playerProfileName);</span>
+<span class="nc" id="L771">        	pIGridPane.add(newProfileNameInput, 1, 3);</span>
+<span class="nc" id="L772">        	pIGridPane.getChildren().remove(editProfileNameButton);</span>
+<span class="nc" id="L773">        	pIGridPane.add(acceptPNEditsButton, 2, 3);</span>
+<span class="nc" id="L774">        	pIGridPane.add(cancelPNEditsButton, 3, 3);</span>
+        	
+<span class="nc" id="L776">        	acceptPNEditsButton.setOnAction(e1 -&gt; {</span>
+<span class="nc" id="L777">    			playerProfileName.setText(newProfileNameInput.getText());</span>
+<span class="nc" id="L778">    			pIGridPane.getChildren().remove(newProfileNameInput);</span>
+<span class="nc" id="L779">    			pIGridPane.getChildren().remove(acceptPNEditsButton);</span>
+<span class="nc" id="L780">    			pIGridPane.getChildren().remove(cancelPNEditsButton);</span>
+<span class="nc" id="L781">    			pIGridPane.add(playerProfileName, 1, 3);</span>
+<span class="nc" id="L782">    			pIGridPane.add(editProfileNameButton, 2, 3);</span>
+<span class="nc" id="L783">    		});</span>
+        	
+<span class="nc" id="L785">    		cancelPNEditsButton.setOnAction(e2 -&gt; {</span>
+<span class="nc" id="L786">    			pIGridPane.getChildren().remove(newProfileNameInput);</span>
+<span class="nc" id="L787">    			pIGridPane.getChildren().remove(acceptPNEditsButton);</span>
+<span class="nc" id="L788">    			pIGridPane.getChildren().remove(cancelPNEditsButton);</span>
+<span class="nc" id="L789">    			pIGridPane.add(playerProfileName, 1, 3);</span>
+<span class="nc" id="L790">    			pIGridPane.add(editProfileNameButton, 2, 3);</span>
+<span class="nc" id="L791">    		});</span>
+<span class="nc" id="L792">        });</span>
+        
+        //This action opens a PasswordField where the user can input a new password. It also opens 2 new actions which are accept and cancel.
+<span class="nc" id="L795">		editPasswordButton.setOnAction(e -&gt; {</span>
+<span class="nc" id="L796">        	newPasswordInput = new PasswordField();</span>
+<span class="nc" id="L797">        	newPasswordInput.setPromptText(&quot;Syötä uusi salasana&quot;);</span>
+<span class="nc" id="L798">        	acceptPSEditsButton = new Button();</span>
+<span class="nc" id="L799">        	acceptPSEditsButton.setGraphic(new ImageView(accept));</span>
+<span class="nc" id="L800">        	cancelPSEditsButton = new Button();</span>
+<span class="nc" id="L801">        	cancelPSEditsButton.setGraphic(new ImageView(cancel));</span>
+<span class="nc" id="L802">        	pIGridPane.getChildren().remove(pwPlaceholder);</span>
+<span class="nc" id="L803">        	pIGridPane.add(newPasswordInput, 1, 4);</span>
+<span class="nc" id="L804">        	pIGridPane.getChildren().remove(editPasswordButton);</span>
+<span class="nc" id="L805">        	pIGridPane.add(acceptPSEditsButton, 2, 4);</span>
+<span class="nc" id="L806">        	pIGridPane.add(cancelPSEditsButton, 3, 4);</span>
+        	
+<span class="nc" id="L808">        	acceptPSEditsButton.setOnAction(e1 -&gt; {</span>
+<span class="nc" id="L809">        		playerPassword.setText(newPasswordInput.getText());</span>
+<span class="nc" id="L810">    			pIGridPane.getChildren().remove(newPasswordInput);</span>
+<span class="nc" id="L811">    			pIGridPane.getChildren().remove(acceptPSEditsButton);</span>
+<span class="nc" id="L812">    			pIGridPane.getChildren().remove(cancelPSEditsButton);</span>
+<span class="nc" id="L813">    			pIGridPane.add(pwPlaceholder, 1, 4);</span>
+<span class="nc" id="L814">    			pIGridPane.add(editPasswordButton, 2, 4);</span>
+<span class="nc" id="L815">    		});</span>
+<span class="nc" id="L816">    		cancelPSEditsButton.setOnAction(e2 -&gt; {</span>
+<span class="nc" id="L817">    			pIGridPane.getChildren().remove(newPasswordInput);</span>
+<span class="nc" id="L818">    			pIGridPane.getChildren().remove(acceptPSEditsButton);</span>
+<span class="nc" id="L819">    			pIGridPane.getChildren().remove(cancelPSEditsButton);</span>
+<span class="nc" id="L820">    			pIGridPane.add(pwPlaceholder, 1, 4);</span>
+<span class="nc" id="L821">    			pIGridPane.add(editPasswordButton, 2, 4);</span>
+<span class="nc" id="L822">    		});</span>
+<span class="nc" id="L823">        });</span>
+		
+		//This method saves the edited information to the current player if the fields are not empty
+<span class="nc" id="L826">		savePlayerInfoButton.setOnAction(e -&gt; {</span>
+<span class="nc" id="L827">			String newPlayerName = playerProfileName.getText();</span>
+<span class="nc" id="L828">			String newPassword = playerPassword.getText();</span>
+<span class="nc bnc" id="L829" title="All 4 branches missed.">			if (!newPlayerName.isEmpty() &amp;&amp; !newPassword.isEmpty()) {</span>
+<span class="nc" id="L830">				this.player.setProfileName(newPlayerName);</span>
+<span class="nc" id="L831">				this.player.setPassword(newPassword);</span>
+<span class="nc" id="L832">				controller.changePlayerInfo(); //controller handles saving the information to database, it then calls handlePlayerInfoChangeSuccess method in View</span>
+<span class="nc" id="L833">			} else {</span>
+<span class="nc" id="L834">				showPlayerInfoErrorEmptyFields(); //if the fields are empty, an error message is shown</span>
+			}
+<span class="nc" id="L836">		});</span>
+		
+		//This closes the window
+<span class="nc" id="L839">		cancelPlayerInfoButton.setOnAction(e -&gt; {</span>
+<span class="nc" id="L840">			Stage stage = (Stage)cancelPlayerInfoButton.getScene().getWindow();</span>
+<span class="nc" id="L841">			stage.close();</span>
+<span class="nc" id="L842">		});</span>
+<span class="nc" id="L843">	}</span>
+	
+	/**	{@inheritDoc} */
+	@Override
+	public Player getPlayer() {
+<span class="nc" id="L848">		return this.player;</span>
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void setDefaultPlayer(Player defaultPlayer) {
+<span class="nc" id="L854">		this.player = defaultPlayer;</span>
+<span class="nc" id="L855">		this.player.setCredits(100.00); //Setting credits to 100 for the Tester (not logged in) account</span>
+		//this is to make sure that the method does not run updateToolBar() and statistics methods before all GUI components are created
+<span class="nc bnc" id="L857" title="All 2 branches missed.">		if (creditView != null) {</span>
+<span class="nc" id="L858">			updateToolBar();</span>
+			try {
+<span class="nc" id="L860">				creditDevelopment.setDisable(true);</span>
+<span class="nc" id="L861">				creditDevelopment.getContent().setVisible(false);</span>
+<span class="nc" id="L862">				playedGames.setDisable(true);</span>
+<span class="nc" id="L863">				playedGames.getContent().setVisible(false);</span>
+<span class="nc" id="L864">			}catch(Exception e) {</span>
+<span class="nc" id="L865">				System.out.println(e);</span>
+			}
+		}
+<span class="nc" id="L868">		System.out.println(&quot;Default player set&quot;);</span>
+<span class="nc" id="L869">	}</span>
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void setCurrentPlayer(Player currentPlayer) {
+<span class="nc" id="L874">		this.player = currentPlayer;</span>
+<span class="nc" id="L875">		updateToolBar();</span>
+<span class="nc" id="L876">		setPokerGamePlayerCredits();</span>
+<span class="nc" id="L877">		fillStatistics(&quot;KAIKKI&quot;);</span>
+<span class="nc bnc" id="L878" title="All 2 branches missed.">		if(this.player.getId()!=1001) {</span>
+			try {
+<span class="nc" id="L880">				creditDevelopment.setDisable(false);</span>
+<span class="nc" id="L881">				creditDevelopment.getContent().setVisible(true);</span>
+<span class="nc" id="L882">				playedGames.setDisable(false);</span>
+<span class="nc" id="L883">				playedGames.getContent().setVisible(true);</span>
+<span class="nc" id="L884">			}catch(Exception e) {</span>
+<span class="nc" id="L885">				System.out.println(e);</span>
+			}
+		}
+		
+<span class="nc" id="L889">		System.out.println(&quot;Player data updated&quot;);</span>
+<span class="nc" id="L890">	}</span>
+	
+	/**
+	 * This method updates all the information in the toolbar to match any changes on the player
+	 */
+	private void updateToolBar() {
+<span class="nc" id="L896">		this.creditView.setText(String.valueOf(this.player.getCredits()));</span>
+<span class="nc" id="L897">		this.playerMenu.setText(this.player.getProfileName());</span>
+<span class="nc" id="L898">		this.emailInput.setText(&quot;&quot;);</span>
+<span class="nc" id="L899">		this.passwordInput.setText(&quot;&quot;);</span>
+<span class="nc bnc" id="L900" title="All 2 branches missed.">		if (this.player.getId() == 1001) { //Checking if the set user is the default player, setting elements in the toolbar accordingly</span>
+<span class="nc" id="L901">			registerButton.setVisible(true);</span>
+<span class="nc" id="L902">			signInLabel.setVisible(true);</span>
+<span class="nc" id="L903">			emailInput.setVisible(true);</span>
+<span class="nc" id="L904">			passwordInput.setVisible(true);</span>
+<span class="nc" id="L905">			signInButton.setVisible(true);</span>
+<span class="nc" id="L906">			playerInfoMI.setVisible(false);</span>
+<span class="nc" id="L907">			logOutMI.setVisible(false);</span>
+<span class="nc" id="L908">			logInProblemMI.setVisible(true);</span>
+<span class="nc" id="L909">		} else {</span>
+<span class="nc" id="L910">			registerButton.setVisible(false);</span>
+<span class="nc" id="L911">			signInLabel.setVisible(false);</span>
+<span class="nc" id="L912">			emailInput.setVisible(false);</span>
+<span class="nc" id="L913">			passwordInput.setVisible(false);</span>
+<span class="nc" id="L914">			signInButton.setVisible(false);</span>
+<span class="nc" id="L915">			playerInfoMI.setVisible(true);</span>
+<span class="nc" id="L916">			logOutMI.setVisible(true);</span>
+<span class="nc" id="L917">			logInProblemMI.setVisible(false);</span>
+		}
+<span class="nc" id="L919">	}</span>
+
+	/**
+	 * This function will create the transitions between different views and also the exit button functionality
+	 * @param primaryStage Current View in the program
+	 * @param mainMenuScene Main menu view
+	 * @param pokerGameScene Poker game view
+	 * @param settingsScene Settings view
+	 * @param statsScene Stats view
+	 */
+	private void createGUITransitions(Stage primaryStage, BorderPane mainView, BorderPane mainMenu, AnchorPane pokerGame, BorderPane settings, BorderPane stats) {
+<span class="nc" id="L930">		enterPokerGame.setOnAction(e -&gt; {</span>
+<span class="nc" id="L931">			mainView.setCenter(pokerGame);</span>
+<span class="nc" id="L932">		});</span>
+<span class="nc" id="L933">		enterSettings.setOnAction(e -&gt; {</span>
+<span class="nc" id="L934">			mainView.setCenter(settings);</span>
+<span class="nc" id="L935">		});</span>
+<span class="nc" id="L936">		enterStats.setOnAction(e -&gt; {</span>
+<span class="nc" id="L937">			mainView.setCenter(stats);</span>
+<span class="nc" id="L938">			fillStatistics((String) combobox.getSelectionModel().getSelectedItem());</span>
+<span class="nc" id="L939">		});</span>
+<span class="nc" id="L940">		homeButton.setOnAction(e -&gt; {</span>
+<span class="nc" id="L941">			mainView.setCenter(mainMenu);</span>
+<span class="nc" id="L942">		});</span>
+<span class="nc" id="L943">		exitProgram.setOnAction(e -&gt; Platform.exit());</span>
+<span class="nc" id="L944">		exitMI.setOnAction(e -&gt; Platform.exit());</span>
+<span class="nc" id="L945">		signInButton.setOnAction(e -&gt; controller.attemptLogIn());</span>
+<span class="nc" id="L946">		logOutMI.setOnAction(e -&gt; controller.getDefaultPlayer());</span>
+<span class="nc" id="L947">		registerButton.setOnAction(e -&gt; showRegisterDialog(primaryStage));</span>
+<span class="nc" id="L948">		playerInfoMI.setOnAction(e -&gt; showPlayerInfoDialog(primaryStage));</span>
+<span class="nc" id="L949">		infoMI.setOnAction(e -&gt; showProgramInfo());</span>
+<span class="nc" id="L950">		logInProblemMI.setOnAction(e -&gt; showPasswordReset());</span>
+<span class="nc" id="L951">	}</span>
+	
+	/**
+	 * Custom onClick handler for card image containers. Handles events where card is clicked, places
+	 * lock image to container when clicked first time and removes it if repeated.
+	 * @param img ImageView image of the card
+	 * @param index int card index, helps to determine which card is clicked.
+	 * @param pane StackPane card image container.
+	 */
+	@SuppressWarnings({ &quot;rawtypes&quot;, &quot;unchecked&quot; })
+	private void setImagesOnClick(final StackPane pane, final ImageView img, final int index) {
+<span class="nc" id="L962">	    pane.setOnMouseClicked(new EventHandler() {</span>
+				@Override
+				public void handle(Event event) {
+<span class="nc bnc" id="L965" title="All 2 branches missed.">					if(gameOn) {</span>
+<span class="nc bnc" id="L966" title="All 2 branches missed.">						if(!cardsToSwapIndexes.contains(index)) {</span>
+<span class="nc" id="L967">							cardsToSwapIndexes.add(index);</span>
+<span class="nc" id="L968">							lockViews[index].setVisible(false);</span>
+<span class="nc" id="L969">							img.setOpacity(1);</span>
+<span class="nc" id="L970">						} else {</span>
+<span class="nc" id="L971">						cardsToSwapIndexes.remove(Integer.valueOf(index));</span>
+<span class="nc" id="L972">						lockViews[index].setVisible(true);</span>
+<span class="nc" id="L973">						img.setOpacity(0.5); </span>
+					}
+				}
+<span class="nc" id="L976">			}</span>
+	    });
+<span class="nc" id="L978">	}</span>
+	
+	@Override
+	public void setPokerGamePlayerCredits () {
+<span class="nc" id="L982">		pokerGameCredits.setText(&quot;Saldo: &quot; + Double.toString(this.player.getCredits()));</span>
+<span class="nc" id="L983">	}</span>
+	
+	@Override
+	public void setPokerGameBet (double bet) {
+<span class="nc" id="L987">		pokerGameBet.setText(&quot;Panos: &quot; + Double.toString(bet));</span>
+<span class="nc" id="L988">		updateWinTable(bet);</span>
+<span class="nc" id="L989">	}</span>
+	
+	/**
+	 * Updates win table texts based on current bet.
+	 * @param bet double current bet amount.
+	 */
+	private void updateWinTable (double bet) {
+		//Tänne set textit kokonaisuudessaan plus kerroin ja betti
+<span class="nc" id="L997">		winTableTexts.get(0).setText(&quot;Ässä pari &quot; + roundToTwoDecimals(bet * HandValue.ACE_PAIR.getMultiplier()));</span>
+<span class="nc" id="L998">		winTableTexts.get(1).setText(&quot;Kaksi paria &quot; + roundToTwoDecimals(bet * HandValue.TWO_PAIRS.getMultiplier()));</span>
+<span class="nc" id="L999">		winTableTexts.get(2).setText(&quot;Kolmoset: &quot; + roundToTwoDecimals(bet * HandValue.THREE_OF_A_KIND.getMultiplier()));</span>
+<span class="nc" id="L1000">		winTableTexts.get(3).setText(&quot;Suora &quot; + roundToTwoDecimals(bet * HandValue.STRAIGHT.getMultiplier()));</span>
+<span class="nc" id="L1001">		winTableTexts.get(4).setText(&quot;Väri: &quot; + roundToTwoDecimals(bet * HandValue.FLUSH.getMultiplier()));</span>
+<span class="nc" id="L1002">		winTableTexts.get(5).setText(&quot;Täyskäsi: &quot; + roundToTwoDecimals(bet * HandValue.FULL_HOUSE.getMultiplier()));</span>
+<span class="nc" id="L1003">		winTableTexts.get(6).setText(&quot;Neloset: &quot; + roundToTwoDecimals(bet * HandValue.FOUR_OF_A_KIND.getMultiplier()));</span>
+<span class="nc" id="L1004">		winTableTexts.get(7).setText(&quot;Värisuora: &quot; + roundToTwoDecimals(bet * HandValue.STRAIGHT_FLUSH.getMultiplier()));</span>
+<span class="nc" id="L1005">	}</span>
+	/**
+	 * Helper for rounding two decimal places
+	 * @param a double value to round
+	 * @return double rounded value 
+	 */
+	private double roundToTwoDecimals (double a) {
+<span class="nc" id="L1012">		return Math.round(a * 100.0) / 100.0; </span>
+	}
+	
+	@Override
+	public void setCards(ArrayList&lt;String&gt; cards) {
+<span class="nc" id="L1017">		Platform.runLater(() -&gt; {</span>
+<span class="nc bnc" id="L1018" title="All 2 branches missed.">		for(int i = 0; i &lt; cards.size(); i++) {</span>
+<span class="nc" id="L1019">			lockViews[i].setVisible(false);</span>
+<span class="nc" id="L1020">			Image newCard = new Image(&quot;/images/&quot; + cards.get(i) + &quot;.png&quot;);</span>
+<span class="nc" id="L1021">			cardViews[i].setImage(newCard);</span>
+<span class="nc" id="L1022">			cardViews[i].setOpacity(1);</span>
+<span class="nc" id="L1023">			setImagesOnClick(imageStacks[i], cardViews[i], i);</span>
+		}
+<span class="nc" id="L1025">		});</span>
+<span class="nc" id="L1026">	}</span>
+
+	@Override
+	public void setScore(String score) {
+<span class="nc bnc" id="L1030" title="All 2 branches missed.">		if(score == &quot;Ei voittoa&quot;) {</span>
+<span class="nc bnc" id="L1031" title="All 2 branches missed.">			for(ImageView v : cardViews) {</span>
+<span class="nc" id="L1032">				v.setOpacity(0.5);</span>
+			}
+<span class="nc" id="L1034">		} else {</span>
+<span class="nc" id="L1035">			cardPane.setStyle(&quot;-fx-border-color: #00FF25;&quot; + &quot; -fx-border-width: 5px;&quot;);</span>
+		}
+<span class="nc" id="L1037">		setNotification(score);</span>
+<span class="nc" id="L1038">	}</span>
+
+	/**
+	 * This method fills all tabs with data from database.
+	 * @param count Value from combobox.
+	 */
+	private void fillStatistics(String count) {
+<span class="nc bnc" id="L1045" title="All 2 branches missed.">		if(this.player.getId()!=1001) {</span>
+<span class="nc bnc" id="L1046" title="All 4 branches missed.">			switch(count) {</span>
+			case &quot;KAIKKI&quot;:
+<span class="nc" id="L1048">				lineChart = controller.getLineChart(1000);</span>
+<span class="nc" id="L1049">				break;</span>
+			case &quot;Viimeiset 10&quot;:
+<span class="nc" id="L1051">				lineChart = controller.getLineChart(10);</span>
+<span class="nc" id="L1052">				break;</span>
+			case &quot;Viimeiset 50&quot;:
+<span class="nc" id="L1054">				lineChart = controller.getLineChart(50);</span>
+				break;
+			}
+			
+			
+<span class="nc" id="L1059">			ArrayList&lt;PlayedGame&gt; playedGames = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L1060">			playedGames = controller.getPlayedGames();</span>
+			
+<span class="nc" id="L1062">			tableViewGames.getItems().clear();</span>
+			String winloss;
+<span class="nc bnc" id="L1064" title="All 2 branches missed.">			for(int i=playedGames.size()-1; i&gt;=0;i--) {</span>
+				//tableViewGames.getItems().add(new PlayedGame(playedGames.get(i).getCreditAfterPlayer1(), playedGames.get(i).getPlayedOn()));
+<span class="nc bnc" id="L1066" title="All 2 branches missed.">				if(playedGames.get(i).getWinner()==this.player.getId()) {</span>
+<span class="nc" id="L1067">					winloss=&quot;VOITTO&quot;;</span>
+<span class="nc" id="L1068">				} else {</span>
+<span class="nc" id="L1069">					winloss=&quot;HÄVIÖ&quot;;</span>
+				}
+<span class="nc" id="L1071">				tableViewGames.getItems().add(new PlayedGameTableView(i+1, playedGames.get(i).getCreditAfterPlayer1(),playedGames.get(i).getCreditChange(), playedGames.get(i).getPlayedOn(), winloss));</span>
+			}
+		}
+		
+<span class="nc" id="L1075">		ArrayList&lt;Player&gt; ranks = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L1076">		ranks = controller.getRanking();</span>
+<span class="nc" id="L1077">		tableViewRanks.getItems().clear();</span>
+<span class="nc bnc" id="L1078" title="All 2 branches missed.">		for(int i = 0;i&lt;ranks.size();i++) {</span>
+<span class="nc" id="L1079">			tableViewRanks.getItems().add(new PlayerRanking(i+1,ranks.get(i).getProfileName(), ranks.get(i).getCredits()));</span>
+		}
+		
+<span class="nc" id="L1082">		BorderPane pane = new BorderPane();</span>
+<span class="nc" id="L1083">		pane.setTop(combobox);</span>
+<span class="nc" id="L1084">		pane.setCenter(lineChart);</span>
+		
+<span class="nc" id="L1086">		creditDevelopment.setContent(pane);</span>
+<span class="nc" id="L1087">        ranking.setContent(tableViewRanks);		</span>
+<span class="nc" id="L1088">	}</span>
+
+	@Override
+	public void setSwappedCards() {
+<span class="nc" id="L1092">		controller.setSwappedCardIndexes(cardsToSwapIndexes);</span>
+<span class="nc" id="L1093">		cardsToSwapIndexes.clear();</span>
+<span class="nc" id="L1094">		Collections.addAll(cardsToSwapIndexes,0,1,2,3,4);</span>
+<span class="nc" id="L1095">	}</span>
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void showLogInError() {
+<span class="nc" id="L1100">		Alert alert = new Alert(AlertType.WARNING);</span>
+<span class="nc" id="L1101">		alert.setTitle(&quot;Virhe&quot;);</span>
+<span class="nc" id="L1102">		alert.setHeaderText(&quot;Virhe - syötetty data ei kelpaa&quot;);</span>
+<span class="nc" id="L1103">		alert.setContentText(&quot;Varmista että sähköposti ja salasana ovat oikein.&quot;);</span>
+<span class="nc" id="L1104">		alert.showAndWait();</span>
+<span class="nc" id="L1105">	}</span>
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void showRegistrationErrorEmptyFields() {
+<span class="nc" id="L1110">		Alert alert = new Alert(AlertType.WARNING);</span>
+<span class="nc" id="L1111">		alert.setTitle(&quot;Virhe&quot;);</span>
+<span class="nc" id="L1112">		alert.setHeaderText(&quot;Virhe - vaaditut tiedot puuttuvat&quot;);</span>
+<span class="nc" id="L1113">		alert.setContentText(&quot;Varmista että etunimi, sukunimi, sähköposti, salasana ja salasanan vahvistus on syötetty.&quot;);</span>
+<span class="nc" id="L1114">		alert.showAndWait();</span>
+<span class="nc" id="L1115">	}</span>
+
+	/**	{@inheritDoc} */
+	@Override
+	public void showRegistrationErrorPasswordsNotMatch() {
+<span class="nc" id="L1120">		Alert alert = new Alert(AlertType.WARNING);</span>
+<span class="nc" id="L1121">		alert.setTitle(&quot;Virhe&quot;);</span>
+<span class="nc" id="L1122">		alert.setHeaderText(&quot;Virhe - salasanat eivät täsmää&quot;);</span>
+<span class="nc" id="L1123">		alert.setContentText(&quot;Varmista että syöttämäsi salasanat vastaavat toisiaan.&quot;);</span>
+<span class="nc" id="L1124">		alert.showAndWait();</span>
+<span class="nc" id="L1125">	}</span>
+
+	/**	{@inheritDoc} */
+	@Override
+	public void showRegistrationErrorEmailAlreadyExists() {
+<span class="nc" id="L1130">		Alert alert = new Alert(AlertType.WARNING);</span>
+<span class="nc" id="L1131">		alert.setTitle(&quot;Virhe&quot;);</span>
+<span class="nc" id="L1132">		alert.setHeaderText(&quot;Virhe - sähköpostiosoite on jo käytössä&quot;);</span>
+<span class="nc" id="L1133">		alert.setContentText(&quot;Tähän sähköpostiosoitteeseen liitetty tili on jo olemassa.\n\n&quot;</span>
+				+ &quot;Kirjaudu sisään tai luo uudet tunnukset käyttäen toista sähköpostiosoitetta.\n&quot;
+				+ &quot;Jos et muista salasanaasi, ota yhteyttä tukeen.&quot;);
+<span class="nc" id="L1136">		alert.showAndWait();</span>
+<span class="nc" id="L1137">	}</span>
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void showRegistrationErrorDatabase() {
+<span class="nc" id="L1142">		Alert alert = new Alert(AlertType.WARNING);</span>
+<span class="nc" id="L1143">		alert.setTitle(&quot;Virhe&quot;);</span>
+<span class="nc" id="L1144">		alert.setHeaderText(&quot;Virhe - Tilin luonti ei onnistunut&quot;);</span>
+<span class="nc" id="L1145">		alert.setContentText(&quot;Jokin meni pieleen, kokeile hetken kuluttua uudelleen.&quot;);</span>
+<span class="nc" id="L1146">		alert.showAndWait();</span>
+<span class="nc" id="L1147">	}</span>
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void handleRegistrationSuccess() {
+<span class="nc" id="L1152">		Stage stage = (Stage)cancelRegisterButton.getScene().getWindow();</span>
+<span class="nc" id="L1153">		stage.close();</span>
+<span class="nc" id="L1154">		Alert alert = new Alert(AlertType.INFORMATION);</span>
+<span class="nc" id="L1155">		alert.setTitle(&quot;Rekisteröityminen&quot;);</span>
+<span class="nc" id="L1156">		alert.setHeaderText(&quot;Tilin luominen onnistui!&quot;);</span>
+<span class="nc" id="L1157">		alert.setContentText(&quot;Sinut on kirjattu sisään ja voit jatkaa pelaamista uusilla tunnuksilla&quot;);</span>
+<span class="nc" id="L1158">		alert.showAndWait();</span>
+<span class="nc" id="L1159">	}</span>
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void showPlayerInfoChangeErrorDatabase() {
+<span class="nc" id="L1164">		Alert alert = new Alert(AlertType.WARNING);</span>
+<span class="nc" id="L1165">		alert.setTitle(&quot;Virhe&quot;);</span>
+<span class="nc" id="L1166">		alert.setHeaderText(&quot;Virhe - Pelaajatietojen päivitys ei onnistunut&quot;);</span>
+<span class="nc" id="L1167">		alert.setContentText(&quot;Jokin meni pieleen, kokeile hetken kuluttua uudelleen.&quot;);</span>
+<span class="nc" id="L1168">		alert.showAndWait();</span>
+<span class="nc" id="L1169">	}</span>
+	
+	/**	{@inheritDoc} */
+	@Override
+	public void handlePlayerInfoChangeSuccess() {
+<span class="nc" id="L1174">		Stage stage = (Stage)cancelPlayerInfoButton.getScene().getWindow();</span>
+<span class="nc" id="L1175">		stage.close();</span>
+<span class="nc" id="L1176">		Alert alert = new Alert(AlertType.INFORMATION);</span>
+<span class="nc" id="L1177">		alert.setTitle(&quot;Pelaajatietojen muuttaminen&quot;);</span>
+<span class="nc" id="L1178">		alert.setHeaderText(&quot;Pelaajatietojen muokkaus onnistui!&quot;);</span>
+<span class="nc" id="L1179">		alert.setContentText(&quot;Jos vaihdoit salasanasi, muista käyttää uutta salasanaa seuraavalla kirjautumiskerralla&quot;);</span>
+<span class="nc" id="L1180">		alert.showAndWait();</span>
+<span class="nc" id="L1181">	}</span>
+	
+	/**
+	 * Tells the user that they can't have empty values for user name and password
+	 */
+	private void showPlayerInfoErrorEmptyFields() {
+<span class="nc" id="L1187">		Alert alert = new Alert(AlertType.WARNING);</span>
+<span class="nc" id="L1188">		alert.setTitle(&quot;Virhe&quot;);</span>
+<span class="nc" id="L1189">		alert.setHeaderText(&quot;Virhe - vaaditut tiedot puuttuvat&quot;);</span>
+<span class="nc" id="L1190">		alert.setContentText(&quot;Varmista että pelaajanimi ja salasana eivät ole tyhjiä&quot;);</span>
+<span class="nc" id="L1191">		alert.showAndWait();</span>
+<span class="nc" id="L1192">	}</span>
+	
+	/**
+	 * Shows user password reset dialog
+	 * NO FUNCTIONALITY YET
+	 */
+	private void showPasswordReset() {
+<span class="nc" id="L1199">		TextInputDialog dialog = new TextInputDialog();</span>
+<span class="nc" id="L1200">		dialog.setTitle(&quot;Salasanan palauttaminen&quot;);</span>
+<span class="nc" id="L1201">		dialog.setHeaderText(&quot;Unohditko salasanasi?\nNoh voi voi, tämä ikkuna ei tee vielä mitään&quot;);</span>
+<span class="nc" id="L1202">		dialog.setContentText(&quot;Syötä tilin sähköpostiosoite :&quot;);</span>
+<span class="nc" id="L1203">		Optional&lt;String&gt; result = dialog.showAndWait();</span>
+<span class="nc" id="L1204">		result.ifPresent(email -&gt; System.out.println(&quot;Email inputted: &quot; + email)); //to catch the result</span>
+<span class="nc" id="L1205">	}</span>
+	
+	/**
+	 * Shows user information about the program
+	 * NOT MUCH HERE YET
+	 */
+	private void showProgramInfo() {
+<span class="nc" id="L1212">		Alert alert = new Alert(AlertType.INFORMATION);</span>
+<span class="nc" id="L1213">		alert.setTitle(&quot;Tietoa ohjelmasta&quot;);</span>
+<span class="nc" id="L1214">		alert.setHeaderText(&quot;Peliymäristö info&quot;);</span>
+<span class="nc" id="L1215">		alert.setContentText(&quot;:)&quot;);</span>
+<span class="nc" id="L1216">		alert.showAndWait();</span>
+<span class="nc" id="L1217">	}</span>
+
+	/**	{@inheritDoc} */
+	@Override
+	public String getEmailInput() {
+<span class="nc" id="L1222">		return String.valueOf(this.emailInput.getText());</span>
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public String getPasswordInput() {
+<span class="nc" id="L1228">		return String.valueOf(this.passwordInput.getText());</span>
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public String getFirstNameRegInput() {
+<span class="nc" id="L1234">		return String.valueOf(this.firstNameRegisterInput.getText());</span>
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public String getLastNameRegInput() {
+<span class="nc" id="L1240">		return String.valueOf(this.lastNameRegisterInput.getText());</span>
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public String getProfileNameRegInput() {
+<span class="nc" id="L1246">		return String.valueOf(this.profileNameRegisterInput.getText());</span>
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public String getEmailRegInput() {
+<span class="nc" id="L1252">		return String.valueOf(this.emailRegisterInput.getText());</span>
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public String getPasswordRegInput() {
+<span class="nc" id="L1258">		return String.valueOf(this.passwordRegisterInput.getText());</span>
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public String getPasswordRegVerInput() {
+<span class="nc" id="L1264">		return String.valueOf(this.passwordRegisterVerifyInput.getText());</span>
+	}
+
+	/**	{@inheritDoc} */
+	@Override
+	public Boolean getCreditTransferRegInput() {
+<span class="nc" id="L1270">		return this.creditTransferRegisterInput.isSelected();</span>
+	}
+	/**
+	 * In pokergame sets up notification and position based on String length
+	 * @param text String notification text
+	 */
+	private void setNotification(String text) {
+<span class="nc bnc" id="L1277" title="All 2 branches missed.">		if(text.length() &lt; 13) {</span>
+<span class="nc" id="L1278">		  notification.setLayoutX(370);</span>
+<span class="nc bnc" id="L1279" title="All 4 branches missed.">		} else if(text.length() &gt;= 13 &amp;&amp; text.length() &lt; 30) {</span>
+<span class="nc" id="L1280">			notification.setLayoutX(310);	</span>
+<span class="nc" id="L1281">		} else {</span>
+<span class="nc" id="L1282">			notification.setLayoutX(200);</span>
+		}
+<span class="nc" id="L1284">		notification.setText(text);</span>
+<span class="nc" id="L1285">	}</span>
+	
+  @Override
+	public void notifyCreditReset(){
+<span class="nc" id="L1289">    Platform.runLater(() -&gt; {</span>
+<span class="nc" id="L1290">      Alert alert = new Alert(AlertType.INFORMATION);</span>
+<span class="nc" id="L1291">      alert.setTitle(&quot;Hävisit pelin!!!&quot;);</span>
+<span class="nc" id="L1292">      alert.setHeaderText(&quot;Saldo palautettu, hävisit liikaa&quot;);</span>
+<span class="nc" id="L1293">      alert.setContentText(&quot;Opettele pelaamaan&quot;);</span>
+<span class="nc" id="L1294">      alert.showAndWait();</span>
+<span class="nc" id="L1295">    });</span>
+<span class="nc" id="L1296">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span>peliymparisto (12.3.2021 13.16.32)</div></body></html>
