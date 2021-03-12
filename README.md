@@ -59,5 +59,5 @@ Maven Dependencies (Project must be maven project)
 Jenkins is used for integration and testing. Jenkins can be accessed here: http://10.114.32.61:8080/ (Metropolia VPN and credentials required)
 
 To easy install:
-1. Clone this repository to Maven supported IDE:een.
+1. Clone this repository to Maven supported IDE.
 2. Run Main.java (or View.java)
