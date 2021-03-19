@@ -64,7 +64,7 @@ import model.PlayerRanking;
 /**
  * The Graphical User Interface built with JavaFX
  * @author ---
- * @version 1.7 09.03.2021
+ * @version 1.8 19.03.2021
  */
 public class View extends Application implements ViewIF {
 	
@@ -99,7 +99,7 @@ public class View extends Application implements ViewIF {
 	private StackPane [] imageStacks = new StackPane [5];
 	private ImageView [] cardViews = new ImageView [5];
 	private ImageView [] lockViews = new ImageView [5];
-	private List <Text> winTableTexts = new ArrayList<Text>(); 
+	private List <Text> winTableTexts = new ArrayList<Text>();
 
 	//navBar components
 	/** Button to go to main menu*/
@@ -471,16 +471,46 @@ public class View extends Application implements ViewIF {
 			plus.setVisible(false);
 			minus.setVisible(false);
 			setNotification("Valitse kortit jotka haluat lukita ja paina jako");
+			setTimeoutForButton(play, 1000); //timeout for play button for 1 second (change time if needed)
 			} else {
 			setSwappedCards();
 			plus.setVisible(true);
 			minus.setVisible(true);
 			play.setText("Pelaa");
+			setTimeoutForButton(play, 1000); //timeout for play button for 1 second (change time if needed)
 			}
 			gameOn = !gameOn;
 		});
 		
 		return pokerGameView;
+	}
+	
+	/**
+	 * This method disables a chosen button for a given time
+	 * Its function is to prevent user for doing multiple clicks accidentally
+	 * @param button is the button that will be disabled for the duration of the delay
+	 * @param delay is the time for delay in milliseconds
+	 */
+	private void setTimeoutForButton(Button button, int delay) {
+		new Thread() {
+		    public void run() {
+		        Platform.runLater(new Runnable() {
+		            public void run() {
+		                button.setDisable(true);
+		            }
+		        });
+		        try {
+		            Thread.sleep(delay);
+		        }
+		        catch(InterruptedException ex) {
+		        }
+		        Platform.runLater(new Runnable() {
+		            public void run() {
+		                button.setDisable(false);
+		            }
+		        });
+		    }
+		}.start();
 	}
 	
 	/**
