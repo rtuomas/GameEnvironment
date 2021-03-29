@@ -29,6 +29,8 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	private Player player2;
 	//Game variables
 	private String gameType = "poker";
+	private Boolean cashOut;
+	private String highOrLow;
 	
 	/**
 	 * Constructor for the poker game engine.
@@ -54,8 +56,9 @@ public class PokerGameEngine extends Thread implements ModelIF {
 				// thread ends
 		dealCards();
 		swapCards();
+		setScore();
 		endGame(); //called when the game ends
-		setScore(); //shows the result in View
+		//setScore(); //shows the result in View
 	}
 	
 	/**
@@ -72,16 +75,42 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		this.dao = dao;
 	}
 	
+	@Override
+	public synchronized void setCashout (Boolean decision) {
+		this.cashOut = decision;
+		notifyAll();
+	}
+	
 	/**
 	 * This method is ran at the end of the game to save the played game into database and update credit amounts to players.
 	 */
-	public void endGame() {
+	public synchronized void endGame() {
+	
+	if(hand.wins()) {
+	while(cashOut == null) {
+		try {
+			System.out.println("Odottaa tuplaus/voitonmaksu päätöstä");
+			wait();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	  }
+	}
+	
+	System.out.println("Eteenpäin endGamessa");
+	
     PlayedGame currentGame;
     Player winner;
     Player loser;
     
     double creditChange = hand.worth() * bet;
+    if(cashOut != null) {
+    	if(!cashOut) {
+    		creditChange = playHighOrLow(creditChange);
+    	}
+    }
     
+    // miten käy tämän?
     if(hand.wins()){
       winner = player1;
       loser = player2;
@@ -209,5 +238,46 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	
 	public Player getCurrentPlayer() {
 		return this.player1;
+	}
+	
+	@Override
+	public synchronized void setHighOrLow (String value) {
+		this.highOrLow = value;
+		notifyAll();
+	}
+	
+	public synchronized double playHighOrLow (double amount) {
+		boolean keepOn = true;
+		double winValue = amount;
+		
+		while(keepOn) {
+			while(highOrLow == null && !cashOut) {
+				try {
+					System.out.println("Odottaaa pientä tai suurta");
+					wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		if(!cashOut) {	
+		System.out.println("Eteenpäin playHighOrLowssa");
+		Card c = deck.nextCard();
+		int value = c.getValue();
+		System.out.println("Kortin arvo: " + value);
+		if(value < 7 && highOrLow == "low" || value > 7 && highOrLow == "high") {
+			winValue *= 2;
+			highOrLow = null;
+		} else {
+			winValue = 0;
+			keepOn = false;
+		}
+		controller.setHighOrLowCard(c.toString());
+		} else {
+			keepOn = false;
+		}
+	}
+		
+	System.out.println("Voittoarvo takaisin endgameen: " + winValue);
+	return winValue;
 	}
 }

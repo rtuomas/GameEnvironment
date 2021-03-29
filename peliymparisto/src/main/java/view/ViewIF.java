@@ -132,5 +132,8 @@ public interface ViewIF {
 	 * @param bet double bet amount
 	 */
 	public void setPokerGameBet(double bet);
-  void notifyCreditReset();
+	void notifyCreditReset();
+  
+  // --- taisto
+	public void setHighOrLowCard(String card);
 }

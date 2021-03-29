@@ -204,5 +204,19 @@ public class Controller implements ControllerIF {
 	public void notifyCreditReset(){
 	  view.notifyCreditReset();
 	}
+	
+	@Override
+	public void setCashout(Boolean decision) {
+		model.setCashout(decision);
+	}
+	
+	@Override
+	public void setHighOrLow(String value) {
+		model.setHighOrLow(value);
+	}
 
+	@Override
+	public void setHighOrLowCard(String card) {
+		view.setHighOrLowCard(card);
+	}
 }

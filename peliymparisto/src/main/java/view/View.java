@@ -1,5 +1,7 @@
 package view;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,10 +14,12 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
@@ -100,6 +104,9 @@ public class View extends Application implements ViewIF {
 	private ImageView [] cardViews = new ImageView [5];
 	private ImageView [] lockViews = new ImageView [5];
 	private List <Text> winTableTexts = new ArrayList<Text>();
+	private ImageView highOrLowCard;
+	private final DecimalFormat df = new DecimalFormat("0.00");
+	private final DecimalFormatSymbols ds = new DecimalFormatSymbols();
 
 	//navBar components
 	/** Button to go to main menu*/
@@ -198,6 +205,8 @@ public class View extends Application implements ViewIF {
 			        System.exit(0);
 			    }
 			});
+			ds.setDecimalSeparator('.');
+			df.setDecimalFormatSymbols(ds);
 			
 			primaryStage.setTitle("GameEnvironment");
 
@@ -277,7 +286,7 @@ public class View extends Application implements ViewIF {
 		signInButton = new Button("Kirjaudu");
 		
 		Label creditLabel = new Label("Saldo: ");
-		creditView = new Label(String.valueOf(this.player.getCredits()));
+		creditView = new Label(df.format(this.player.getCredits()));
 		creditView.setStyle("-fx-font-weight: bold; -fx-border-color: black; -fx-background-color: #c4d8de;");
 		creditView.setPadding(new Insets(4, 4, 4, 4));
 
@@ -304,6 +313,38 @@ public class View extends Application implements ViewIF {
 		HBox.setMargin(signInButton, new Insets(0, 10, 0, 0));
 		HBox.setMargin(playerMenu, new Insets(0, 10, 0, 10));
 		return navBar;
+	}
+	
+	private BorderPane highOrLowBuilder (AnchorPane pokerGameView) {
+		BorderPane highOrLowView = new BorderPane();
+		
+		Button cashout = new Button("Paluu");
+		Button low = new Button("Pieni");
+		Button high = new Button("Suuri");
+		highOrLowCard = new ImageView(new Image("/images/green_back.png",500,300,true,true));
+		
+		highOrLowView.setLeft(low);
+		highOrLowView.setCenter(highOrLowCard);
+		highOrLowView.setRight(high);
+		highOrLowView.setBottom(cashout);
+		
+		cashout.setOnAction(e -> {
+			pokerGameView.getChildren().remove(highOrLowView);
+			ObservableList<Node> childs = pokerGameView.getChildren();
+			for(Node n : childs) {
+				n.setVisible(true);
+			}
+		});
+		
+		low.setOnAction(e -> {
+			controller.setHighOrLow("low");
+		});
+		
+		high.setOnAction(e -> {
+			controller.setHighOrLow("high");
+		});
+		
+		return highOrLowView;
 	}
 	
 	/**
@@ -339,6 +380,18 @@ public class View extends Application implements ViewIF {
 		AnchorPane.setBottomAnchor(play, 11.39);
 		AnchorPane.setRightAnchor(play, 14.59);
 		
+		// payout button placement
+		Button payout = new Button("Voitonmaksu");
+		payout.setPrefHeight(58.0);
+		payout.setPrefWidth(98.0);
+		AnchorPane.setBottomAnchor(payout, 11.39);
+		AnchorPane.setRightAnchor(payout, 256.0);
+		payout.setOnAction(e -> {
+			Boolean value = true;
+			controller.setCashout(value);
+		});
+		
+		
 		// bet increment button placement
 		Button plus = new Button("+");
 		plus.setPrefSize(30, 30);
@@ -356,7 +409,6 @@ public class View extends Application implements ViewIF {
 		minus.setOnAction(e -> {
 			setPokerGameBet(controller.getBetDecrement());
 		});
-		
 		
 		// Gridpane for wintable
 		GridPane wintable = new GridPane();
@@ -458,7 +510,7 @@ public class View extends Application implements ViewIF {
 		
 		//Sets the whole AnchorPane with elements
 		AnchorPane pokerGameView = new AnchorPane(play, gamble, plus, minus, pokerGameCredits, pokerGameBet,
-				wintable, cardPane, notification, topLeftImg);
+				wintable, cardPane, notification, topLeftImg, payout);
 		
 		play.setOnAction(e -> {
 			for(ImageView v : cardViews) {
@@ -481,6 +533,22 @@ public class View extends Application implements ViewIF {
 			}
 			gameOn = !gameOn;
 		});
+		
+		gamble.setOnAction(e -> {
+			BorderPane hl = highOrLowBuilder(pokerGameView);
+			AnchorPane.setBottomAnchor(hl, 0.0);
+			AnchorPane.setTopAnchor(hl, 0.0);
+			AnchorPane.setLeftAnchor(hl, 0.0);
+			AnchorPane.setRightAnchor(hl, 0.0);
+			ObservableList<Node> childs = pokerGameView.getChildren();
+			for(Node n : childs) {
+				n.setVisible(false);
+			}
+			pokerGameView.getChildren().add(hl);
+			Boolean value = false;
+			controller.setCashout(value);
+		});
+		
 		
 		return pokerGameView;
 	}
@@ -1009,12 +1077,12 @@ private BorderPane settingsBuilder() {
 	
 	@Override
 	public void setPokerGamePlayerCredits () {
-		pokerGameCredits.setText("Saldo: " + Double.toString(this.player.getCredits()));
+		pokerGameCredits.setText("Saldo: " + df.format(this.player.getCredits()));
 	}
 	
 	@Override
 	public void setPokerGameBet (double bet) {
-		pokerGameBet.setText("Panos: " + Double.toString(bet));
+		pokerGameBet.setText("Panos: " + df.format(bet));
 		updateWinTable(bet);
 	}
 	
@@ -1024,14 +1092,14 @@ private BorderPane settingsBuilder() {
 	 */
 	private void updateWinTable (double bet) {
 		//Tänne set textit kokonaisuudessaan plus kerroin ja betti
-		winTableTexts.get(0).setText("Ässä pari " + roundToTwoDecimals(bet * HandValue.ACE_PAIR.getMultiplier()));
-		winTableTexts.get(1).setText("Kaksi paria " + roundToTwoDecimals(bet * HandValue.TWO_PAIRS.getMultiplier()));
-		winTableTexts.get(2).setText("Kolmoset: " + roundToTwoDecimals(bet * HandValue.THREE_OF_A_KIND.getMultiplier()));
-		winTableTexts.get(3).setText("Suora " + roundToTwoDecimals(bet * HandValue.STRAIGHT.getMultiplier()));
-		winTableTexts.get(4).setText("Väri: " + roundToTwoDecimals(bet * HandValue.FLUSH.getMultiplier()));
-		winTableTexts.get(5).setText("Täyskäsi: " + roundToTwoDecimals(bet * HandValue.FULL_HOUSE.getMultiplier()));
-		winTableTexts.get(6).setText("Neloset: " + roundToTwoDecimals(bet * HandValue.FOUR_OF_A_KIND.getMultiplier()));
-		winTableTexts.get(7).setText("Värisuora: " + roundToTwoDecimals(bet * HandValue.STRAIGHT_FLUSH.getMultiplier()));
+		winTableTexts.get(0).setText("Ässä pari " + df.format(roundToTwoDecimals(bet * HandValue.ACE_PAIR.getMultiplier())));
+		winTableTexts.get(1).setText("Kaksi paria " + df.format(roundToTwoDecimals(bet * HandValue.TWO_PAIRS.getMultiplier())));
+		winTableTexts.get(2).setText("Kolmoset: " + df.format(roundToTwoDecimals(bet * HandValue.THREE_OF_A_KIND.getMultiplier())));
+		winTableTexts.get(3).setText("Suora " +  df.format(roundToTwoDecimals(bet * HandValue.STRAIGHT.getMultiplier())));
+		winTableTexts.get(4).setText("Väri: " + df.format(roundToTwoDecimals(bet * HandValue.FLUSH.getMultiplier())));
+		winTableTexts.get(5).setText("Täyskäsi: " + df.format(roundToTwoDecimals(bet * HandValue.FULL_HOUSE.getMultiplier())));
+		winTableTexts.get(6).setText("Neloset: " + df.format(roundToTwoDecimals(bet * HandValue.FOUR_OF_A_KIND.getMultiplier())));
+		winTableTexts.get(7).setText("Värisuora: " + df.format(roundToTwoDecimals(bet * HandValue.STRAIGHT_FLUSH.getMultiplier())));
 	}
 	/**
 	 * Helper for rounding two decimal places
@@ -1314,7 +1382,7 @@ private BorderPane settingsBuilder() {
 		notification.setText(text);
 	}
 	
-  @Override
+	@Override
 	public void notifyCreditReset(){
     Platform.runLater(() -> {
       Alert alert = new Alert(AlertType.INFORMATION);
@@ -1323,5 +1391,12 @@ private BorderPane settingsBuilder() {
       alert.setContentText("Opettele pelaamaan");
       alert.showAndWait();
     });
+	}
+
+	@Override
+	public void setHighOrLowCard(String card) {
+		Image initialImg = highOrLowCard.getImage();
+		highOrLowCard.setImage(new Image("/images/" + card + ".png",initialImg.getRequestedWidth()
+				, initialImg.getRequestedHeight(), true, true));
 	}
 }

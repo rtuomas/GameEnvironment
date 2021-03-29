@@ -235,5 +235,11 @@ public class ViewCLI implements ViewIF {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void setHighOrLowCard(String card) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
