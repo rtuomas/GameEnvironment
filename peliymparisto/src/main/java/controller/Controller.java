@@ -219,4 +219,9 @@ public class Controller implements ControllerIF {
 	public void setHighOrLowCard(String card) {
 		view.setHighOrLowCard(card);
 	}
+	
+	@Override
+	public void setGameState(String state) {
+		view.setGameState(state);
+	}
 }

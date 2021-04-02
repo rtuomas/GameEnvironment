@@ -241,5 +241,11 @@ public class ViewCLI implements ViewIF {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void setGameState(String state) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

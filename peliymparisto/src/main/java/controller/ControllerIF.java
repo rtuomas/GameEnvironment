@@ -93,8 +93,8 @@ public interface ControllerIF {
 	public void changePlayerInfo();
 
   public void notifyCreditReset();
-  	// taisto -- 
   	public void setCashout(Boolean decision);
   	public void setHighOrLow(String value);
   	public void setHighOrLowCard(String card);
+  	public void setGameState(String state);
 }

@@ -43,7 +43,6 @@ public interface ModelIF {
 	public void setDatabaseConnection(DAOIF dao);
 
 	public Player getCurrentPlayer(); //make non interface
-	// taisto -- 
 	public void setCashout(Boolean decision);
 	public void setHighOrLow(String value);
 }

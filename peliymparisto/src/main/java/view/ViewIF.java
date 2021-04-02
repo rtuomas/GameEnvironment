@@ -133,7 +133,6 @@ public interface ViewIF {
 	 */
 	public void setPokerGameBet(double bet);
 	void notifyCreditReset();
-  
-  // --- taisto
 	public void setHighOrLowCard(String card);
+	public void setGameState(String state);
 }

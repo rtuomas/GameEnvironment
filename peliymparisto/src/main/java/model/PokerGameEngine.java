@@ -133,6 +133,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		dao.updatePlayer(player1);
 		dao.updatePlayer(player2);
 		controller.setCurrentPlayer();
+		controller.setGameState("start");
 	}
 	
 	@Override
@@ -208,6 +209,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		
 		if(score.getMultiplier() != 0) {
 			controller.setScore(s + ", voitit " + score.getMultiplier() * bet);
+			controller.setGameState("win");
 		} else {
 			controller.setScore(s);
 		}

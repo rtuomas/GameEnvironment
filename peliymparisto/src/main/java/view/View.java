@@ -107,6 +107,7 @@ public class View extends Application implements ViewIF {
 	private ImageView highOrLowCard;
 	private final DecimalFormat df = new DecimalFormat("0.00");
 	private final DecimalFormatSymbols ds = new DecimalFormatSymbols();
+	private GSObservable stateObs;
 
 	//navBar components
 	/** Button to go to main menu*/
@@ -353,7 +354,8 @@ public class View extends Application implements ViewIF {
 	 */
 	private AnchorPane pokerGameBuilder() {
 		Collections.addAll(cardsToSwapIndexes,0,1,2,3,4);
-		
+		stateObs = new GSObservable();
+
 		//Notification text under cards
 		notification = new Text("Valitse panos ja paina pelaa");
 		AnchorPane.setBottomAnchor(notification, 70.0);
@@ -368,10 +370,12 @@ public class View extends Application implements ViewIF {
 		
 		// gamble button placement
 		Button gamble = new Button ("Tuplaa");
+		GSObserverBtn gambleObs = new GSObserverBtn(gamble);
 		gamble.setPrefHeight(58.0);
 		gamble.setPrefWidth(98.0);
 		AnchorPane.setBottomAnchor(gamble, 11.39);
 		AnchorPane.setRightAnchor(gamble, 135.0);
+		stateObs.addPropertyChangeListener(gambleObs);
 		
 		// play button placement
 		Button play = new Button("Pelaa");
@@ -382,6 +386,7 @@ public class View extends Application implements ViewIF {
 		
 		// payout button placement
 		Button payout = new Button("Voitonmaksu");
+		GSObserverBtn payoutObs = new GSObserverBtn(payout);
 		payout.setPrefHeight(58.0);
 		payout.setPrefWidth(98.0);
 		AnchorPane.setBottomAnchor(payout, 11.39);
@@ -390,6 +395,8 @@ public class View extends Application implements ViewIF {
 			Boolean value = true;
 			controller.setCashout(value);
 		});
+		stateObs.addPropertyChangeListener(payoutObs);
+		
 		
 		
 		// bet increment button placement
@@ -548,8 +555,7 @@ public class View extends Application implements ViewIF {
 			Boolean value = false;
 			controller.setCashout(value);
 		});
-		
-		
+		setGameState("start");
 		return pokerGameView;
 	}
 	
@@ -1398,5 +1404,10 @@ private BorderPane settingsBuilder() {
 		Image initialImg = highOrLowCard.getImage();
 		highOrLowCard.setImage(new Image("/images/" + card + ".png",initialImg.getRequestedWidth()
 				, initialImg.getRequestedHeight(), true, true));
+	}
+	
+	@Override
+	public void setGameState (String state) {
+		stateObs.setGameState(state);
 	}
 }
