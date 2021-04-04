@@ -1,7 +1,10 @@
 package controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import client.ClientSocketHandler;
+import client.EchoClient;
 import javafx.application.Platform;
 import javafx.scene.chart.LineChart;
 import model.Card;
@@ -25,6 +28,8 @@ public class Controller implements ControllerIF {
 	private ViewIF view;
 	private DAOIF dao;
 	private Statistics stats;
+	private EchoClient clientConnection;
+	private ClientSocketHandler handler;
 	
 	/**
 	 * The constructor of the Controller class
@@ -223,5 +228,25 @@ public class Controller implements ControllerIF {
 	@Override
 	public void setGameState(String state) {
 		view.setGameState(state);
+	}
+
+	@Override
+	public void sendMessage(String msg) {
+		handler.sendMessage(msg);
+	}
+
+	@Override
+	public void initChatConnection() {
+		clientConnection = new EchoClient(this);
+		try {
+			handler = clientConnection.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void displayMessage(String message) {
+		view.displayMessage(message);
 	}
 }

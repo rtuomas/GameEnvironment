@@ -20,6 +20,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
@@ -37,6 +38,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Toggle;
@@ -177,7 +179,13 @@ public class View extends Application implements ViewIF {
 	private Button acceptPSEditsButton;
 	/** Button to cancel changes to password in password editing */
 	private Button cancelPSEditsButton;
-
+	
+	/** Button opens a chat window*/
+	private Button chatButton;
+	/** Check if chat window is already open or not */
+	private boolean chatWindowOpen = false;
+	/** This TextArea displays all the received and sent messages*/
+	TextArea allMessages;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -257,7 +265,9 @@ public class View extends Application implements ViewIF {
 		enterStats.setMinWidth(napit.getPrefWidth());
 		exitProgram = new Button("Lopeta");
 		exitProgram.setMinWidth(napit.getPrefWidth());
-		napit.getChildren().addAll(aceView, enterPokerGame, enterSettings, enterStats, exitProgram);
+		chatButton = new Button("Chat");
+		chatButton.setMinWidth(napit.getPrefWidth());
+		napit.getChildren().addAll(aceView, enterPokerGame, enterSettings, enterStats, exitProgram, chatButton);
 		
 		mainMenuView.setCenter(napit);
 		return mainMenuView;
@@ -1044,6 +1054,14 @@ private BorderPane settingsBuilder() {
 		homeButton.setOnAction(e -> {
 			mainView.setCenter(mainMenu);
 		});
+		chatButton.setOnAction(e -> {
+			if(!chatWindowOpen) {
+				createChatWindow();
+			} else {
+				System.out.println("AUki jo");
+			}
+			
+		});
 		exitProgram.setOnAction(e -> Platform.exit());
 		exitMI.setOnAction(e -> Platform.exit());
 		signInButton.setOnAction(e -> controller.attemptLogIn());
@@ -1053,7 +1071,7 @@ private BorderPane settingsBuilder() {
 		infoMI.setOnAction(e -> showProgramInfo());
 		logInProblemMI.setOnAction(e -> showPasswordReset());
 	}
-	
+
 	/**
 	 * Custom onClick handler for card image containers. Handles events where card is clicked, places
 	 * lock image to container when clicked first time and removes it if repeated.
@@ -1410,4 +1428,63 @@ private BorderPane settingsBuilder() {
 	public void setGameState (String state) {
 		stateObs.setGameState(state);
 	}
+	
+	private void createChatWindow() {
+
+		Stage chatStage = new Stage();
+		
+		allMessages = new TextArea();
+		allMessages.setFont(Font.font ("Verdana", 20));
+		allMessages.setEditable(false);
+		allMessages.setPrefSize(1.0, 1.0);
+		
+		TextField message = new TextField();
+		message.setPrefWidth(300);
+		message.setPadding(new Insets(5,5,5,5));
+
+		Button sendButton = new Button("Lähetä");
+		
+		sendButton.setOnAction(e -> {
+			controller.sendMessage(message.getText());
+			message.setText("");
+		});
+		
+		HBox inputField = new HBox();
+		inputField.getChildren().addAll(message, sendButton);
+		
+		BorderPane chatPane = new BorderPane();
+		chatPane.setCenter(allMessages);
+		chatPane.setBottom(inputField);
+		
+		chatStage.setTitle("Chat");
+		chatStage.setScene(new Scene(chatPane, 450, 450));
+		chatStage.show();
+		chatWindowOpen = true;
+		
+		initConnection();
+	}
+
+	private void initConnection() {
+		controller.initChatConnection();
+	}
+	
+	@Override
+	public void displayMessage(String message) {
+		allMessages.appendText(message + "\n");
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

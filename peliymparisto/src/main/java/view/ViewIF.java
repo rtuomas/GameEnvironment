@@ -135,4 +135,5 @@ public interface ViewIF {
 	void notifyCreditReset();
 	public void setHighOrLowCard(String card);
 	public void setGameState(String state);
+	void displayMessage(String message);
 }
