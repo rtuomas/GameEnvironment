@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import javafx.application.Platform;
 import transferobjects.Message;
 
 public class ClientSocketHandler implements Runnable {
@@ -13,11 +14,11 @@ public class ClientSocketHandler implements Runnable {
     private Socket socket;
     private ObjectInputStream infromServer;
     private ObjectOutputStream outToServer;
+    private volatile boolean exit = false;
 
     public ClientSocketHandler(Socket socket, EchoClient client) {
         this.socket = socket;
         this.client = client;
-
         try {
             outToServer = new ObjectOutputStream(socket.getOutputStream());
             infromServer = new ObjectInputStream(socket.getInputStream());
@@ -29,10 +30,11 @@ public class ClientSocketHandler implements Runnable {
     @Override
     public void run() {
         try {
-            while (true) {
+            while (!exit) {
                 Message message = (Message) infromServer.readObject();
                 client.messageReceived(message.getMessage());
             }
+            System.out.println("Connection to chat server closed...");
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -46,4 +48,12 @@ public class ClientSocketHandler implements Runnable {
             e.printStackTrace();
         }
     }
+    
+    /*
+    public void stopRun() {
+    	exit = true;
+    	System.out.println("Stopped?");
+    }
+    */
+    
 }

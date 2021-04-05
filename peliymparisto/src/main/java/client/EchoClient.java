@@ -1,15 +1,13 @@
 package client;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Scanner;
 
 import controller.Controller;
 
 public class EchoClient {
 	private Controller controller;
+	private Thread thread;
 
     public EchoClient(Controller controller) {
 		this.controller = controller;
@@ -20,7 +18,7 @@ public class EchoClient {
         Socket socket = new Socket("localhost", 4998);
        
         ClientSocketHandler handler = new ClientSocketHandler(socket, this);
-        Thread thread = new Thread(handler);
+        thread = new Thread(handler);
         thread.setDaemon(true);
         thread.start();
         return handler;
@@ -30,4 +28,5 @@ public class EchoClient {
         //System.out.println("Input >   " + message);
     	controller.displayMessage(message);
     }
+    
 }

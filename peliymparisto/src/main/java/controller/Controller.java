@@ -237,12 +237,23 @@ public class Controller implements ControllerIF {
 
 	@Override
 	public void initChatConnection() {
-		clientConnection = new EchoClient(this);
-		try {
-			handler = clientConnection.start();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (clientConnection == null) { //singleton connection, could make class singleton but uses controller as parameter
+			clientConnection = new EchoClient(this);
+			try {
+				handler = clientConnection.start();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("Using previous chat connection");
 		}
+		
+	}
+	
+	//unused at this time
+	@Override
+	public void closeChatConnection() {
+		//handler.stopRun();
 	}
 	
 	@Override

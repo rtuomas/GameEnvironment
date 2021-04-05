@@ -96,7 +96,7 @@ public interface ControllerIF {
 	 * @param string */
 	public void sendMessage(String string);
 
-  public void notifyCreditReset();
+	public void notifyCreditReset();
   	public void setCashout(Boolean decision);
   	public void setHighOrLow(String value);
   	public void setHighOrLowCard(String card);
@@ -104,4 +104,6 @@ public interface ControllerIF {
 
 	public void initChatConnection();
 	public void displayMessage(String message);
+
+	public void closeChatConnection();
 }

@@ -47,6 +47,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
@@ -57,9 +59,11 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import model.HandValue;
 import model.PlayedGame;
@@ -70,7 +74,7 @@ import model.PlayerRanking;
 /**
  * The Graphical User Interface built with JavaFX
  * @author ---
- * @version 1.8 19.03.2021
+ * @version 2.0 05.04.2021
  */
 public class View extends Application implements ViewIF {
 	
@@ -233,6 +237,8 @@ public class View extends Application implements ViewIF {
 			primaryStage.getIcons().add(new Image("/images/cards_icon.png"));
 			
 			createGUITransitions(primaryStage, mainView, mainMenu, pokerGame, settings, stats);
+			
+			createChatTextArea(); //This is only used when chat is opened. Created here so it can store the sent and received messages
 
 			primaryStage.setScene(mainScene);
 	        primaryStage.show();
@@ -243,15 +249,40 @@ public class View extends Application implements ViewIF {
 	}
 	
 	/**
+	 * Creates the textArea which stores sent and received messages
+	 */
+	private void createChatTextArea() {
+		allMessages = new TextArea();
+		allMessages.setFont(Font.font ("Verdana", 10));
+		allMessages.setEditable(false);
+		allMessages.setPrefSize(1.0, 1.0);
+		allMessages.setWrapText(true);
+		allMessages.setPadding(new Insets(5, 5, 5, 5));
+	}
+	
+	/**
 	 * Contains the GUI for main menu
 	 * @return BorderPane type layout for the main menu
 	 */
 	private BorderPane mainMenuBuilder() {
-		Image aceCards = new Image("/images/aces.png", 500, 300, false, false);
+		Image aceCards = new Image("/images/aces.png", 350, 210, false, false);
 		ImageView aceView = new ImageView(aceCards);
+		Image chatOpen = new Image("/images/up.png", 20, 20, false, false);
+		ImageView chatOpenView = new ImageView(chatOpen);
 		
 		BorderPane mainMenuView = new BorderPane();
 		//mainMenuView.setPrefSize(400, 400);
+		
+		VBox nameAndPicture = new VBox();
+		nameAndPicture.setAlignment(Pos.CENTER);
+		nameAndPicture.setPadding(new Insets(10, 10, 10, 10));
+		nameAndPicture.setSpacing(10);
+		nameAndPicture.setPrefWidth(100);
+		Label name = new Label("AutoMatti");
+		name.setFont(Font.font ("Verdana", FontWeight.BOLD, 35));
+		nameAndPicture.getChildren().addAll(aceView, name);
+		mainMenuView.setTop(nameAndPicture);
+		
 		VBox napit = new VBox();
 		napit.setAlignment(Pos.CENTER);
 		napit.setPadding(new Insets(10, 10, 10, 10));
@@ -265,11 +296,17 @@ public class View extends Application implements ViewIF {
 		enterStats.setMinWidth(napit.getPrefWidth());
 		exitProgram = new Button("Lopeta");
 		exitProgram.setMinWidth(napit.getPrefWidth());
-		chatButton = new Button("Chat");
-		chatButton.setMinWidth(napit.getPrefWidth());
-		napit.getChildren().addAll(aceView, enterPokerGame, enterSettings, enterStats, exitProgram, chatButton);
-		
+		napit.getChildren().addAll(enterPokerGame, enterSettings, enterStats, exitProgram);
 		mainMenuView.setCenter(napit);
+		
+		HBox chatLocation = new HBox();
+		chatLocation.setAlignment(Pos.CENTER_RIGHT);
+		chatLocation.setPadding(new Insets(5, 5, 5, 5));
+		chatButton = new Button("Chat", chatOpenView);
+		chatButton.setMinWidth(50);
+		chatLocation.getChildren().add(chatButton);
+		mainMenuView.setBottom(chatLocation);
+		
 		return mainMenuView;
 	}
 	
@@ -1056,7 +1093,7 @@ private BorderPane settingsBuilder() {
 		});
 		chatButton.setOnAction(e -> {
 			if(!chatWindowOpen) {
-				createChatWindow();
+				createChatWindow(primaryStage);
 			} else {
 				System.out.println("AUki jo");
 			}
@@ -1429,43 +1466,73 @@ private BorderPane settingsBuilder() {
 		stateObs.setGameState(state);
 	}
 	
-	private void createChatWindow() {
+	/**
+	 * Creates the chatWindow popup
+	 * @param primaryStage is the stage that the new chatStage is linked to. primaryStage is also used to calculate the position for the chatwindow
+	 */
+	private void createChatWindow(Stage primaryStage) {
+
+		double chatHeight = 400;
+		double chatWidth = 200;
 
 		Stage chatStage = new Stage();
+		chatStage.setAlwaysOnTop(true);
+		chatStage.initOwner(primaryStage);
+		chatStage.initStyle(StageStyle.UTILITY); //simple UI with only a basic closing button
+		chatStage.initModality(Modality.NONE); //doesnt lock the use of other windows
+		chatStage.setHeight(chatHeight);
+		chatStage.setWidth(chatWidth);
+		//calculating the position for the chat popup, NOTE! this does not yet move if primary window is moved
+		chatStage.setX(primaryStage.getX() + primaryStage.getWidth() - chatWidth); 
+		chatStage.setY(primaryStage.getY() + primaryStage.getHeight() - chatHeight);
 		
-		allMessages = new TextArea();
-		allMessages.setFont(Font.font ("Verdana", 20));
-		allMessages.setEditable(false);
-		allMessages.setPrefSize(1.0, 1.0);
-		
-		TextField message = new TextField();
-		message.setPrefWidth(300);
-		message.setPadding(new Insets(5,5,5,5));
-
-		Button sendButton = new Button("Lähetä");
-		
-		sendButton.setOnAction(e -> {
-			controller.sendMessage(message.getText());
-			message.setText("");
+		//upon closing the chatWindowOpen value is set to false
+		chatStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		    @Override
+		    public void handle(WindowEvent t) {
+		    	chatWindowOpen = false;
+		    }
 		});
 		
-		HBox inputField = new HBox();
-		inputField.getChildren().addAll(message, sendButton);
+		//allMessages is created on program start so it can save the chat
+
+		TextField message = new TextField();
+		message.setPrefWidth(120);
+		//This lets users send messages by pressing enter in addition to pressing sendButton
+		message.setOnKeyPressed(new EventHandler<KeyEvent>() {
+		    @Override
+		    public void handle(KeyEvent ke) {
+		        if (ke.getCode().equals(KeyCode.ENTER)) {
+		        	if (!message.getText().isEmpty()) {
+		        		controller.sendMessage(player.getProfileName() + ": " +  message.getText()); //player profile name and message from textfield
+						message.setText("");
+		        	}
+		        }
+		    }
+		});
+
+		Button sendButton = new Button("Lähetä");
+		sendButton.setOnAction(e -> {
+			if (!message.getText().isEmpty()) {
+				controller.sendMessage(player.getProfileName() + ": " +  message.getText()); //player profile name and message from textfield
+				message.setText("");
+			}
+		});
 		
+		BorderPane inputField = new BorderPane();
+		inputField.setLeft(message);
+		inputField.setRight(sendButton);
+		inputField.setPadding(new Insets(5,5,5,5));
 		BorderPane chatPane = new BorderPane();
 		chatPane.setCenter(allMessages);
 		chatPane.setBottom(inputField);
 		
 		chatStage.setTitle("Chat");
-		chatStage.setScene(new Scene(chatPane, 450, 450));
+		chatStage.setScene(new Scene(chatPane));
 		chatStage.show();
 		chatWindowOpen = true;
-		
-		initConnection();
-	}
 
-	private void initConnection() {
-		controller.initChatConnection();
+		controller.initChatConnection(); //after this controller will check if connection allready exists
 	}
 	
 	@Override
