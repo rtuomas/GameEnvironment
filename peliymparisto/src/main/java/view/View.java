@@ -27,7 +27,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
@@ -190,6 +193,8 @@ public class View extends Application implements ViewIF {
 	private boolean chatWindowOpen = false;
 	/** This TextArea displays all the received and sent messages*/
 	TextArea allMessages;
+	
+	TextArea dropDownMessages;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -352,8 +357,36 @@ public class View extends Application implements ViewIF {
 		exitMI = new MenuItem("Lopeta ohjelma");
 		menu2.getItems().addAll(infoMI, exitMI);
 		
-		navBar.getChildren().addAll(homeButton, registerButton, signInLabel, emailInput, passwordInput, signInButton, 
+		
+		/** TESTIN NAVBAR */
+		/*
+		CustomMenuItem chatCustom = new CustomMenuItem();
+		BorderPane chatPane = new BorderPane();
+		chatPane.setCenter(createChat());
+		
+		chatCustom.setContent(chatPane);
+		
+		chatCustom.setHideOnClick(false);
+		
+		
+		Menu menu4 = new Menu("Chat");
+		menu4.getItems().add(chatCustom);
+		
+		MenuBar menuBar = new MenuBar();
+		menuBar.getMenus().add(menu4);
+		*/
+		Menu chatMenu = new Menu("Chat");
+		CustomMenuItem cmi = new CustomMenuItem(createChat());
+		cmi.setHideOnClick(false);
+		
+		chatMenu.getItems().add(cmi);
+		
+		MenuBar menuBar = new MenuBar(chatMenu);
+		/**------------------------------------------------------*/
+		
+		navBar.getChildren().addAll( menuBar, homeButton, registerButton, signInLabel, emailInput, passwordInput, signInButton, 
 				creditLabel, creditView, playerMenu, menu2);
+		
 		navBar.setAlignment(Pos.CENTER);
 		navBar.setPadding(new Insets(5, 5, 5, 5));
 		HBox.setMargin(registerButton, new Insets(0, 10, 0, 10));
@@ -362,7 +395,7 @@ public class View extends Application implements ViewIF {
 		HBox.setMargin(playerMenu, new Insets(0, 10, 0, 10));
 		return navBar;
 	}
-	
+
 	private BorderPane highOrLowBuilder (AnchorPane pokerGameView) {
 		BorderPane highOrLowView = new BorderPane();
 		
@@ -1471,7 +1504,7 @@ private BorderPane settingsBuilder() {
 	 * @param primaryStage is the stage that the new chatStage is linked to. primaryStage is also used to calculate the position for the chatwindow
 	 */
 	private void createChatWindow(Stage primaryStage) {
-
+		/*
 		double chatHeight = 400;
 		double chatWidth = 200;
 
@@ -1533,11 +1566,12 @@ private BorderPane settingsBuilder() {
 		chatWindowOpen = true;
 
 		controller.initChatConnection(); //after this controller will check if connection allready exists
+		*/
 	}
 	
 	@Override
 	public void displayMessage(String message) {
-		allMessages.appendText(message + "\n");
+		dropDownMessages.appendText(message + "\n");
 	}
 	
 	
@@ -1550,7 +1584,54 @@ private BorderPane settingsBuilder() {
 	
 	
 	
-	
+	private Node createChat() {
+		
+		dropDownMessages = new TextArea();
+		dropDownMessages.setFont(Font.font ("Verdana", 10));
+		dropDownMessages.setEditable(false);
+		dropDownMessages.setPrefSize(1.0, 1.0);
+		dropDownMessages.setPrefWidth(300);
+		dropDownMessages.setPrefHeight(300);
+		dropDownMessages.setWrapText(true);
+		dropDownMessages.setPadding(new Insets(5, 5, 5, 5));
+		
+		TextField message = new TextField();
+		message.setPrefWidth(120);
+		//This lets users send messages by pressing enter in addition to pressing sendButton
+		message.setOnKeyPressed(new EventHandler<KeyEvent>() {
+		    @Override
+		    public void handle(KeyEvent ke) {
+		        if (ke.getCode().equals(KeyCode.ENTER)) {
+		        	if (!message.getText().isEmpty()) {
+		        		controller.sendMessage(player.getProfileName() + ": " +  message.getText()); //player profile name and message from textfield
+						message.setText("");
+		        	}
+		        }
+		    }
+		});
+
+		Button sendButton = new Button("Lähetä");
+		sendButton.setOnAction(e -> {
+			if (!message.getText().isEmpty()) {
+				controller.sendMessage(player.getProfileName() + ": " +  message.getText()); //player profile name and message from textfield
+				message.setText("");
+			}
+		});
+		
+		BorderPane inputField = new BorderPane();
+		inputField.setLeft(message);
+		inputField.setRight(sendButton);
+		inputField.setPadding(new Insets(5,5,5,5));
+		BorderPane chatPane = new BorderPane();
+		chatPane.setCenter(dropDownMessages);
+		chatPane.setBottom(inputField);
+		
+		chatWindowOpen = true;
+
+		controller.initChatConnection(); //after this controller will check if connection allready exists
+		
+		return chatPane;
+	}
 	
 	
 	
