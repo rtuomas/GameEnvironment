@@ -16,6 +16,12 @@
 		<artifactId>javafx-controls</artifactId>
 		<version>11</version>
 	</dependency>
+	
+	<dependency>
+    	<groupId>org.openjfx</groupId>
+    	<artifactId>javafx-swing</artifactId>
+    	<version>11-ea+24</version>
+	</dependency>
 
 	<!-- MariaDB tietokanta-Client ja Java Database Connector -->
 	<dependency>

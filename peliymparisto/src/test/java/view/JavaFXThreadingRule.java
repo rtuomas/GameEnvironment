@@ -4,12 +4,12 @@ import java.util.concurrent.CountDownLatch;
 
 import javax.swing.SwingUtilities;
 
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 
 class JavaFXThreadingRule implements TestRule {    
     /**
