@@ -65,7 +65,8 @@ class JavaFXThreadingRule implements TestRule {
         }
 
         protected void setupJavaFX() throws InterruptedException {
-            final CountDownLatch latch = new CountDownLatch(1);            
+            final CountDownLatch latch = new CountDownLatch(1);
+            System.setProperty("java.awt.headless", "true");            
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     // initializes JavaFX environment
