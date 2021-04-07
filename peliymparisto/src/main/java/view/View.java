@@ -1,12 +1,15 @@
 package view;
 
+import java.io.FileInputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
-
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 import controller.Controller;
 import controller.ControllerIF;
@@ -69,6 +72,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import model.HandValue;
+import model.LanguageResources;
 import model.PlayedGame;
 import model.PlayedGameTableView;
 import model.Player;
@@ -195,6 +199,11 @@ public class View extends Application implements ViewIF {
 	TextArea allMessages;
 	
 	TextArea dropDownMessages;
+	
+	private Locale locale;
+	private ResourceBundle rb;
+	
+	private LanguageResources lang;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -209,6 +218,7 @@ public class View extends Application implements ViewIF {
 		controller = new Controller(this);
 		//setting a default player (Tester)
 		controller.getDefaultPlayer();
+		lang = LanguageResources.getInstance();
 	}
 
 	@Override
@@ -226,7 +236,9 @@ public class View extends Application implements ViewIF {
 			ds.setDecimalSeparator('.');
 			df.setDecimalFormatSymbols(ds);
 			
-			primaryStage.setTitle("GameEnvironment");
+			//setLanguage("fi", "FI");
+			lang.setLanguage("fi", "FI");
+			primaryStage.setTitle(lang.getLanguage().getString("primaryStageTitle"));
 
 			BorderPane mainMenu = mainMenuBuilder();
 			AnchorPane pokerGame = pokerGameBuilder();
@@ -239,12 +251,17 @@ public class View extends Application implements ViewIF {
 			mainView.setCenter(mainMenu);
 			mainScene = new Scene(mainView);
 			
+			
+			
 			primaryStage.getIcons().add(new Image("/images/cards_icon.png"));
 			
 			createGUITransitions(primaryStage, mainView, mainMenu, pokerGame, settings, stats);
 			
 			createChatTextArea(); //This is only used when chat is opened. Created here so it can store the sent and received messages
-
+			
+			
+			
+			
 			primaryStage.setScene(mainScene);
 	        primaryStage.show();
 			
@@ -283,7 +300,7 @@ public class View extends Application implements ViewIF {
 		nameAndPicture.setPadding(new Insets(10, 10, 10, 10));
 		nameAndPicture.setSpacing(10);
 		nameAndPicture.setPrefWidth(100);
-		Label name = new Label("AutoMatti");
+		Label name = new Label(lang.getLanguage().getString("GameTitle"));
 		name.setFont(Font.font ("Verdana", FontWeight.BOLD, 35));
 		nameAndPicture.getChildren().addAll(aceView, name);
 		mainMenuView.setTop(nameAndPicture);
@@ -378,6 +395,7 @@ public class View extends Application implements ViewIF {
 		Menu chatMenu = new Menu("Chat");
 		CustomMenuItem cmi = new CustomMenuItem(createChat());
 		cmi.setHideOnClick(false);
+		
 		
 		chatMenu.getItems().add(cmi);
 		
@@ -682,11 +700,23 @@ private BorderPane settingsBuilder() {
         RadioButton radioButton2 = new RadioButton("Light Mode");
         ToggleGroup radioGroup = new ToggleGroup();
         
+        Button englishButton = new Button("English");
+        englishButton.setOnAction(e -> {
+        	System.out.println("english");
+			lang.setLanguage("en", "US");
+			
+		});
+        Button finnishButton = new Button("suomi");
+        finnishButton.setOnAction(e -> {
+        	System.out.println("finnish");
+			lang.setLanguage("fi", "FI");
+		});
+        
         radioButton1.setToggleGroup(radioGroup);
         radioButton2.setToggleGroup(radioGroup);
         
         
-        HBox hbox = new HBox(radioButton1, radioButton2);
+        HBox hbox = new HBox(englishButton,finnishButton,radioButton1, radioButton2);
         hbox.setAlignment(Pos.CENTER);
         settingsView.setCenter(hbox);
 
