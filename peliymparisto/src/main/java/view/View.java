@@ -35,6 +35,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.Separator;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -396,20 +397,93 @@ public class View extends Application implements ViewIF {
 		return navBar;
 	}
 
-	private BorderPane highOrLowBuilder (AnchorPane pokerGameView) {
-		BorderPane highOrLowView = new BorderPane();
+	private AnchorPane highOrLowBuilder (AnchorPane pokerGameView) {
+		AnchorPane highOrLowView = new AnchorPane();
 		
-		Button cashout = new Button("Paluu");
+		Text instruction = new Text("Valitse suuri (8 - K), pieni (A - 6) tai maa voittaaksesi");
+		instruction.setFont(Font.font(24));
+		AnchorPane.setTopAnchor(instruction, 15.0);
+		AnchorPane.setLeftAnchor(instruction, 200.0);
+		
+		Image img = new Image("/images/green_back.png",500,300,true,true);
+		highOrLowCard = new ImageView(img);
+		AnchorPane.setTopAnchor(highOrLowCard, 50.0);
+		AnchorPane.setLeftAnchor(highOrLowCard, 375.0);
+		
+		VBox highLowContainer = new VBox(45.0);
+		Text highLowText = new Text("SUURI / PIENI \n  MAKSAA 2X");
+		highLowText.setFont(Font.font(16));
 		Button low = new Button("Pieni");
+		low.setPrefWidth(100.0);
+		low.setFont(Font.font(16));
 		Button high = new Button("Suuri");
-		highOrLowCard = new ImageView(new Image("/images/green_back.png",500,300,true,true));
+		high.setPrefWidth(100.0);
+		high.setFont(Font.font(16));
+		highLowContainer.setAlignment(Pos.TOP_CENTER);
+		highLowContainer.setPrefWidth(img.getWidth());
+		highLowContainer.setPrefHeight(img.getHeight());
+		AnchorPane.setTopAnchor(highLowContainer, 50.0);
+		AnchorPane.setLeftAnchor(highLowContainer, 100.0);
+		String borderForVbox = "-fx-border-color: black;\n" +
+                "-fx-border-insets: 5;\n" +
+                "-fx-border-width: 2;\n" +
+                "-fx-border-style: solid;\n";
+		highLowContainer.setStyle(borderForVbox);
+		highLowContainer.getChildren().addAll(highLowText,high,low);
 		
-		highOrLowView.setLeft(low);
-		highOrLowView.setCenter(highOrLowCard);
-		highOrLowView.setRight(high);
-		highOrLowView.setBottom(cashout);
 		
-		cashout.setOnAction(e -> {
+		VBox suitContainer = new VBox(25.0);
+		Text suitText = new Text("      MAA \n MAKSAA 4X");
+		suitText.setFont(Font.font(16));
+		GridPane suitGrid = new GridPane();
+		suitContainer.setAlignment(Pos.TOP_CENTER);
+		suitContainer.setPrefWidth(img.getWidth());
+		suitContainer.setPrefHeight(img.getHeight());
+		
+		suitGrid.setPadding(new Insets(5,5,5,5));
+		suitGrid.setHgap(10); 
+		suitGrid.setVgap(10);
+		
+		ImageView heart = new ImageView(new Image("/images/suitHeart.png",90,90,true,true));
+		ImageView club = new ImageView(new Image("/images/suitClub.png",90,90,true,true));
+		ImageView spade = new ImageView(new Image("/images/suitSpade.png",90,90,true,true));
+		ImageView diamond = new ImageView(new Image("/images/suitDiamond.png",90,90,true,true));
+		
+		suitGrid.add(heart, 0, 0);
+		suitGrid.add(club, 0, 1);
+		suitGrid.add(spade, 1, 0);
+		suitGrid.add(diamond, 1, 1);
+		
+		AnchorPane.setTopAnchor(suitContainer, 50.0);
+		AnchorPane.setRightAnchor(suitContainer, 100.0);
+		suitContainer.setStyle(borderForVbox);
+		suitContainer.getChildren().addAll(suitText,suitGrid);
+		
+		
+		HBox labeledSeparator = new HBox();
+		Label winTxt = new Label("Voitto");
+		winTxt.setFont(Font.font(16));
+		Separator leftSeparator = new Separator();
+		Separator rightSeparator = new Separator();
+		labeledSeparator.getChildren().add(leftSeparator);
+		labeledSeparator.getChildren().add(winTxt);
+		labeledSeparator.getChildren().add(rightSeparator);
+		labeledSeparator.setAlignment(Pos.CENTER);
+		
+		VBox backAndWinContainer = new VBox(10.0);
+		Label win = new Label("1.00");
+		win.setFont(Font.font(16));
+		backAndWinContainer.setAlignment(Pos.TOP_CENTER);
+		Button back = new Button("Paluu");
+		back.setPrefWidth(100);
+		back.setFont(Font.font(16));
+		backAndWinContainer.setPrefHeight(95.0);
+		backAndWinContainer.setPrefWidth(img.getWidth());
+		AnchorPane.setLeftAnchor(backAndWinContainer, 375.0);
+		AnchorPane.setBottomAnchor(backAndWinContainer, 0.0);
+		backAndWinContainer.getChildren().addAll(labeledSeparator, win, back);
+		
+		back.setOnAction(e -> {
 			pokerGameView.getChildren().remove(highOrLowView);
 			ObservableList<Node> childs = pokerGameView.getChildren();
 			for(Node n : childs) {
@@ -424,6 +498,8 @@ public class View extends Application implements ViewIF {
 		high.setOnAction(e -> {
 			controller.setHighOrLow("high");
 		});
+		
+		highOrLowView.getChildren().addAll(highOrLowCard, highLowContainer,suitContainer,instruction,backAndWinContainer);
 		
 		return highOrLowView;
 	}
@@ -622,7 +698,7 @@ public class View extends Application implements ViewIF {
 		});
 		
 		gamble.setOnAction(e -> {
-			BorderPane hl = highOrLowBuilder(pokerGameView);
+			AnchorPane hl = highOrLowBuilder(pokerGameView);
 			AnchorPane.setBottomAnchor(hl, 0.0);
 			AnchorPane.setTopAnchor(hl, 0.0);
 			AnchorPane.setLeftAnchor(hl, 0.0);
