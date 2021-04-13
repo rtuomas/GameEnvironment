@@ -96,9 +96,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		}
 	  }
 	}
-	
-	System.out.println("Eteenpäin endGamessa");
-	
+		
     PlayedGame currentGame;
     Player winner;
     Player loser;
@@ -261,18 +259,67 @@ public class PokerGameEngine extends Thread implements ModelIF {
 					e.printStackTrace();
 				}
 			}
-		if(!cashOut) {	
-		System.out.println("Eteenpäin playHighOrLowssa");
+		if(!cashOut) {
 		Card c = deck.nextCard();
 		int value = c.getValue();
-		System.out.println("Kortin arvo: " + value);
-		if(value < 7 && highOrLow == "low" || value > 7 && highOrLow == "high") {
-			winValue *= 2;
-			highOrLow = null;
-		} else {
-			winValue = 0;
-			keepOn = false;
+		
+		switch (highOrLow) {
+		case "heart":
+			if(c.getSuit() == 0) {
+				winValue *= 4;
+				highOrLow = null;
+			} else {
+				winValue = 0;
+				keepOn = false;
+			}
+			break;
+		case "diamond":
+			if(c.getSuit() == 1) {
+				winValue *= 4;
+				highOrLow = null;
+			} else {
+				winValue = 0;
+				keepOn = false;
+			}
+			break;
+		case "club":
+			if(c.getSuit() == 2) {
+				winValue *= 4;
+				highOrLow = null;
+			} else {
+				winValue = 0;
+				keepOn = false;
+			}
+			break;
+		case "spade":
+			if(c.getSuit() == 3) {
+				winValue *= 4;
+				highOrLow = null;
+			} else {
+				winValue = 0;
+				keepOn = false;
+			}
+			break;
+		case "low":
+			if(value < 7 && highOrLow == "low") { 
+				winValue *= 2;
+				highOrLow = null;
+			} else {
+				winValue = 0;
+				keepOn = false;
+			}
+			break;
+		case "high":
+			if(value > 7 && highOrLow == "high") {
+				winValue *= 2;
+				highOrLow = null;
+			} else {
+				winValue = 0;
+				keepOn = false;
+			}
+			break;
 		}
+		
 		controller.setHighOrLowCard(c.toString());
 		} else {
 			keepOn = false;

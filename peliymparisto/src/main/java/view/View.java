@@ -56,6 +56,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
@@ -415,6 +416,7 @@ public class View extends Application implements ViewIF {
 		return navBar;
 	}
 
+	
 	private AnchorPane highOrLowBuilder (AnchorPane pokerGameView) {
 		AnchorPane highOrLowView = new AnchorPane();
 		
@@ -463,9 +465,45 @@ public class View extends Application implements ViewIF {
 		suitGrid.setVgap(10);
 		
 		ImageView heart = new ImageView(new Image("/images/suitHeart.png",90,90,true,true));
+		heart.setPickOnBounds(true);
 		ImageView club = new ImageView(new Image("/images/suitClub.png",90,90,true,true));
+		club.setPickOnBounds(true);
 		ImageView spade = new ImageView(new Image("/images/suitSpade.png",90,90,true,true));
+		spade.setPickOnBounds(true);
 		ImageView diamond = new ImageView(new Image("/images/suitDiamond.png",90,90,true,true));
+		diamond.setPickOnBounds(true);
+		
+		heart.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				controller.setHighOrLow("heart");
+			}	
+		});
+		
+		club.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				controller.setHighOrLow("club");
+			}	
+		});
+		
+		spade.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				controller.setHighOrLow("spade");
+			}	
+		});
+		
+		diamond.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				controller.setHighOrLow("diamond");
+			}	
+		});
 		
 		suitGrid.add(heart, 0, 0);
 		suitGrid.add(club, 0, 1);
