@@ -206,7 +206,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		}
 		
 		if(score.getMultiplier() != 0) {
-			controller.setScore(s + ", voitit " + score.getMultiplier() * bet);
+			controller.setScore(s + ", voitit " + score.getMultiplier() * bet + "0");
 			controller.setGameState("win");
 		} else {
 			controller.setScore(s);
@@ -321,6 +321,12 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		}
 		
 		controller.setHighOrLowCard(c.toString());
+		if(winValue > 0) {
+			controller.setScore("Voitit " + Double.toString(winValue) + "0");
+		} else {
+			controller.setScore("");
+		}
+		
 		} else {
 			keepOn = false;
 		}

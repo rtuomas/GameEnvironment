@@ -120,9 +120,10 @@ public class View extends Application implements ViewIF {
 	private ImageView [] lockViews = new ImageView [5];
 	private List <Text> winTableTexts = new ArrayList<Text>();
 	private ImageView highOrLowCard;
+	private GSObservable stateObs;
+	private Text gambleWin;
 	private final DecimalFormat df = new DecimalFormat("0.00");
 	private final DecimalFormatSymbols ds = new DecimalFormatSymbols();
-	private GSObservable stateObs;
 
 	//navBar components
 	/** Button to go to main menu*/
@@ -527,8 +528,8 @@ public class View extends Application implements ViewIF {
 		labeledSeparator.setAlignment(Pos.CENTER);
 		
 		VBox backAndWinContainer = new VBox(10.0);
-		Label win = new Label("1.00");
-		win.setFont(Font.font(16));
+		//gambleWin = new Text("1.00");
+		gambleWin.setFont(Font.font(16));
 		backAndWinContainer.setAlignment(Pos.TOP_CENTER);
 		Button back = new Button("Paluu");
 		back.setPrefWidth(100);
@@ -537,7 +538,7 @@ public class View extends Application implements ViewIF {
 		backAndWinContainer.setPrefWidth(img.getWidth());
 		AnchorPane.setLeftAnchor(backAndWinContainer, 375.0);
 		AnchorPane.setBottomAnchor(backAndWinContainer, 0.0);
-		backAndWinContainer.getChildren().addAll(labeledSeparator, win, back);
+		backAndWinContainer.getChildren().addAll(labeledSeparator, gambleWin, back);
 		
 		back.setOnAction(e -> {
 			pokerGameView.getChildren().remove(highOrLowView);
@@ -567,7 +568,8 @@ public class View extends Application implements ViewIF {
 	private AnchorPane pokerGameBuilder() {
 		Collections.addAll(cardsToSwapIndexes,0,1,2,3,4);
 		stateObs = new GSObservable();
-
+		gambleWin = new Text("1.00");
+		
 		//Notification text under cards
 		notification = new Text("Valitse panos ja paina pelaa");
 		AnchorPane.setBottomAnchor(notification, 70.0);
@@ -1371,6 +1373,7 @@ private BorderPane settingsBuilder() {
 			cardPane.setStyle("-fx-border-color: #00FF25;" + " -fx-border-width: 5px;");
 		}
 		setNotification(score);
+		setGambleWin(score.replaceAll("[^\\d.]", ""));
 	}
 
 	/**
@@ -1618,6 +1621,13 @@ private BorderPane settingsBuilder() {
 			notification.setLayoutX(200);
 		}
 		notification.setText(text);
+	}
+	
+	private void setGambleWin(String txt) {
+		if(txt.length() == 0) {
+			txt = "0.00";
+		}
+		gambleWin.setText(txt);
 	}
 	
 	@Override
