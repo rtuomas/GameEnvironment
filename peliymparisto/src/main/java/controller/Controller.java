@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 import client.ClientSocketHandler;
@@ -232,7 +233,11 @@ public class Controller implements ControllerIF {
 
 	@Override
 	public void sendMessage(String msg) {
-		handler.sendMessage(msg);
+		if (clientConnection != null) {
+			handler.sendMessage(msg);
+		} else {
+			displayMessage("Viestiä ei voitu lähettää");
+		}
 	}
 
 	@Override
@@ -241,10 +246,18 @@ public class Controller implements ControllerIF {
 			clientConnection = new EchoClient(this);
 			try {
 				handler = clientConnection.start();
+				displayMessage("Yhteys chat palvelimeen muodostettu");
+			} catch (SocketException e) {
+				displayMessage("Yhteyttä chat palvelimeen ei voitu muodostaa");
+				clientConnection = null;
+				//e.printStackTrace();
 			} catch (IOException e) {
+				//view.displayConnectionError();
+				displayMessage("Virhe chat palvelimella");
 				e.printStackTrace();
 			}
 		} else {
+			displayMessage("Yhteys chat palvelimeen on jo muodostettu");
 			System.out.println("Using previous chat connection");
 		}
 		

@@ -14,7 +14,6 @@ public class EchoClient {
 	}
 
 	public ClientSocketHandler start() throws IOException {
-
         Socket socket = new Socket("localhost", 4998);
        
         ClientSocketHandler handler = new ClientSocketHandler(socket, this);

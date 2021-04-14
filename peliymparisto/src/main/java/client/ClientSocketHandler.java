@@ -16,15 +16,11 @@ public class ClientSocketHandler implements Runnable {
     private ObjectOutputStream outToServer;
     private volatile boolean exit = false;
 
-    public ClientSocketHandler(Socket socket, EchoClient client) {
+    public ClientSocketHandler(Socket socket, EchoClient client) throws IOException{
         this.socket = socket;
         this.client = client;
-        try {
-            outToServer = new ObjectOutputStream(socket.getOutputStream());
-            infromServer = new ObjectInputStream(socket.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        outToServer = new ObjectOutputStream(socket.getOutputStream());
+        infromServer = new ObjectInputStream(socket.getInputStream());
     }
 
     @Override

@@ -1,6 +1,5 @@
 package view;
 
-import java.io.FileInputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -8,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 import controller.Controller;
@@ -23,7 +21,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
@@ -32,14 +29,11 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Separator;
-import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
@@ -63,6 +57,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -71,7 +66,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import model.HandValue;
 import model.LanguageResources;
@@ -87,12 +81,12 @@ import model.PlayerRanking;
  */
 public class View extends Application implements ViewIF {
 	
-	//Normal variables here -->
+	//General variables
 	/** Controller which transfers info per mvc structure */
 	private ControllerIF controller;
 	private Player player;
 	
-	//GUI components here -->
+	//General GUI components
 	/** Button to enter the poker game view */
 	private Button enterPokerGame;
 	/** Button to enter the settings view */
@@ -106,7 +100,6 @@ public class View extends Application implements ViewIF {
 	LineChart<String, Number> lineChart;
 	private TableView tableViewRanks, tableViewGames;
 	private Scene mainScene;
-
 	
 	//PokerGameView variables
 	private Text pokerGameCredits;
@@ -194,14 +187,13 @@ public class View extends Application implements ViewIF {
 	/** Button to cancel changes to password in password editing */
 	private Button cancelPSEditsButton;
 	
-	/** Button opens a chat window*/
-	private Button chatButton;
-	/** Check if chat window is already open or not */
-	private boolean chatWindowOpen = false;
+	//adBar components
 	/** This TextArea displays all the received and sent messages*/
-	TextArea allMessages;
-	
-	TextArea dropDownMessages;
+	private TextArea dropDownMessages;
+	/** This Button opens the custom chat window*/
+	private MenuButton chatButton;
+	/** This Label displays how many players are online in the application at a given time*/
+	private Label playerCount; //FUNCTIONALITY NOT YET IMPLEMENTED!!!
 	
 	private Locale locale;
 	private ResourceBundle rb;
@@ -248,43 +240,30 @@ public class View extends Application implements ViewIF {
 			BorderPane settings = settingsBuilder();
 			BorderPane stats = statsBuilder();
 			HBox navBar = navBarBuilder();
+			HBox adBar = adBarBuilder();
 			
 			BorderPane mainView = new BorderPane();
 			mainView.setTop(navBar);
 			mainView.setCenter(mainMenu);
+			mainView.setBottom(adBar);
 			mainScene = new Scene(mainView);
-			
-			
-			
+
 			primaryStage.getIcons().add(new Image("/images/cards_icon.png"));
 			
 			createGUITransitions(primaryStage, mainView, mainMenu, pokerGame, settings, stats);
 			
-			createChatTextArea(); //This is only used when chat is opened. Created here so it can store the sent and received messages
-			
-			
-			
-			
 			primaryStage.setScene(mainScene);
 	        primaryStage.show();
+	        
+	        //hiding the downwards arrow on menuButton which opens chat window
+	        chatButton.lookup(".arrow-button").setStyle("-fx-padding: 0;");
+	        chatButton.lookup(".arrow").setStyle("-fx-padding: 0;");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	/**
-	 * Creates the textArea which stores sent and received messages
-	 */
-	private void createChatTextArea() {
-		allMessages = new TextArea();
-		allMessages.setFont(Font.font ("Verdana", 10));
-		allMessages.setEditable(false);
-		allMessages.setPrefSize(1.0, 1.0);
-		allMessages.setWrapText(true);
-		allMessages.setPadding(new Insets(5, 5, 5, 5));
-	}
-	
+
 	/**
 	 * Contains the GUI for main menu
 	 * @return BorderPane type layout for the main menu
@@ -292,8 +271,6 @@ public class View extends Application implements ViewIF {
 	private BorderPane mainMenuBuilder() {
 		Image aceCards = new Image("/images/aces.png", 350, 210, false, false);
 		ImageView aceView = new ImageView(aceCards);
-		Image chatOpen = new Image("/images/up.png", 20, 20, false, false);
-		ImageView chatOpenView = new ImageView(chatOpen);
 		
 		BorderPane mainMenuView = new BorderPane();
 		//mainMenuView.setPrefSize(400, 400);
@@ -323,15 +300,7 @@ public class View extends Application implements ViewIF {
 		exitProgram.setMinWidth(napit.getPrefWidth());
 		napit.getChildren().addAll(enterPokerGame, enterSettings, enterStats, exitProgram);
 		mainMenuView.setCenter(napit);
-		
-		HBox chatLocation = new HBox();
-		chatLocation.setAlignment(Pos.CENTER_RIGHT);
-		chatLocation.setPadding(new Insets(5, 5, 5, 5));
-		chatButton = new Button("Chat", chatOpenView);
-		chatButton.setMinWidth(50);
-		chatLocation.getChildren().add(chatButton);
-		mainMenuView.setBottom(chatLocation);
-		
+
 		return mainMenuView;
 	}
 	
@@ -360,7 +329,7 @@ public class View extends Application implements ViewIF {
 		
 		Label creditLabel = new Label("Saldo: ");
 		creditView = new Label(df.format(this.player.getCredits()));
-		creditView.setStyle("-fx-font-weight: bold; -fx-border-color: black; -fx-background-color: #c4d8de;");
+		creditView.setStyle("-fx-font-weight: bold; -fx-border-color: black; -fx-background-color: #88a4a5;");
 		creditView.setPadding(new Insets(4, 4, 4, 4));
 
 		playerMenu = new MenuButton("Ei kirjautunut");
@@ -377,6 +346,36 @@ public class View extends Application implements ViewIF {
 		exitMI = new MenuItem("Lopeta ohjelma");
 		menu2.getItems().addAll(infoMI, exitMI);
 		
+		navBar.getChildren().addAll(homeButton, registerButton, signInLabel, emailInput, passwordInput, signInButton, 
+				creditLabel, creditView, playerMenu, menu2);
+		
+		navBar.setAlignment(Pos.CENTER);
+		navBar.setPadding(new Insets(5, 5, 5, 5));
+		HBox.setMargin(registerButton, new Insets(0, 10, 0, 10));
+		HBox.setMargin(signInLabel, new Insets(0, 10, 0, 0));
+		HBox.setMargin(signInButton, new Insets(0, 10, 0, 0));
+		HBox.setMargin(playerMenu, new Insets(0, 10, 0, 10));
+		return navBar;
+	}
+	
+	/**
+	 * This creates the lower toolbar where ads, chatwindowButton and playerCount(Online) is found
+	 * @return HBox type of toolbar presentation
+	 */
+	private HBox adBarBuilder() {
+		HBox adBar = new HBox();
+		Region region1 = new Region();
+        HBox.setHgrow(region1, Priority.ALWAYS);
+        Region region2 = new Region();
+        HBox.setHgrow(region2, Priority.ALWAYS);
+        
+		Image chatOpen = new Image("/images/up.png", 20, 20, false, false);
+		ImageView chatOpenView = new ImageView(chatOpen);
+		
+		Image ad = new Image("/images/ads/ad2.png");
+		ImageView adView = new ImageView(ad);
+		adView.setFitHeight(50);
+		adView.setPreserveRatio(true);
 		
 		/** TESTIN NAVBAR */
 		/*
@@ -395,26 +394,24 @@ public class View extends Application implements ViewIF {
 		MenuBar menuBar = new MenuBar();
 		menuBar.getMenus().add(menu4);
 		*/
-		Menu chatMenu = new Menu("Chat");
+		
+		chatButton = new MenuButton("Chat");
+		chatButton.setGraphic(chatOpenView);
 		CustomMenuItem cmi = new CustomMenuItem(createChat());
 		cmi.setHideOnClick(false);
+		chatButton.getItems().add(cmi);
 		
+		Label playerLabel = new Label("Pelaajia online: ");
+		playerCount = new Label("6"); //ADD FUNCTIONALITY!!!
+		playerCount.setFont(Font.font ("Verdana", FontWeight.BOLD, 12));
+		playerCount.setStyle("-fx-border-color: black; -fx-background-color: #88a4a5;");
+		playerCount.setPadding(new Insets(4, 4, 4, 4));
 		
-		chatMenu.getItems().add(cmi);
+		adBar.setAlignment(Pos.CENTER);
+		adBar.getChildren().addAll(chatButton, region1, adView, region2, playerLabel, playerCount);
+		adBar.setPadding(new Insets(5, 10, 5, 10));
 		
-		MenuBar menuBar = new MenuBar(chatMenu);
-		/**------------------------------------------------------*/
-		
-		navBar.getChildren().addAll( menuBar, homeButton, registerButton, signInLabel, emailInput, passwordInput, signInButton, 
-				creditLabel, creditView, playerMenu, menu2);
-		
-		navBar.setAlignment(Pos.CENTER);
-		navBar.setPadding(new Insets(5, 5, 5, 5));
-		HBox.setMargin(registerButton, new Insets(0, 10, 0, 10));
-		HBox.setMargin(signInLabel, new Insets(0, 10, 0, 0));
-		HBox.setMargin(signInButton, new Insets(0, 10, 0, 0));
-		HBox.setMargin(playerMenu, new Insets(0, 10, 0, 10));
-		return navBar;
+		return adBar;
 	}
 
 	
@@ -1270,14 +1267,6 @@ private BorderPane settingsBuilder() {
 		homeButton.setOnAction(e -> {
 			mainView.setCenter(mainMenu);
 		});
-		chatButton.setOnAction(e -> {
-			if(!chatWindowOpen) {
-				createChatWindow(primaryStage);
-			} else {
-				System.out.println("AUki jo");
-			}
-			
-		});
 		exitProgram.setOnAction(e -> Platform.exit());
 		exitMI.setOnAction(e -> Platform.exit());
 		signInButton.setOnAction(e -> controller.attemptLogIn());
@@ -1653,92 +1642,17 @@ private BorderPane settingsBuilder() {
 		stateObs.setGameState(state);
 	}
 	
-	/**
-	 * Creates the chatWindow popup
-	 * @param primaryStage is the stage that the new chatStage is linked to. primaryStage is also used to calculate the position for the chatwindow
-	 */
-	private void createChatWindow(Stage primaryStage) {
-		/*
-		double chatHeight = 400;
-		double chatWidth = 200;
-
-		Stage chatStage = new Stage();
-		chatStage.setAlwaysOnTop(true);
-		chatStage.initOwner(primaryStage);
-		chatStage.initStyle(StageStyle.UTILITY); //simple UI with only a basic closing button
-		chatStage.initModality(Modality.NONE); //doesnt lock the use of other windows
-		chatStage.setHeight(chatHeight);
-		chatStage.setWidth(chatWidth);
-		//calculating the position for the chat popup, NOTE! this does not yet move if primary window is moved
-		chatStage.setX(primaryStage.getX() + primaryStage.getWidth() - chatWidth); 
-		chatStage.setY(primaryStage.getY() + primaryStage.getHeight() - chatHeight);
-		
-		//upon closing the chatWindowOpen value is set to false
-		chatStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-		    @Override
-		    public void handle(WindowEvent t) {
-		    	chatWindowOpen = false;
-		    }
-		});
-		
-		//allMessages is created on program start so it can save the chat
-
-		TextField message = new TextField();
-		message.setPrefWidth(120);
-		//This lets users send messages by pressing enter in addition to pressing sendButton
-		message.setOnKeyPressed(new EventHandler<KeyEvent>() {
-		    @Override
-		    public void handle(KeyEvent ke) {
-		        if (ke.getCode().equals(KeyCode.ENTER)) {
-		        	if (!message.getText().isEmpty()) {
-		        		controller.sendMessage(player.getProfileName() + ": " +  message.getText()); //player profile name and message from textfield
-						message.setText("");
-		        	}
-		        }
-		    }
-		});
-
-		Button sendButton = new Button("Lähetä");
-		sendButton.setOnAction(e -> {
-			if (!message.getText().isEmpty()) {
-				controller.sendMessage(player.getProfileName() + ": " +  message.getText()); //player profile name and message from textfield
-				message.setText("");
-			}
-		});
-		
-		BorderPane inputField = new BorderPane();
-		inputField.setLeft(message);
-		inputField.setRight(sendButton);
-		inputField.setPadding(new Insets(5,5,5,5));
-		BorderPane chatPane = new BorderPane();
-		chatPane.setCenter(allMessages);
-		chatPane.setBottom(inputField);
-		
-		chatStage.setTitle("Chat");
-		chatStage.setScene(new Scene(chatPane));
-		chatStage.show();
-		chatWindowOpen = true;
-
-		controller.initChatConnection(); //after this controller will check if connection allready exists
-		*/
-	}
-	
 	@Override
 	public void displayMessage(String message) {
 		dropDownMessages.appendText(message + "\n");
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	/**
+	 * Creates the chatwindow for users to send messages to each other trhough the chat server
+	 * @return custom chatPane
+	 */
 	private Node createChat() {
+		Image refresh = new Image("/images/refresh.png", 15, 15, false, false);
 		
 		dropDownMessages = new TextArea();
 		dropDownMessages.setFont(Font.font ("Verdana", 10));
@@ -1750,7 +1664,6 @@ private BorderPane settingsBuilder() {
 		dropDownMessages.setPadding(new Insets(5, 5, 5, 5));
 		
 		TextField message = new TextField();
-		message.setPrefWidth(120);
 		//This lets users send messages by pressing enter in addition to pressing sendButton
 		message.setOnKeyPressed(new EventHandler<KeyEvent>() {
 		    @Override
@@ -1772,21 +1685,23 @@ private BorderPane settingsBuilder() {
 			}
 		});
 		
-		BorderPane inputField = new BorderPane();
-		inputField.setLeft(message);
-		inputField.setRight(sendButton);
-		inputField.setPadding(new Insets(5,5,5,5));
+		Button refreshButton = new Button();
+		refreshButton.setGraphic(new ImageView(refresh));
+		refreshButton.setOnAction(e -> controller.initChatConnection());
+		
+		HBox inputField = new HBox();
+		inputField.getChildren().addAll(message, refreshButton, sendButton);
+		inputField.setPadding(new Insets(5,0,0,0));
+		HBox.setHgrow(message, Priority.ALWAYS);
+		HBox.setMargin(refreshButton, new Insets(0, 10, 0, 10));
+		
 		BorderPane chatPane = new BorderPane();
 		chatPane.setCenter(dropDownMessages);
 		chatPane.setBottom(inputField);
-		
-		chatWindowOpen = true;
 
 		controller.initChatConnection(); //after this controller will check if connection allready exists
 		
 		return chatPane;
 	}
-	
-	
 	
 }
