@@ -117,6 +117,7 @@ public class View extends Application implements ViewIF {
 	private Text gambleWin;
 	private final DecimalFormat df = new DecimalFormat("0.00");
 	private final DecimalFormatSymbols ds = new DecimalFormatSymbols();
+	private Button playButton;
 
 	//navBar components
 	/** Button to go to main menu*/
@@ -420,13 +421,13 @@ public class View extends Application implements ViewIF {
 		
 		Text instruction = new Text("Valitse suuri (8 - K), pieni (A - 6) tai maa voittaaksesi");
 		instruction.setFont(Font.font(24));
-		AnchorPane.setTopAnchor(instruction, 15.0);
+		AnchorPane.setTopAnchor(instruction, 10.0);
 		AnchorPane.setLeftAnchor(instruction, 200.0);
 		
 		Image img = new Image("/images/green_back.png",500,300,true,true);
 		highOrLowCard = new ImageView(img);
 		AnchorPane.setTopAnchor(highOrLowCard, 50.0);
-		AnchorPane.setLeftAnchor(highOrLowCard, 375.0);
+		AnchorPane.setLeftAnchor(highOrLowCard, 340.0);
 		
 		VBox highLowContainer = new VBox(45.0);
 		Text highLowText = new Text("SUURI / PIENI \n  MAKSAA 2X");
@@ -524,7 +525,7 @@ public class View extends Application implements ViewIF {
 		labeledSeparator.getChildren().add(rightSeparator);
 		labeledSeparator.setAlignment(Pos.CENTER);
 		
-		VBox backAndWinContainer = new VBox(10.0);
+		VBox backAndWinContainer = new VBox(4.0);
 		//gambleWin = new Text("1.00");
 		gambleWin.setFont(Font.font(16));
 		backAndWinContainer.setAlignment(Pos.TOP_CENTER);
@@ -533,7 +534,7 @@ public class View extends Application implements ViewIF {
 		back.setFont(Font.font(16));
 		backAndWinContainer.setPrefHeight(95.0);
 		backAndWinContainer.setPrefWidth(img.getWidth());
-		AnchorPane.setLeftAnchor(backAndWinContainer, 375.0);
+		AnchorPane.setLeftAnchor(backAndWinContainer, 345.0);
 		AnchorPane.setBottomAnchor(backAndWinContainer, 0.0);
 		backAndWinContainer.getChildren().addAll(labeledSeparator, gambleWin, back);
 		
@@ -589,11 +590,11 @@ public class View extends Application implements ViewIF {
 		stateObs.addPropertyChangeListener(gambleObs);
 		
 		// play button placement
-		Button play = new Button("Pelaa");
-		play.setPrefHeight(58.0);
-		play.setPrefWidth(98.0);
-		AnchorPane.setBottomAnchor(play, 11.39);
-		AnchorPane.setRightAnchor(play, 14.59);
+		playButton = new Button("Pelaa");
+		playButton.setPrefHeight(58.0);
+		playButton.setPrefWidth(98.0);
+		AnchorPane.setBottomAnchor(playButton, 11.39);
+		AnchorPane.setRightAnchor(playButton, 14.59);
 		
 		// payout button placement
 		Button payout = new Button("Voitonmaksu");
@@ -605,6 +606,7 @@ public class View extends Application implements ViewIF {
 		payout.setOnAction(e -> {
 			Boolean value = true;
 			controller.setCashout(value);
+			playButton.setDisable(false);
 		});
 		stateObs.addPropertyChangeListener(payoutObs);
 		
@@ -614,7 +616,7 @@ public class View extends Application implements ViewIF {
 		Button plus = new Button("+");
 		plus.setPrefSize(30, 30);
 		AnchorPane.setBottomAnchor(plus, 24.4);
-		AnchorPane.setLeftAnchor(plus, 470.0);
+		AnchorPane.setLeftAnchor(plus, 460.0);
 		plus.setOnAction(e -> {
 			setPokerGameBet(controller.getBetIncrement());
 		});
@@ -623,7 +625,7 @@ public class View extends Application implements ViewIF {
 		Button minus = new Button("-");
 		minus.setPrefSize(30, 30);
 		AnchorPane.setBottomAnchor(minus, 24.4);
-		AnchorPane.setLeftAnchor(minus, 340.0);
+		AnchorPane.setLeftAnchor(minus, 330.0);
 		minus.setOnAction(e -> {
 			setPokerGameBet(controller.getBetDecrement());
 		});
@@ -679,7 +681,7 @@ public class View extends Application implements ViewIF {
 		AnchorPane.setLeftAnchor(pokerGameCredits, 36.0);
 		setPokerGameBet(controller.getBet());
 		AnchorPane.setBottomAnchor(pokerGameBet, 30.0);
-		AnchorPane.setLeftAnchor(pokerGameBet, 385.0);
+		AnchorPane.setLeftAnchor(pokerGameBet, 370.0);
 		
 		// Gridpane for card images
 		cardPane = new GridPane ();
@@ -727,27 +729,27 @@ public class View extends Application implements ViewIF {
 		
 		
 		//Sets the whole AnchorPane with elements
-		AnchorPane pokerGameView = new AnchorPane(play, gamble, plus, minus, pokerGameCredits, pokerGameBet,
+		AnchorPane pokerGameView = new AnchorPane(playButton, gamble, plus, minus, pokerGameCredits, pokerGameBet,
 				wintable, cardPane, notification, topLeftImg, payout);
 		
-		play.setOnAction(e -> {
+		playButton.setOnAction(e -> {
 			for(ImageView v : cardViews) {
 				v.setOpacity(1);
 			}
 			cardPane.setStyle(null);
 			if(!gameOn) {
 			controller.startPokerGame();
-			play.setText("Jako");
+			playButton.setText("Jako");
 			plus.setVisible(false);
 			minus.setVisible(false);
 			setNotification("Valitse kortit jotka haluat lukita ja paina jako");
-			setTimeoutForButton(play, 1000); //timeout for play button for 1 second (change time if needed)
+			setTimeoutForButton(playButton, 1000); //timeout for play button for 1 second (change time if needed)
 			} else {
 			setSwappedCards();
 			plus.setVisible(true);
 			minus.setVisible(true);
-			play.setText("Pelaa");
-			setTimeoutForButton(play, 1000); //timeout for play button for 1 second (change time if needed)
+			playButton.setText("Pelaa");
+			//setTimeoutForButton(play, 1000); //timeout for play button for 1 second (change time if needed)
 			}
 			gameOn = !gameOn;
 		});
@@ -1358,9 +1360,11 @@ private BorderPane settingsBuilder() {
 			for(ImageView v : cardViews) {
 				v.setOpacity(0.5);
 			}
+			setTimeoutForButton(playButton,1000);
 		} else {
 			cardPane.setStyle("-fx-border-color: #00FF25;" + " -fx-border-width: 5px;");
 		}
+		playButton.setDisable(true);
 		setNotification(score);
 		setGambleWin(score.replaceAll("[^\\d.]", ""));
 	}
@@ -1615,6 +1619,7 @@ private BorderPane settingsBuilder() {
 	private void setGambleWin(String txt) {
 		if(txt.length() == 0) {
 			txt = "0.00";
+			playButton.setDisable(false);
 		}
 		gambleWin.setText(txt);
 	}

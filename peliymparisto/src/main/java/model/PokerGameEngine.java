@@ -109,7 +109,9 @@ public class PokerGameEngine extends Thread implements ModelIF {
     }
     
     // miten käy tämän?
-    if(hand.wins()){
+    // oli if (hand.wins())
+    
+    if(creditChange > 0){
       winner = player1;
       loser = player2;
     } else {
