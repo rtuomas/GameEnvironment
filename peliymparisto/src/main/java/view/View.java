@@ -69,6 +69,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.HandValue;
 import model.LanguageResources;
+import model.ObservableResourceFactory;
 import model.PlayedGame;
 import model.PlayedGameTableView;
 import model.Player;
@@ -197,9 +198,9 @@ public class View extends Application implements ViewIF {
 	private Label playerCount; //FUNCTIONALITY NOT YET IMPLEMENTED!!!
 	
 	private Locale locale;
-	private ResourceBundle rb;
 	
-	private LanguageResources lang;
+	private static final ObservableResourceFactory RESOURCE_FACTORY = new ObservableResourceFactory();
+	
 
 	public static void main(String[] args) {
 		launch(args);
@@ -214,7 +215,6 @@ public class View extends Application implements ViewIF {
 		controller = new Controller(this);
 		//setting a default player (Tester)
 		controller.getDefaultPlayer();
-		lang = LanguageResources.getInstance();
 	}
 
 	@Override
@@ -232,9 +232,9 @@ public class View extends Application implements ViewIF {
 			ds.setDecimalSeparator('.');
 			df.setDecimalFormatSymbols(ds);
 			
-			//setLanguage("fi", "FI");
-			lang.setLanguage("fi", "FI");
-			primaryStage.setTitle(lang.getLanguage().getString("primaryStageTitle"));
+			locale = new Locale("fi", "FI");
+			RESOURCE_FACTORY.setResources(ResourceBundle.getBundle("properties/TextResources", locale));
+			primaryStage.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("primaryStageTitle"));
 
 			BorderPane mainMenu = mainMenuBuilder();
 			AnchorPane pokerGame = pokerGameBuilder();
@@ -281,7 +281,8 @@ public class View extends Application implements ViewIF {
 		nameAndPicture.setPadding(new Insets(10, 10, 10, 10));
 		nameAndPicture.setSpacing(10);
 		nameAndPicture.setPrefWidth(100);
-		Label name = new Label(lang.getLanguage().getString("GameTitle"));
+		Label name = new Label("");
+		name.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GameTitle"));
 		name.setFont(Font.font ("Verdana", FontWeight.BOLD, 35));
 		nameAndPicture.getChildren().addAll(aceView, name);
 		mainMenuView.setTop(nameAndPicture);
@@ -817,14 +818,13 @@ private BorderPane settingsBuilder() {
         
         Button englishButton = new Button("English");
         englishButton.setOnAction(e -> {
-        	System.out.println("english");
-			lang.setLanguage("en", "US");
-			
+			locale = new Locale("en","US");
+			RESOURCE_FACTORY.setResources(ResourceBundle.getBundle("properties/TextResources", locale));
 		});
         Button finnishButton = new Button("suomi");
         finnishButton.setOnAction(e -> {
-        	System.out.println("finnish");
-			lang.setLanguage("fi", "FI");
+        	locale = new Locale("fi", "FI");
+        	RESOURCE_FACTORY.setResources(ResourceBundle.getBundle("properties/TextResources", locale));
 		});
         
         radioButton1.setToggleGroup(radioGroup);
