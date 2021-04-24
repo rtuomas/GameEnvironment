@@ -199,7 +199,7 @@ public class View extends Application implements ViewIF {
 	
 	private Locale locale;
 	
-	private static final ObservableResourceFactory RESOURCE_FACTORY = new ObservableResourceFactory();
+	private static final ObservableResourceFactory RESOURCE_FACTORY = ObservableResourceFactory.getInstance();
 	
 
 	public static void main(String[] args) {
@@ -292,13 +292,17 @@ public class View extends Application implements ViewIF {
 		napit.setPadding(new Insets(10, 10, 10, 10));
 		napit.setSpacing(10);
 		napit.setPrefWidth(100);
-		enterPokerGame = new Button("Pokeri");
+		enterPokerGame = new Button("");
+		enterPokerGame.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PokerButton"));
 		enterPokerGame.setMinWidth(napit.getPrefWidth());
-		enterSettings = new Button("Asetukset");
+		enterSettings = new Button("");
+		enterSettings.textProperty().bind(RESOURCE_FACTORY.getStringBinding("SettingsButton"));
 		enterSettings.setMinWidth(napit.getPrefWidth());
-		enterStats = new Button("Tilastot");
+		enterStats = new Button("");
+		enterStats.textProperty().bind(RESOURCE_FACTORY.getStringBinding("StatisticsButton"));
 		enterStats.setMinWidth(napit.getPrefWidth());
-		exitProgram = new Button("Lopeta");
+		exitProgram = new Button("");
+		exitProgram.textProperty().bind(RESOURCE_FACTORY.getStringBinding("ExitButton"));
 		exitProgram.setMinWidth(napit.getPrefWidth());
 		napit.getChildren().addAll(enterPokerGame, enterSettings, enterStats, exitProgram);
 		mainMenuView.setCenter(napit);
@@ -320,32 +324,44 @@ public class View extends Application implements ViewIF {
 		homeButton = new Button();
 		homeButton.setGraphic(new ImageView(home));
 		
-		registerButton = new Button("Rekisteröidy");
-		signInLabel = new Label("tai kirjaudu: ");
+		registerButton = new Button("");
+		registerButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("RegisterButton"));
+		signInLabel = new Label("");
+		signInLabel.textProperty().bind(RESOURCE_FACTORY.getStringBinding("SignInLabel"));
 		
 		emailInput = new TextField();
-		emailInput.setPromptText("Syötä sähköposti");
+		emailInput.promptTextProperty().bind(RESOURCE_FACTORY.getStringBinding("EmailInputPrompt"));
 		passwordInput = new PasswordField();
-		passwordInput.setPromptText("Syötä salasana");
-		signInButton = new Button("Kirjaudu");
+		passwordInput.promptTextProperty().bind(RESOURCE_FACTORY.getStringBinding("PasswordInputPrompt"));
+		signInButton = new Button("");
+		signInButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("SignInButton"));
 		
-		Label creditLabel = new Label("Saldo: ");
+		Label creditLabel = new Label("");
+		creditLabel.textProperty().bind(RESOURCE_FACTORY.getStringBinding("CreditLabel"));
 		creditView = new Label(df.format(this.player.getCredits()));
 		creditView.setStyle("-fx-font-weight: bold; -fx-border-color: black; -fx-background-color: #88a4a5;");
 		creditView.setPadding(new Insets(4, 4, 4, 4));
-
-		playerMenu = new MenuButton("Ei kirjautunut");
+		
+		playerMenu = new MenuButton("");
+		playerMenu.textProperty().bind(RESOURCE_FACTORY.getStringBinding("NotSignedIn"));
+		
 		playerMenu.setGraphic(new ImageView(user));
-		playerInfoMI = new MenuItem("Näytä pelaajatiedot");
-		logOutMI = new MenuItem("Kirjaudu ulos");
-		logInProblemMI = new MenuItem("Unohditko salasanasi");
+		playerInfoMI = new MenuItem("");
+		playerInfoMI.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfo"));
+		logOutMI = new MenuItem("");
+		logOutMI.textProperty().bind(RESOURCE_FACTORY.getStringBinding("LogOut"));
+		logInProblemMI = new MenuItem("");
+		logInProblemMI.textProperty().bind(RESOURCE_FACTORY.getStringBinding("ForgotPassword"));
 		playerMenu.getItems().addAll(playerInfoMI, logOutMI, logInProblemMI);
+		
 		logOutMI.setVisible(false);
 		playerInfoMI.setVisible(false);
 		MenuButton menu2 = new MenuButton();
 		menu2.setGraphic(new ImageView(settings));
-		infoMI = new MenuItem("Lisätietoja ohjelmasta");
-		exitMI = new MenuItem("Lopeta ohjelma");
+		infoMI = new MenuItem("");
+		infoMI.textProperty().bind(RESOURCE_FACTORY.getStringBinding("ProgramInfo"));
+		exitMI = new MenuItem("");
+		exitMI.textProperty().bind(RESOURCE_FACTORY.getStringBinding("QuitProgram"));
 		menu2.getItems().addAll(infoMI, exitMI);
 		
 		navBar.getChildren().addAll(homeButton, registerButton, signInLabel, emailInput, passwordInput, signInButton, 
@@ -1356,7 +1372,7 @@ private BorderPane settingsBuilder() {
 
 	@Override
 	public void setScore(String score) {
-		if(score == "Ei voittoa") {
+		if(score == RESOURCE_FACTORY.getResources().getString("NoWin")) {
 			for(ImageView v : cardViews) {
 				v.setOpacity(0.5);
 			}

@@ -2,6 +2,9 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ResourceBundle;
+
+import org.codehaus.plexus.util.StringUtils;
 
 import controller.ControllerIF;
 
@@ -31,6 +34,8 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	private String gameType = "poker";
 	private Boolean cashOut;
 	private String highOrLow;
+	private static final ObservableResourceFactory RESOURCE_FACTORY = ObservableResourceFactory.getInstance();
+	private ResourceBundle rb;
 	
 	/**
 	 * Constructor for the poker game engine.
@@ -40,6 +45,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	public PokerGameEngine(ControllerIF controller) {
 		this.controller = controller;
 		//this.stats = new Statistics();
+		 rb = RESOURCE_FACTORY.getResources();
 	}
 	
 	/**
@@ -89,7 +95,6 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	if(hand.wins()) {
 	while(cashOut == null) {
 		try {
-			System.out.println("Odottaa tuplaus/voitonmaksu päätöstä");
 			wait();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -107,9 +112,6 @@ public class PokerGameEngine extends Thread implements ModelIF {
     		creditChange = playHighOrLow(creditChange);
     	}
     }
-    
-    // miten käy tämän?
-    // oli if (hand.wins())
     
     if(creditChange > 0){
       winner = player1;
@@ -179,36 +181,36 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		
 		switch(score) {
 		case ACE_PAIR:
-			s = "Ässä pari";
+			s = rb.getString("AcePairWin");
 			break;
 		case TWO_PAIRS:
-			s = "Kaksi paria";
+			s = rb.getString("TwoPairsWin");
 			break;
 		case THREE_OF_A_KIND:
-			s = "Kolmoset";
+			s = rb.getString("ThreeOfKindWin");
 			break;
 		case STRAIGHT:
-			s = "Suora";
+			s = rb.getString("StraightWin");
 			break;
 		case FLUSH:
-			s = "Väri";
+			s = rb.getString("FlushWin");
 			break;
 		case FULL_HOUSE:
-			s = "Täyskäsi";
+			s = rb.getString("FullHouseWin");
 			break;
 		case FOUR_OF_A_KIND:
-			s = "Neloset";
+			s = rb.getString("AcePairWin");
 			break;
 		case STRAIGHT_FLUSH:
-			s = "Värisuora";
+			s = rb.getString("StraightFlushWin");
 			break;
 		case NO_WIN:
-			s = "Ei voittoa";
+			s = rb.getString("NoWin");
 			break;
 		}
 		
 		if(score.getMultiplier() != 0) {
-			controller.setScore(s + ", voitit " + score.getMultiplier() * bet + "0");
+			controller.setScore(s + ", " + rb.getString("YouWon") + " " + score.getMultiplier() * bet + "0");
 			controller.setGameState("win");
 		} else {
 			controller.setScore(s);
@@ -255,7 +257,6 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		while(keepOn) {
 			while(highOrLow == null && !cashOut) {
 				try {
-					System.out.println("Odottaaa pientä tai suurta");
 					wait();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -324,7 +325,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		
 		controller.setHighOrLowCard(c.toString());
 		if(winValue > 0) {
-			controller.setScore("Voitit " + Double.toString(winValue) + "0");
+			controller.setScore(StringUtils.capitalise(rb.getString("YouWon")) + " " + Double.toString(winValue) + "0");
 		} else {
 			controller.setScore("");
 		}
@@ -333,8 +334,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 			keepOn = false;
 		}
 	}
-		
-	System.out.println("Voittoarvo takaisin endgameen: " + winValue);
+	
 	return winValue;
 	}
 }
