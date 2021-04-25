@@ -19,6 +19,7 @@ public class TextMain {
 //		Card cards [] = hand.getHand();
 //		System.out.println(hand.toString());
 		
+		/*
 		Card fours [] = { new Card (0, 4), new Card (2, 4), new Card (3, 4), new Card (0,4), new Card(0,2) };
 
 		Card threes [] = { new Card (2, 7), new Card (4, 4), new Card (13, 7), new Card (11,14), new Card(2,7) };
@@ -49,10 +50,16 @@ public class TextMain {
 		System.out.println(hacep.getScore());
 		System.out.println(hstr.getScore());
 		
+		*/
+		
 		//Tietokanta testailua
 		DAOIF dao = new DAO();
-		printPlayers(dao);
-		printPlayedGames(dao);
+		//printPlayers(dao);
+		//printPlayedGames(dao);
+		Player sis = dao.getPlayer(1001);
+		System.out.println(sis.getProfileName());
+		//sis.setProfileName("N/A");
+		System.out.println(sis.getProfileName());
 		//dao.deleteAllPlayedGames();
 		//Player jari = dao.getPlayer(1003);
 		//jari.setFirstName("Kari");

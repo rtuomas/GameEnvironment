@@ -342,8 +342,8 @@ public class View extends Application implements ViewIF {
 		creditView.setStyle("-fx-font-weight: bold; -fx-border-color: black; -fx-background-color: #88a4a5;");
 		creditView.setPadding(new Insets(4, 4, 4, 4));
 		
-		playerMenu = new MenuButton("");
-		playerMenu.textProperty().bind(RESOURCE_FACTORY.getStringBinding("NotSignedIn"));
+		playerMenu = new MenuButton("N/A"); //this cannot be binded, needs to change on runtime
+		//playerMenu.textProperty().bind(RESOURCE_FACTORY.getStringBinding("NotSignedIn")); 
 		
 		playerMenu.setGraphic(new ImageView(user));
 		playerInfoMI = new MenuItem("");
@@ -413,13 +413,15 @@ public class View extends Application implements ViewIF {
 		menuBar.getMenus().add(menu4);
 		*/
 		
-		chatButton = new MenuButton("Chat");
+		chatButton = new MenuButton("");
+		chatButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("EnterChatButton"));
 		chatButton.setGraphic(chatOpenView);
 		CustomMenuItem cmi = new CustomMenuItem(createChat());
 		cmi.setHideOnClick(false);
 		chatButton.getItems().add(cmi);
 		
-		Label playerLabel = new Label("Pelaajia online: ");
+		Label playerLabel = new Label("");
+		playerLabel.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerCountInfo"));
 		playerCount = new Label("6"); //ADD FUNCTIONALITY!!!
 		playerCount.setFont(Font.font ("Verdana", FontWeight.BOLD, 12));
 		playerCount.setStyle("-fx-border-color: black; -fx-background-color: #88a4a5;");
@@ -436,7 +438,8 @@ public class View extends Application implements ViewIF {
 	private AnchorPane highOrLowBuilder (AnchorPane pokerGameView) {
 		AnchorPane highOrLowView = new AnchorPane();
 		
-		Text instruction = new Text("Valitse suuri (8 - K), pieni (A - 6) tai maa voittaaksesi");
+		Text instruction = new Text("");
+		instruction.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GambleWinningsInfo"));
 		instruction.setFont(Font.font(24));
 		AnchorPane.setTopAnchor(instruction, 10.0);
 		AnchorPane.setLeftAnchor(instruction, 200.0);
@@ -447,12 +450,15 @@ public class View extends Application implements ViewIF {
 		AnchorPane.setLeftAnchor(highOrLowCard, 340.0);
 		
 		VBox highLowContainer = new VBox(45.0);
-		Text highLowText = new Text("SUURI / PIENI \n  MAKSAA 2X");
+		Text highLowText = new Text("");
+		highLowText.textProperty().bind(RESOURCE_FACTORY.getStringBinding("ChooseHighOrLowInfo"));
 		highLowText.setFont(Font.font(16));
-		Button low = new Button("Pieni");
+		Button low = new Button("");
+		low.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GambleLowButton"));
 		low.setPrefWidth(100.0);
 		low.setFont(Font.font(16));
-		Button high = new Button("Suuri");
+		Button high = new Button("");
+		high.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GambleHighButton"));
 		high.setPrefWidth(100.0);
 		high.setFont(Font.font(16));
 		highLowContainer.setAlignment(Pos.TOP_CENTER);
@@ -469,7 +475,8 @@ public class View extends Application implements ViewIF {
 		
 		
 		VBox suitContainer = new VBox(25.0);
-		Text suitText = new Text("      MAA \n MAKSAA 4X");
+		Text suitText = new Text("");
+		suitText.textProperty().bind(RESOURCE_FACTORY.getStringBinding("ChooseSuitInfo"));
 		suitText.setFont(Font.font(16));
 		GridPane suitGrid = new GridPane();
 		suitContainer.setAlignment(Pos.TOP_CENTER);
@@ -546,7 +553,8 @@ public class View extends Application implements ViewIF {
 		//gambleWin = new Text("1.00");
 		gambleWin.setFont(Font.font(16));
 		backAndWinContainer.setAlignment(Pos.TOP_CENTER);
-		Button back = new Button("Paluu");
+		Button back = new Button("");
+		back.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GambleReturnButton"));
 		back.setPrefWidth(100);
 		back.setFont(Font.font(16));
 		backAndWinContainer.setPrefHeight(95.0);
@@ -822,7 +830,7 @@ public class View extends Application implements ViewIF {
 	 * @return BorderPane type layout for the settings
 	 */
 	// Work in progress - Ville Riepponen
-private BorderPane settingsBuilder() {
+	private BorderPane settingsBuilder() {
 		
 		
 		
