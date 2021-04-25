@@ -59,7 +59,8 @@ public class TextMain {
 		Player sis = dao.getPlayer(1001);
 		System.out.println(sis.getProfileName());
 		//sis.setProfileName("N/A");
-		System.out.println(sis.getProfileName());
+		//dao.updatePlayer(sis);
+		//System.out.println(sis.getProfileName());
 		//dao.deleteAllPlayedGames();
 		//Player jari = dao.getPlayer(1003);
 		//jari.setFirstName("Kari");

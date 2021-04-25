@@ -606,7 +606,8 @@ public class View extends Application implements ViewIF {
 		
 		
 		// gamble button placement
-		Button gamble = new Button ("Tuplaa");
+		Button gamble = new Button ("");
+		gamble.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GambleButton"));
 		GSObserverBtn gambleObs = new GSObserverBtn(gamble);
 		gamble.setPrefHeight(58.0);
 		gamble.setPrefWidth(98.0);
@@ -622,7 +623,8 @@ public class View extends Application implements ViewIF {
 		AnchorPane.setRightAnchor(playButton, 14.59);
 		
 		// payout button placement
-		Button payout = new Button("Voitonmaksu");
+		Button payout = new Button("");
+		payout.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PayOutButton"));
 		GSObserverBtn payoutObs = new GSObserverBtn(payout);
 		payout.setPrefHeight(58.0);
 		payout.setPrefWidth(98.0);
@@ -831,13 +833,13 @@ public class View extends Application implements ViewIF {
 	 */
 	// Work in progress - Ville Riepponen
 	private BorderPane settingsBuilder() {
-		
-		
-		
+
 		BorderPane settingsView = new BorderPane();
 		settingsView.setPrefSize(400, 400);
-		RadioButton radioButton1 = new RadioButton("Dark Mode");
-        RadioButton radioButton2 = new RadioButton("Light Mode");
+		RadioButton radioButton1 = new RadioButton("");
+		radioButton1.textProperty().bind(RESOURCE_FACTORY.getStringBinding("DarkModeButton"));
+        RadioButton radioButton2 = new RadioButton("");
+        radioButton2.textProperty().bind(RESOURCE_FACTORY.getStringBinding("LightModeButton"));
         ToggleGroup radioGroup = new ToggleGroup();
         
         Button englishButton = new Button("English");
@@ -845,7 +847,7 @@ public class View extends Application implements ViewIF {
 			locale = new Locale("en","US");
 			RESOURCE_FACTORY.setResources(ResourceBundle.getBundle("properties/TextResources", locale));
 		});
-        Button finnishButton = new Button("suomi");
+        Button finnishButton = new Button("Suomi");
         finnishButton.setOnAction(e -> {
         	locale = new Locale("fi", "FI");
         	RESOURCE_FACTORY.setResources(ResourceBundle.getBundle("properties/TextResources", locale));
@@ -872,8 +874,7 @@ public class View extends Application implements ViewIF {
                 if (rb != null) { 
                     String s = rb.getText(); 
                     
-                    
-                    if(s == "Dark Mode") {
+                    if(s.equals("Dark theme") || s.equals("Tumma teema")) { //these are from locale properties
                     	mainScene.getRoot().getStylesheets().add("/styles/style.css");
                     } else {
                     	mainScene.getRoot().getStylesheets().remove("/styles/style.css");
