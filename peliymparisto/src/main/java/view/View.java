@@ -13,6 +13,7 @@ import controller.Controller;
 import controller.ControllerIF;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -250,6 +251,8 @@ public class View extends Application implements ViewIF {
 			mainScene = new Scene(mainView);
 
 			primaryStage.getIcons().add(new Image("/images/cards_icon.png"));
+			primaryStage.setMinWidth(900);
+			primaryStage.setMinHeight(600);
 			
 			createGUITransitions(primaryStage, mainView, mainMenu, pokerGame, settings, stats);
 			
@@ -304,6 +307,7 @@ public class View extends Application implements ViewIF {
 		exitProgram = new Button("");
 		exitProgram.textProperty().bind(RESOURCE_FACTORY.getStringBinding("ExitButton"));
 		exitProgram.setMinWidth(napit.getPrefWidth());
+		
 		napit.getChildren().addAll(enterPokerGame, enterSettings, enterStats, exitProgram);
 		mainMenuView.setCenter(napit);
 
@@ -364,8 +368,13 @@ public class View extends Application implements ViewIF {
 		exitMI.textProperty().bind(RESOURCE_FACTORY.getStringBinding("QuitProgram"));
 		menu2.getItems().addAll(infoMI, exitMI);
 		
-		navBar.getChildren().addAll(homeButton, registerButton, signInLabel, emailInput, passwordInput, signInButton, 
-				creditLabel, creditView, playerMenu, menu2);
+		Region region1 = new Region();
+        HBox.setHgrow(region1, Priority.ALWAYS);
+        Region region2 = new Region();
+        HBox.setHgrow(region2, Priority.ALWAYS);
+
+		navBar.getChildren().addAll(homeButton, region1, registerButton, signInLabel, emailInput, passwordInput, signInButton, 
+				creditLabel, creditView, playerMenu, region2, menu2);
 		
 		navBar.setAlignment(Pos.CENTER);
 		navBar.setPadding(new Insets(5, 5, 5, 5));
@@ -382,6 +391,8 @@ public class View extends Application implements ViewIF {
 	 */
 	private HBox adBarBuilder() {
 		HBox adBar = new HBox();
+		adBar.autosize();
+		
 		Region region1 = new Region();
         HBox.setHgrow(region1, Priority.ALWAYS);
         Region region2 = new Region();
@@ -856,21 +867,37 @@ public class View extends Application implements ViewIF {
         radioButton1.setToggleGroup(radioGroup);
         radioButton2.setToggleGroup(radioGroup);
         
+        HBox languages = new HBox(englishButton, finnishButton);
+        languages.setAlignment(Pos.CENTER);
+        languages.setSpacing(10);
+        languages.setPadding(new Insets(0,0,25,0));
+        HBox themes = new HBox(radioButton1, radioButton2);
+        themes.setAlignment(Pos.CENTER);
+        themes.setSpacing(10);
         
-        HBox hbox = new HBox(englishButton,finnishButton,radioButton1, radioButton2);
-        hbox.setAlignment(Pos.CENTER);
-        settingsView.setCenter(hbox);
+        Label languageInfo = new Label("");
+        languageInfo.setFont(Font.font ("Verdana", FontWeight.BOLD, 12));
+        languageInfo.textProperty().bind(RESOURCE_FACTORY.getStringBinding("LanguageInfo"));
+        languageInfo.setPadding(new Insets(5,5,5,5));
+        languageInfo.setStyle("-fx-border-color: black; -fx-background-color: #88a4a5;"); //could change to css file
+        Label themeInfo = new Label("");
+        themeInfo.setFont(Font.font ("Verdana", FontWeight.BOLD, 12));
+        themeInfo.textProperty().bind(RESOURCE_FACTORY.getStringBinding("ThemeInfo"));
+        themeInfo.setPadding(new Insets(5,5,5,5));
+        themeInfo.setStyle("-fx-border-color: black; -fx-background-color: #88a4a5;"); //could change to css file
+        
+        VBox buttons = new VBox(languageInfo, languages, themeInfo, themes);
+        buttons.setSpacing(5);
+        buttons.setAlignment(Pos.CENTER);
 
-		Scene settingsScene = new Scene(settingsView);
+        settingsView.setCenter(buttons);
 		
 		radioGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>()  
         { 
             public void changed(ObservableValue<? extends Toggle> ob,  
                                                     Toggle o, Toggle n) 
             { 
-  
                 RadioButton rb = (RadioButton)radioGroup.getSelectedToggle(); 
-  
                 if (rb != null) { 
                     String s = rb.getText(); 
                     
@@ -1281,6 +1308,7 @@ public class View extends Application implements ViewIF {
 	 * @param statsScene Stats view
 	 */
 	private void createGUITransitions(Stage primaryStage, BorderPane mainView, BorderPane mainMenu, AnchorPane pokerGame, BorderPane settings, BorderPane stats) {
+		
 		enterPokerGame.setOnAction(e -> {
 			mainView.setCenter(pokerGame);
 		});
