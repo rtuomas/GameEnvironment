@@ -452,8 +452,13 @@ public class View extends Application implements ViewIF {
 		Text instruction = new Text("");
 		instruction.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GambleWinningsInfo"));
 		instruction.setFont(Font.font(24));
-		AnchorPane.setTopAnchor(instruction, 10.0);
-		AnchorPane.setLeftAnchor(instruction, 200.0);
+	
+		BorderPane infoTextPane = new BorderPane();
+		infoTextPane.setCenter(instruction);
+		AnchorPane.setTopAnchor(infoTextPane,10.0);
+		AnchorPane.setRightAnchor(infoTextPane,0.0);
+		AnchorPane.setLeftAnchor(infoTextPane,0.0);
+	
 		
 		Image img = new Image("/images/green_back.png",500,300,true,true);
 		highOrLowCard = new ImageView(img);
@@ -462,6 +467,7 @@ public class View extends Application implements ViewIF {
 		
 		VBox highLowContainer = new VBox(45.0);
 		Text highLowText = new Text("");
+		
 		highLowText.textProperty().bind(RESOURCE_FACTORY.getStringBinding("ChooseHighOrLowInfo"));
 		highLowText.setFont(Font.font(16));
 		Button low = new Button("");
@@ -488,6 +494,7 @@ public class View extends Application implements ViewIF {
 		VBox suitContainer = new VBox(25.0);
 		Text suitText = new Text("");
 		suitText.textProperty().bind(RESOURCE_FACTORY.getStringBinding("ChooseSuitInfo"));
+		
 		suitText.setFont(Font.font(16));
 		GridPane suitGrid = new GridPane();
 		suitContainer.setAlignment(Pos.TOP_CENTER);
@@ -590,7 +597,7 @@ public class View extends Application implements ViewIF {
 			controller.setHighOrLow("high");
 		});
 		
-		highOrLowView.getChildren().addAll(highOrLowCard, highLowContainer,suitContainer,instruction,backAndWinContainer);
+		highOrLowView.getChildren().addAll(highOrLowCard, highLowContainer,suitContainer,infoTextPane,backAndWinContainer);
 		
 		return highOrLowView;
 	}
@@ -606,10 +613,14 @@ public class View extends Application implements ViewIF {
 		
 		//Notification text under cards
 		notification = new Text("Valitse panos ja paina pelaa");
-		AnchorPane.setBottomAnchor(notification, 70.0);
-		notification.setLayoutX(270);
 		notification.setFont(Font.font(24));
+		BorderPane notificationPane = new BorderPane();
 		
+		notificationPane.setCenter(notification);
+		AnchorPane.setBottomAnchor(notificationPane,70.0);
+		AnchorPane.setRightAnchor(notificationPane,0.0);
+		AnchorPane.setLeftAnchor(notificationPane,0.0);
+	
 		// Top left corner image
 		ImageView topLeftImg = new ImageView(new Image("/images/pokergame_top_left.png", 110, 125.4 , true, true));
 		AnchorPane.setLeftAnchor(topLeftImg, 13.0);
@@ -768,7 +779,7 @@ public class View extends Application implements ViewIF {
 		
 		//Sets the whole AnchorPane with elements
 		AnchorPane pokerGameView = new AnchorPane(playButton, gamble, plus, minus, pokerGameCredits, pokerGameBet,
-				wintable, cardPane, notification, topLeftImg, payout);
+				wintable, cardPane, topLeftImg, payout, notificationPane);
 		
 		playButton.setOnAction(e -> {
 			for(ImageView v : cardViews) {
@@ -1274,7 +1285,7 @@ public class View extends Application implements ViewIF {
 	 * This method updates all the information in the toolbar to match any changes on the player
 	 */
 	private void updateToolBar() {
-		this.creditView.setText(String.valueOf(this.player.getCredits()));
+		this.creditView.setText(String.valueOf(df.format(player.getCredits())));
 		this.playerMenu.setText(this.player.getProfileName());
 		this.emailInput.setText("");
 		this.passwordInput.setText("");
@@ -1659,13 +1670,13 @@ public class View extends Application implements ViewIF {
 	 * @param text String notification text
 	 */
 	private void setNotification(String text) {
-		if(text.length() < 13) {
-		  notification.setLayoutX(370);
-		} else if(text.length() >= 13 && text.length() < 30) {
-			notification.setLayoutX(310);	
-		} else {
-			notification.setLayoutX(200);
-		}
+//		if(text.length() < 13) {
+//		  notification.setLayoutX(370);
+//		} else if(text.length() >= 13 && text.length() < 30) {
+//			notification.setLayoutX(310);	
+//		} else {
+//			notification.setLayoutX(200);
+//		}
 		notification.setText(text);
 	}
 	
