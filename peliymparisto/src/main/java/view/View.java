@@ -956,7 +956,11 @@ public class View extends Application implements ViewIF {
 		TabPane tabPane = new TabPane();
 		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 		
-		creditDevelopment = new Tab("Saldo", new Label("Tämä välilehti näyttää saldosi."));
+		//playButton = new Button("");
+		//playButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayButton1"));
+		
+		creditDevelopment = new Tab("");
+		creditDevelopment.textProperty().bind(RESOURCE_FACTORY.getStringBinding("TabBalance"));
 		ImageView growth = new ImageView(new Image("/images/growthtab.png", 25, 22, false, false));
 		creditDevelopment.setGraphic(growth);
 		combobox = new ComboBox();
@@ -973,20 +977,25 @@ public class View extends Application implements ViewIF {
 		creditsPane.setCenter(lineChart);
 		creditDevelopment.setContent(creditsPane);
 
-		playedGames = new Tab("Pelihistoria"  , new Label("Pelatut pelit"));
+		playedGames = new Tab("");
+		playedGames.textProperty().bind(RESOURCE_FACTORY.getStringBinding("TabGamehistory"));
         ImageView played = new ImageView(new Image("/images/playedGame.png", 25, 22, false, false));
         playedGames.setGraphic(played);
         
         tableViewGames = new TableView();
         TableColumn<PlayedGameTableView, String> playedCountColumn = new TableColumn<>("#");
         playedCountColumn.setCellValueFactory(new PropertyValueFactory<>("rank"));
-        TableColumn<PlayedGameTableView, String> playedSaldoColumn = new TableColumn<>("Saldo");
+        TableColumn<PlayedGameTableView, String> playedSaldoColumn = new TableColumn<>("");
+        playedSaldoColumn.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GamehistoryBalance"));
         playedSaldoColumn.setCellValueFactory(new PropertyValueFactory<>("creditAfter"));
-        TableColumn<PlayedGameTableView, String> playedChangeColumn = new TableColumn<>("Saldon muutos");
+        TableColumn<PlayedGameTableView, String> playedChangeColumn = new TableColumn<>("");
+        playedChangeColumn.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GamehistoryChange"));
         playedChangeColumn.setCellValueFactory(new PropertyValueFactory<>("creditChange"));
-        TableColumn<PlayedGameTableView, String> playedWinColumn = new TableColumn<>("Voitto/Häviö");
+        TableColumn<PlayedGameTableView, String> playedWinColumn = new TableColumn<>("");
+        playedWinColumn.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GamehistoryWinLoss"));
         playedWinColumn.setCellValueFactory(new PropertyValueFactory<>("winloss"));
-        TableColumn<PlayedGameTableView, String> playedDateColumn = new TableColumn<>("Pelattu");
+        TableColumn<PlayedGameTableView, String> playedDateColumn = new TableColumn<>("");
+        playedDateColumn.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GamehistoryPlayed"));
         playedDateColumn.setCellValueFactory(new PropertyValueFactory<>("playedOn"));
         
         tableViewGames.getColumns().add(playedCountColumn);
@@ -997,15 +1006,19 @@ public class View extends Application implements ViewIF {
         
         playedGames.setContent(tableViewGames);
 
-        ranking = new Tab("Sijoitukset"  , new Label("Oletko paras?"));
+        ranking = new Tab("");
+        ranking.textProperty().bind(RESOURCE_FACTORY.getStringBinding("TabRankings"));
         ImageView rank = new ImageView(new Image("/images/rankingtab.png", 25, 22, false, false));
         ranking.setGraphic(rank);
         tableViewRanks = new TableView();
-        TableColumn<PlayerRanking, String> playerRankColumn = new TableColumn<>("Sijoitus");
+        TableColumn<PlayerRanking, String> playerRankColumn = new TableColumn<>("");
+        playerRankColumn.textProperty().bind(RESOURCE_FACTORY.getStringBinding("RankingsRank"));
         playerRankColumn.setCellValueFactory(new PropertyValueFactory<>("rank"));
-        TableColumn<PlayerRanking, String> playerCreditsColumn = new TableColumn<>("Saldo");
+        TableColumn<PlayerRanking, String> playerCreditsColumn = new TableColumn<>("");
+        playerCreditsColumn.textProperty().bind(RESOURCE_FACTORY.getStringBinding("RankingsBalance"));
         playerCreditsColumn.setCellValueFactory(new PropertyValueFactory<>("credits"));
-        TableColumn<PlayerRanking, String> playernicknameColumn = new TableColumn<>("Pelaaja");
+        TableColumn<PlayerRanking, String> playernicknameColumn = new TableColumn<>("");
+        playernicknameColumn.textProperty().bind(RESOURCE_FACTORY.getStringBinding("RankingsPlayer"));
         playernicknameColumn.setCellValueFactory(new PropertyValueFactory<>("profileName"));
         tableViewRanks.getColumns().add(playerRankColumn);
         tableViewRanks.getColumns().add(playerCreditsColumn);
@@ -1474,7 +1487,6 @@ public class View extends Application implements ViewIF {
 			tableViewGames.getItems().clear();
 			String winloss;
 			for(int i=playedGames.size()-1; i>=0;i--) {
-				//tableViewGames.getItems().add(new PlayedGame(playedGames.get(i).getCreditAfterPlayer1(), playedGames.get(i).getPlayedOn()));
 				if(playedGames.get(i).getWinner()==this.player.getId()) {
 					winloss="VOITTO";
 				} else {
