@@ -79,7 +79,7 @@ import model.PlayerRanking;
 /**
  * The Graphical User Interface built with JavaFX
  * @author ---
- * @version 2.0 05.04.2021
+ * @version 2.1 28.04.2021
  */
 public class View extends Application implements ViewIF {
 	
@@ -1030,37 +1030,47 @@ public class View extends Application implements ViewIF {
 	 */
 	private void showRegisterDialog(Stage primaryStage) {
 		Stage rDialog = new Stage();
+		rDialog.setMinWidth(450);
+		rDialog.setMinHeight(350);
 		rDialog.initModality(Modality.APPLICATION_MODAL);
 		rDialog.initOwner(primaryStage);
-		rDialog.setTitle("Rekisteröitymislomake");
+		rDialog.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("RegisterDialogTitle"));
 		VBox rHeadline = new VBox();
 		GridPane rGridPane = new GridPane();
 		HBox rButtons = new HBox();
         
 		firstNameRegisterInput = new TextField();
-		firstNameRegisterInput.setPromptText("Syötä etunimi");
+		firstNameRegisterInput.promptTextProperty().bind(RESOURCE_FACTORY.getStringBinding("FirstNameRegisterPrompt"));
 		lastNameRegisterInput = new TextField();
-		lastNameRegisterInput.setPromptText("Syötä sukunimi");
+		lastNameRegisterInput.promptTextProperty().bind(RESOURCE_FACTORY.getStringBinding("LastNameRegisterPrompt"));
 		profileNameRegisterInput = new TextField();
-		profileNameRegisterInput.setPromptText("Valitse pelaajanimi");
+		profileNameRegisterInput.promptTextProperty().bind(RESOURCE_FACTORY.getStringBinding("ProfileNameRegisterPrompt"));
 		emailRegisterInput = new TextField();
-		emailRegisterInput.setPromptText("Syötä sähköposti");
+		emailRegisterInput.promptTextProperty().bind(RESOURCE_FACTORY.getStringBinding("EmailRegisterPrompt"));
 		passwordRegisterInput = new PasswordField();
-		passwordRegisterInput.setPromptText("Valitse salasana");
+		passwordRegisterInput.promptTextProperty().bind(RESOURCE_FACTORY.getStringBinding("PasswordRegisterPrompt1"));
 		passwordRegisterVerifyInput = new PasswordField();
-		passwordRegisterVerifyInput.setPromptText("Syötä salasana uudestaan");
-		creditTransferRegisterInput = new CheckBox("Vie testikäyttäjänä kerätty saldo\nuudelle tilille (min. 100 krediittiä)");
-		confirmRegisterButton = new Button("Rekisteröidy");
-		cancelRegisterButton = new Button("Peruuta");
+		passwordRegisterVerifyInput.promptTextProperty().bind(RESOURCE_FACTORY.getStringBinding("PasswordRegisterPrompt2"));
+		creditTransferRegisterInput = new CheckBox("");
+		creditTransferRegisterInput.textProperty().bind(RESOURCE_FACTORY.getStringBinding("CreditTransferRegister"));
+		confirmRegisterButton = new Button("");
+		confirmRegisterButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("ConfirmRegisterButton"));
+		cancelRegisterButton = new Button("");
+		cancelRegisterButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("CancelRegisterButton"));
 		
-		rHeadline.getChildren().add(new Label("Luo tili"));
+		Label registerInfo = new Label("");
+		registerInfo.textProperty().bind(RESOURCE_FACTORY.getStringBinding("RegisterInfo"));
+		Label profileNameRegisterInfo = new Label("");
+		profileNameRegisterInfo.textProperty().bind(RESOURCE_FACTORY.getStringBinding("ProfileNameRegisterInfo"));
+		
+		rHeadline.getChildren().add(registerInfo);
 		rHeadline.setPadding(new Insets(10, 10, 10, 10));
 		rHeadline.setAlignment(Pos.CENTER);
 		
 		rGridPane.add(firstNameRegisterInput, 0, 0);
 		rGridPane.add(lastNameRegisterInput, 1, 0);
 		rGridPane.add(profileNameRegisterInput, 0, 1);
-		rGridPane.add(new Label("Tämä nimi näytetään muille pelaajille"), 1, 1);
+		rGridPane.add(profileNameRegisterInfo, 1, 1);
 		rGridPane.add(emailRegisterInput, 0, 2, 2, 1);
 		rGridPane.add(passwordRegisterInput, 0, 3, 2, 1);
 		rGridPane.add(passwordRegisterVerifyInput, 0, 4, 2, 1);
@@ -1106,9 +1116,11 @@ public class View extends Application implements ViewIF {
 		Image cancel = new Image("/images/cancel.png", 20, 20, false, false);
 		
 		Stage pIDialog = new Stage();
+		pIDialog.setMinWidth(350);
+		pIDialog.setMinHeight(300);
 		pIDialog.initModality(Modality.APPLICATION_MODAL);
 		pIDialog.initOwner(primaryStage);
-		pIDialog.setTitle("Pelaajatiedot");
+		pIDialog.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoTitle"));
 		VBox pIHeadline = new VBox();
 		GridPane pIGridPane = new GridPane();
 		HBox pIButtons = new HBox();
@@ -1123,22 +1135,37 @@ public class View extends Application implements ViewIF {
 		editPasswordButton = new Button();
 		editPasswordButton.setGraphic(new ImageView(edit));
 		savePlayerInfoButton = new Button("Tallenna");
+		savePlayerInfoButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoSaveButton"));
 		cancelPlayerInfoButton = new Button("Peruuta");
+		cancelPlayerInfoButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoCancelButton"));
 		
-		pIHeadline.getChildren().add(new Label("Pelaajatiedot"));
+		Label playerInfoInfo = new Label("");
+		playerInfoInfo.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoInfo"));
+		Label playerWholeNameInfo = new Label("");
+		playerWholeNameInfo.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoWholeName"));
+		Label playerJoinDateInfo = new Label("");
+		playerJoinDateInfo.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoJoined"));
+		Label playerEmailInfo = new Label("");
+		playerEmailInfo.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoEmail"));
+		Label playerProfileNameInfo = new Label("");
+		playerProfileNameInfo.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoProfileName"));
+		Label playerPasswordInfo = new Label("");
+		playerPasswordInfo.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoPassword"));
+		
+		pIHeadline.getChildren().add(playerInfoInfo);
 		pIHeadline.setPadding(new Insets(10, 10, 10, 10));
 		pIHeadline.setAlignment(Pos.CENTER);
 		
-		pIGridPane.add(new Label("Nimi:"), 0, 0);
+		pIGridPane.add(playerWholeNameInfo, 0, 0);
 		pIGridPane.add(playerWholeName, 1, 0);
-		pIGridPane.add(new Label("Liittynyt:"), 0, 1);
+		pIGridPane.add(playerJoinDateInfo, 0, 1);
 		pIGridPane.add(playerJoinDate, 1, 1);
-		pIGridPane.add(new Label("Sähköposti:"), 0, 2);
+		pIGridPane.add(playerEmailInfo, 0, 2);
 		pIGridPane.add(playerEmail, 1, 2);
-		pIGridPane.add(new Label("Nimimerkki:"), 0, 3);
+		pIGridPane.add(playerProfileNameInfo, 0, 3);
 		pIGridPane.add(playerProfileName, 1, 3);
 		pIGridPane.add(editProfileNameButton, 2, 3);
-		pIGridPane.add(new Label("Salasana:"), 0, 4);
+		pIGridPane.add(playerPasswordInfo, 0, 4);
 		Label pwPlaceholder = new Label("********");
 		pIGridPane.add(pwPlaceholder, 1, 4);
 		pIGridPane.add(editPasswordButton, 2, 4);
@@ -1166,7 +1193,7 @@ public class View extends Application implements ViewIF {
         //This action opens a TextField where the user can input a new user name. It also opens 2 new actions which are accept and cancel.
         editProfileNameButton.setOnAction(e -> {
         	newProfileNameInput = new TextField();
-        	newProfileNameInput.setPromptText("Syötä uusi pelaajanimi");
+        	newProfileNameInput.promptTextProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoNewProfileNameInfo"));
         	acceptPNEditsButton = new Button();
         	acceptPNEditsButton.setGraphic(new ImageView(accept));
         	cancelPNEditsButton = new Button();
@@ -1198,7 +1225,7 @@ public class View extends Application implements ViewIF {
         //This action opens a PasswordField where the user can input a new password. It also opens 2 new actions which are accept and cancel.
 		editPasswordButton.setOnAction(e -> {
         	newPasswordInput = new PasswordField();
-        	newPasswordInput.setPromptText("Syötä uusi salasana");
+        	newPasswordInput.promptTextProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoNewEmailInfo"));
         	acceptPSEditsButton = new Button();
         	acceptPSEditsButton.setGraphic(new ImageView(accept));
         	cancelPSEditsButton = new Button();
@@ -1510,9 +1537,9 @@ public class View extends Application implements ViewIF {
 	@Override
 	public void showLogInError() {
 		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Virhe");
-		alert.setHeaderText("Virhe - syötetty data ei kelpaa");
-		alert.setContentText("Varmista että sähköposti ja salasana ovat oikein.");
+		alert.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("LogInErrorTitle"));
+		alert.headerTextProperty().bind(RESOURCE_FACTORY.getStringBinding("LogInErrorHeader"));
+		alert.contentTextProperty().bind(RESOURCE_FACTORY.getStringBinding("LogInErrorContent"));
 		alert.showAndWait();
 	}
 	
