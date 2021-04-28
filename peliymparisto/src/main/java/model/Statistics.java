@@ -8,6 +8,7 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Label;
 
 /**
  * This class is responsible for creating and passing statistics in statistics view.
@@ -34,6 +35,8 @@ public class Statistics {
 		List[] creditsList = this.dao.readCredits(this.playerId, count);
 		final Axis<String> xAxis = new CategoryAxis();
         final NumberAxis yAxis = new NumberAxis();
+        
+        
         xAxis.setLabel("Päivämäärä");
         final LineChart<String,Number> lineChart = 
                 new LineChart<String,Number>(xAxis,yAxis); //creating the chart
