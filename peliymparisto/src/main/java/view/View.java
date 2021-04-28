@@ -853,39 +853,37 @@ public class View extends Application implements ViewIF {
 	 * Contains the GUI for settings
 	 * @return BorderPane type layout for the settings
 	 */
-	// Work in progress - Ville Riepponen
 	private BorderPane settingsBuilder() {
 
 		BorderPane settingsView = new BorderPane();
-		settingsView.setPrefSize(400, 400);
-		RadioButton radioButton1 = new RadioButton("");
-		radioButton1.textProperty().bind(RESOURCE_FACTORY.getStringBinding("DarkModeButton"));
-        RadioButton radioButton2 = new RadioButton("");
-        radioButton2.textProperty().bind(RESOURCE_FACTORY.getStringBinding("LightModeButton"));
-        ToggleGroup radioGroup = new ToggleGroup();
+		
+		//theme selection buttons
+		ToggleGroup themeGroup = new ToggleGroup();
+		RadioButton lightThemeButton = new RadioButton("");
+		lightThemeButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("DarkModeButton"));
+        RadioButton darkThemeButton = new RadioButton("");
+        darkThemeButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("LightModeButton"));
+        lightThemeButton.setToggleGroup(themeGroup);
+        darkThemeButton.setToggleGroup(themeGroup);
         
-        Button englishButton = new Button("English");
-        englishButton.setOnAction(e -> {
-			locale = new Locale("en","US");
-			RESOURCE_FACTORY.setResources(ResourceBundle.getBundle("properties/TextResources", locale));
-		});
-        Button finnishButton = new Button("Suomi");
-        finnishButton.setOnAction(e -> {
-        	locale = new Locale("fi", "FI");
-        	RESOURCE_FACTORY.setResources(ResourceBundle.getBundle("properties/TextResources", locale));
-		});
         
-        radioButton1.setToggleGroup(radioGroup);
-        radioButton2.setToggleGroup(radioGroup);
+        //language selection buttons
+        ToggleGroup languageGroup = new ToggleGroup();
+        RadioButton englishButton = new RadioButton("English");
+        RadioButton finnishButton = new RadioButton("Suomi");
+        englishButton.setToggleGroup(languageGroup);
+        finnishButton.setToggleGroup(languageGroup);
         
+        //theme and language positioning
         HBox languages = new HBox(englishButton, finnishButton);
         languages.setAlignment(Pos.CENTER);
         languages.setSpacing(10);
         languages.setPadding(new Insets(0,0,25,0));
-        HBox themes = new HBox(radioButton1, radioButton2);
+        HBox themes = new HBox(lightThemeButton, darkThemeButton);
         themes.setAlignment(Pos.CENTER);
         themes.setSpacing(10);
         
+        //theme and language labeling
         Label languageInfo = new Label("");
         languageInfo.setFont(Font.font ("Verdana", FontWeight.BOLD, 12));
         languageInfo.textProperty().bind(RESOURCE_FACTORY.getStringBinding("LanguageInfo"));
@@ -897,18 +895,40 @@ public class View extends Application implements ViewIF {
         themeInfo.setPadding(new Insets(5,5,5,5));
         themeInfo.setStyle("-fx-border-color: black; -fx-background-color: #88a4a5;"); //could change to css file
         
+        //positioning the items to view
         VBox buttons = new VBox(languageInfo, languages, themeInfo, themes);
         buttons.setSpacing(5);
         buttons.setAlignment(Pos.CENTER);
-
         settingsView.setCenter(buttons);
-		
-		radioGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>()  
+        
+        //language switching functionality
+        languageGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>()  
         { 
-            public void changed(ObservableValue<? extends Toggle> ob,  
-                                                    Toggle o, Toggle n) 
+            public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n) 
             { 
-                RadioButton rb = (RadioButton)radioGroup.getSelectedToggle(); 
+                RadioButton rb = (RadioButton)languageGroup.getSelectedToggle(); 
+                if (rb != null) { 
+                    String s = rb.getText(); 
+                    
+                    if(s.equals("English")) { //these are from locale properties
+                    	locale = new Locale("en","US");
+            			RESOURCE_FACTORY.setResources(ResourceBundle.getBundle("properties/TextResources", locale));
+                    } else if (s.equals("Suomi")) {
+                    	locale = new Locale("fi", "FI");
+                    	RESOURCE_FACTORY.setResources(ResourceBundle.getBundle("properties/TextResources", locale));
+                    } else {
+                    	//other languages
+                    }
+                } 
+            } 
+        }); 
+		
+        //theme switching functionality
+        themeGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>()  
+        { 
+            public void changed(ObservableValue<? extends Toggle> ob, Toggle o, Toggle n) 
+            { 
+                RadioButton rb = (RadioButton)themeGroup.getSelectedToggle(); 
                 if (rb != null) { 
                     String s = rb.getText(); 
                     
