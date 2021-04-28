@@ -109,7 +109,7 @@ public class View extends Application implements ViewIF {
 	private GridPane cardPane;
 	private ArrayList<Integer> cardsToSwapIndexes = new ArrayList<Integer>();
 	private boolean gameOn = false;
-	private Text notification;
+	private Label notification; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	private StackPane [] imageStacks = new StackPane [5];
 	private ImageView [] cardViews = new ImageView [5];
 	private ImageView [] lockViews = new ImageView [5];
@@ -277,7 +277,6 @@ public class View extends Application implements ViewIF {
 		ImageView aceView = new ImageView(aceCards);
 		
 		BorderPane mainMenuView = new BorderPane();
-		//mainMenuView.setPrefSize(400, 400);
 		
 		VBox nameAndPicture = new VBox();
 		nameAndPicture.setAlignment(Pos.CENTER);
@@ -346,8 +345,9 @@ public class View extends Application implements ViewIF {
 		creditView.setStyle("-fx-font-weight: bold; -fx-border-color: black; -fx-background-color: #88a4a5;");
 		creditView.setPadding(new Insets(4, 4, 4, 4));
 		
-		playerMenu = new MenuButton("N/A"); //this cannot be binded, needs to change on runtime
-		//playerMenu.textProperty().bind(RESOURCE_FACTORY.getStringBinding("NotSignedIn")); 
+		//this button needs unbinding when using runtime setText.
+		playerMenu = new MenuButton(""); 
+		playerMenu.textProperty().bind(RESOURCE_FACTORY.getStringBinding("NotSignedIn"));
 		
 		playerMenu.setGraphic(new ImageView(user));
 		playerInfoMI = new MenuItem("");
@@ -405,24 +405,6 @@ public class View extends Application implements ViewIF {
 		ImageView adView = new ImageView(ad);
 		adView.setFitHeight(50);
 		adView.setPreserveRatio(true);
-		
-		/** TESTIN NAVBAR */
-		/*
-		CustomMenuItem chatCustom = new CustomMenuItem();
-		BorderPane chatPane = new BorderPane();
-		chatPane.setCenter(createChat());
-		
-		chatCustom.setContent(chatPane);
-		
-		chatCustom.setHideOnClick(false);
-		
-		
-		Menu menu4 = new Menu("Chat");
-		menu4.getItems().add(chatCustom);
-		
-		MenuBar menuBar = new MenuBar();
-		menuBar.getMenus().add(menu4);
-		*/
 		
 		chatButton = new MenuButton("");
 		chatButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("EnterChatButton"));
@@ -612,7 +594,8 @@ public class View extends Application implements ViewIF {
 		gambleWin = new Text("1.00");
 		
 		//Notification text under cards
-		notification = new Text("Valitse panos ja paina pelaa");
+		notification = new Label("");
+		notification.textProperty().bind(RESOURCE_FACTORY.getStringBinding("StartGameInfo1"));
 		notification.setFont(Font.font(24));
 		BorderPane notificationPane = new BorderPane();
 		
@@ -625,8 +608,7 @@ public class View extends Application implements ViewIF {
 		ImageView topLeftImg = new ImageView(new Image("/images/pokergame_top_left.png", 110, 125.4 , true, true));
 		AnchorPane.setLeftAnchor(topLeftImg, 13.0);
 		AnchorPane.setTopAnchor(topLeftImg, 5.0);
-		
-		
+
 		// gamble button placement
 		Button gamble = new Button ("");
 		gamble.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GambleButton"));
@@ -638,7 +620,8 @@ public class View extends Application implements ViewIF {
 		stateObs.addPropertyChangeListener(gambleObs);
 		
 		// play button placement
-		playButton = new Button("Pelaa");
+		playButton = new Button("");
+		playButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayButton1"));
 		playButton.setPrefHeight(58.0);
 		playButton.setPrefWidth(98.0);
 		AnchorPane.setBottomAnchor(playButton, 11.39);
@@ -658,8 +641,6 @@ public class View extends Application implements ViewIF {
 			playButton.setDisable(false);
 		});
 		stateObs.addPropertyChangeListener(payoutObs);
-		
-		
 		
 		// bet increment button placement
 		Button plus = new Button("+");
@@ -758,8 +739,6 @@ public class View extends Application implements ViewIF {
 			cardPane.getColumnConstraints().add(column);
 		}
 		
-		
-		
 		// Initial card images
 		for(int i = 0; i < imageStacks.length ; i++) {
 			imageStacks[i] = new StackPane();
@@ -776,7 +755,6 @@ public class View extends Application implements ViewIF {
 			cardPane.add(imageStacks[i], i, 0);
 		}
 		
-		
 		//Sets the whole AnchorPane with elements
 		AnchorPane pokerGameView = new AnchorPane(playButton, gamble, plus, minus, pokerGameCredits, pokerGameBet,
 				wintable, cardPane, topLeftImg, payout, notificationPane);
@@ -786,19 +764,27 @@ public class View extends Application implements ViewIF {
 				v.setOpacity(1);
 			}
 			cardPane.setStyle(null);
+			
 			if(!gameOn) {
-			controller.startPokerGame();
-			playButton.setText("Jako");
-			plus.setVisible(false);
-			minus.setVisible(false);
-			setNotification("Valitse kortit jotka haluat lukita ja paina jako");
-			setTimeoutForButton(playButton, 1000); //timeout for play button for 1 second (change time if needed)
+				controller.startPokerGame();
+				playButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayButton2"));
+				plus.setVisible(false);
+				minus.setVisible(false);
+				//disabling some toolbar functionality so player has to finish the game before doing anything else
+				blockToolBar(true); 
+				//making playbutton show Deal
+				notification.textProperty().bind(RESOURCE_FACTORY.getStringBinding("StartGameInfo2"));
+				//timeout for play button for 1 second (change time if needed)
+				setTimeoutForButton(playButton, 1000); 
+				
 			} else {
-			setSwappedCards();
-			plus.setVisible(true);
-			minus.setVisible(true);
-			playButton.setText("Pelaa");
-			//setTimeoutForButton(play, 1000); //timeout for play button for 1 second (change time if needed)
+				setSwappedCards();
+				plus.setVisible(true);
+				minus.setVisible(true);
+				//enabling previously blocked toolbar functionality
+				blockToolBar(false);
+				//making playbutton show Play
+				playButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayButton1"));
 			}
 			gameOn = !gameOn;
 		});
@@ -819,6 +805,22 @@ public class View extends Application implements ViewIF {
 		});
 		setGameState("start");
 		return pokerGameView;
+	}
+	
+	/**
+	 * Blocks or unblocks the toolbar depending on the boolean input
+	 * @param block true value blocks, false value unblocks
+	 */
+	private void blockToolBar(boolean block) {
+		homeButton.setDisable(block);
+		registerButton.setDisable(block);
+		signInLabel.setDisable(block);
+		emailInput.setDisable(block);
+		passwordInput.setDisable(block);
+		signInButton.setDisable(block);
+		playerInfoMI.setDisable(block);
+		logOutMI.setDisable(block);
+		logInProblemMI.setDisable(block);
 	}
 	
 	/**
@@ -970,11 +972,7 @@ public class View extends Application implements ViewIF {
 		creditsPane.setTop(combobox);
 		creditsPane.setCenter(lineChart);
 		creditDevelopment.setContent(creditsPane);
-		
-		
-		
-		
-		
+
 		playedGames = new Tab("Pelihistoria"  , new Label("Pelatut pelit"));
         ImageView played = new ImageView(new Image("/images/playedGame.png", 25, 22, false, false));
         playedGames.setGraphic(played);
@@ -997,12 +995,8 @@ public class View extends Application implements ViewIF {
         tableViewGames.getColumns().add(playedWinColumn);
         tableViewGames.getColumns().add(playedDateColumn);
         
-        
         playedGames.setContent(tableViewGames);
- 
-        
-        
-		
+
         ranking = new Tab("Sijoitukset"  , new Label("Oletko paras?"));
         ImageView rank = new ImageView(new Image("/images/rankingtab.png", 25, 22, false, false));
         ranking.setGraphic(rank);
@@ -1018,11 +1012,9 @@ public class View extends Application implements ViewIF {
         tableViewRanks.getColumns().add(playernicknameColumn);
         ranking.setContent(tableViewRanks);
         
-        
         tabPane.getTabs().add(ranking);
         tabPane.getTabs().add(creditDevelopment);
         tabPane.getTabs().add(playedGames);
-        
         
         creditDevelopment.setDisable(true);
         playedGames.setDisable(true);
@@ -1306,10 +1298,11 @@ public class View extends Application implements ViewIF {
 	 */
 	private void updateToolBar() {
 		this.creditView.setText(String.valueOf(df.format(player.getCredits())));
-		this.playerMenu.setText(this.player.getProfileName());
+		//this.playerMenu.setText(this.player.getProfileName());
 		this.emailInput.setText("");
 		this.passwordInput.setText("");
-		if (this.player.getId() == 1001) { //Checking if the set user is the default player, setting elements in the toolbar accordingly
+		if (player.getId() == 1001) { //Checking if the set user is the default player, setting elements in the toolbar accordingly
+			playerMenu.textProperty().bind(RESOURCE_FACTORY.getStringBinding("NotSignedIn")); //bind the properties file recource again incase it was unbound
 			registerButton.setVisible(true);
 			signInLabel.setVisible(true);
 			emailInput.setVisible(true);
@@ -1319,6 +1312,8 @@ public class View extends Application implements ViewIF {
 			logOutMI.setVisible(false);
 			logInProblemMI.setVisible(true);
 		} else {
+			playerMenu.textProperty().unbind(); //unbinding the not-signed in -message from properties file
+			playerMenu.setText(player.getProfileName()); //after unbinding the setText can be used
 			registerButton.setVisible(false);
 			signInLabel.setVisible(false);
 			emailInput.setVisible(false);
@@ -1449,7 +1444,8 @@ public class View extends Application implements ViewIF {
 			cardPane.setStyle("-fx-border-color: #00FF25;" + " -fx-border-width: 5px;");
 		}
 		playButton.setDisable(true);
-		setNotification(score);
+		notification.textProperty().unbind();
+		notification.setText(score);
 		setGambleWin(score.replaceAll("[^\\d.]", ""));
 	}
 
@@ -1685,10 +1681,12 @@ public class View extends Application implements ViewIF {
 	public Boolean getCreditTransferRegInput() {
 		return this.creditTransferRegisterInput.isSelected();
 	}
+	
 	/**
 	 * In pokergame sets up notification and position based on String length
 	 * @param text String notification text
 	 */
+	/*
 	private void setNotification(String text) {
 //		if(text.length() < 13) {
 //		  notification.setLayoutX(370);
@@ -1699,6 +1697,7 @@ public class View extends Application implements ViewIF {
 //		}
 		notification.setText(text);
 	}
+	*/
 	
 	private void setGambleWin(String txt) {
 		if(txt.length() == 0) {

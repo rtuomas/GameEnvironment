@@ -35,6 +35,13 @@ public interface ModelIF {
 	public void setCardsToSwapIndexes(ArrayList<Integer> indexes);
 	
 	public void setUpSinglePlayerGame(Player player); //make non interface
+	
+	/**
+	 * Re setting the player1 while a game is already running
+	 * for example upon logging out but continuing with same connection
+	 * @param player
+	 */
+	public void setPlayer1(Player player);
 
 	/**
 	 * Sets connection to database in controller so it can be passed down to model
