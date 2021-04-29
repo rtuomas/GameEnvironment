@@ -31,6 +31,7 @@ public class Controller implements ControllerIF {
 	private Statistics stats;
 	private EchoClient clientConnection;
 	private ClientSocketHandler handler;
+	private boolean gameStarted;
 	
 	/**
 	 * The constructor of the Controller class
@@ -40,6 +41,7 @@ public class Controller implements ControllerIF {
 		this.view = view;
 		this.dao = new DAO();
 		this.stats = new Statistics(this.dao);
+		this.gameStarted = false;
 	}
 	
 	/**	{@inheritDoc} */ //this line copies the JavaDoc from interface
@@ -50,12 +52,18 @@ public class Controller implements ControllerIF {
 		//model.setBet(view.getBet());
 		model.setUpSinglePlayerGame(view.getPlayer());
 		((Thread)model).start();
+		gameStarted = true;
 	}
 	
 	/**	{@inheritDoc} */
 	@Override
 	public void getDefaultPlayer() {
-		Platform.runLater(()->view.setDefaultPlayer(dao.getPlayer(1001)));
+		Platform.runLater(()-> {
+			view.setDefaultPlayer(dao.getPlayer(1001));
+			if (gameStarted) {
+				model.setPlayer1(view.getPlayer());
+			}
+		});
 	}
 	
 	/**	{@inheritDoc} */

@@ -77,6 +77,12 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	
 	/**	{@inheritDoc} */
 	@Override
+	public void setPlayer1(Player player) {
+		this.player1 = player;
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
 	public void setDatabaseConnection(DAOIF dao) {
 		this.dao = dao;
 	}
@@ -92,41 +98,41 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	 */
 	public synchronized void endGame() {
 	
-	if(hand.wins()) {
-	while(cashOut == null) {
-		try {
-			wait();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		if(hand.wins()) {
+		while(cashOut == null) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		  }
 		}
-	  }
-	}
-		
-    PlayedGame currentGame;
-    Player winner;
-    Player loser;
-    
-    double creditChange = hand.worth() * bet;
-    if(cashOut != null) {
-    	if(!cashOut) {
-    		creditChange = playHighOrLow(creditChange);
-    	}
-    }
-    
-    if(creditChange > 0){
-      winner = player1;
-      loser = player2;
-    } else {
-      winner = player2;
-      loser = player1;
-    }
-    
-    winner.alterCredits(creditChange - bet);
-    loser.alterCredits(-creditChange - bet);
-    
-    currentGame = new PlayedGame(player1,player2,gameType,winner,creditChange-bet);
-    
-		if(player1.getCredits() <= 0){
+			
+	    PlayedGame currentGame;
+	    Player winner;
+	    Player loser;
+	    
+	    double creditChange = hand.worth() * bet;
+	    if(cashOut != null) {
+	    	if(!cashOut) {
+	    		creditChange = playHighOrLow(creditChange);
+	    	}
+	    }
+	    
+	    if(creditChange > 0){
+	      winner = player1;
+	      loser = player2;
+	    } else {
+	      winner = player2;
+	      loser = player1;
+	    }
+	    
+	    winner.alterCredits(creditChange - bet);
+	    loser.alterCredits(-creditChange - bet);
+	    
+	    currentGame = new PlayedGame(player1,player2,gameType,winner,creditChange-bet);
+	    
+	    if(player1.getCredits() <= 0){
 		  player1.setCredits(initialCredits);
 		  controller.notifyCreditReset();
 		}
