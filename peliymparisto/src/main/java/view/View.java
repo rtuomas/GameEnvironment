@@ -19,6 +19,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -446,51 +447,49 @@ public class View extends Application implements ViewIF {
 	}
 
 	
-	private AnchorPane highOrLowBuilder (AnchorPane pokerGameView) {
-		AnchorPane highOrLowView = new AnchorPane();
+	private BorderPane highOrLowBuilder (AnchorPane pokerGameView) {
+		BorderPane highOrLowView = new BorderPane();
 		
 		Text instruction = new Text("");
 		instruction.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GambleWinningsInfo"));
 		instruction.setFont(Font.font(24));
-	
-		BorderPane infoTextPane = new BorderPane();
-		infoTextPane.setCenter(instruction);
-		AnchorPane.setTopAnchor(infoTextPane,10.0);
-		AnchorPane.setRightAnchor(infoTextPane,0.0);
-		AnchorPane.setLeftAnchor(infoTextPane,0.0);
-	
+		highOrLowView.setTop(instruction);
+		BorderPane.setAlignment(instruction, Pos.TOP_CENTER);
 		
 		Image img = new Image("/images/green_back.png",500,300,true,true);
 		highOrLowCard = new ImageView(img);
-		AnchorPane.setTopAnchor(highOrLowCard, 50.0);
-		AnchorPane.setLeftAnchor(highOrLowCard, 340.0);
+		highOrLowView.setCenter(highOrLowCard);
+		highOrLowCard.fitWidthProperty().bind(Bindings.divide(mainScene.widthProperty(), 4.0));
+		highOrLowCard.fitHeightProperty().bind(Bindings.divide(mainScene.widthProperty(), 2.8));
 		
-		VBox highLowContainer = new VBox(45.0);
+		
+		VBox highLowContainer = new VBox();
 		Text highLowText = new Text("");
 		
 		highLowText.textProperty().bind(RESOURCE_FACTORY.getStringBinding("ChooseHighOrLowInfo"));
 		highLowText.setFont(Font.font(16));
 		Button low = new Button("");
+		low.prefWidthProperty().bind(Bindings.divide(highLowContainer.widthProperty(), 2.0));
+		low.prefHeightProperty().bind(Bindings.divide(highLowContainer.heightProperty(), 10.0));
 		low.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GambleLowButton"));
-		low.setPrefWidth(100.0);
 		low.setFont(Font.font(16));
+		
 		Button high = new Button("");
+		high.prefWidthProperty().bind(Bindings.divide(highLowContainer.widthProperty(), 2.0));
+		high.prefHeightProperty().bind(Bindings.divide(highLowContainer.heightProperty(), 10.0));
 		high.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GambleHighButton"));
-		high.setPrefWidth(100.0);
 		high.setFont(Font.font(16));
 		highLowContainer.setAlignment(Pos.TOP_CENTER);
-		highLowContainer.setPrefWidth(img.getWidth());
-		highLowContainer.setPrefHeight(img.getHeight());
-		AnchorPane.setTopAnchor(highLowContainer, 50.0);
-		AnchorPane.setLeftAnchor(highLowContainer, 100.0);
 		String borderForVbox = "-fx-border-color: black;\n" +
                 "-fx-border-insets: 5;\n" +
                 "-fx-border-width: 2;\n" +
                 "-fx-border-style: solid;\n";
 		highLowContainer.setStyle(borderForVbox);
 		highLowContainer.getChildren().addAll(highLowText,high,low);
-		
-		
+		highOrLowView.setLeft(highLowContainer);
+		highLowContainer.prefWidthProperty().bind(Bindings.divide(mainScene.widthProperty(), 4.0));
+		highLowContainer.spacingProperty().bind(Bindings.divide(highLowContainer.heightProperty(), 5.25));
+	
 		VBox suitContainer = new VBox(25.0);
 		Text suitText = new Text("");
 		suitText.textProperty().bind(RESOURCE_FACTORY.getStringBinding("ChooseSuitInfo"));
@@ -498,8 +497,6 @@ public class View extends Application implements ViewIF {
 		suitText.setFont(Font.font(16));
 		GridPane suitGrid = new GridPane();
 		suitContainer.setAlignment(Pos.TOP_CENTER);
-		suitContainer.setPrefWidth(img.getWidth());
-		suitContainer.setPrefHeight(img.getHeight());
 		
 		suitGrid.setPadding(new Insets(5,5,5,5));
 		suitGrid.setHgap(10); 
@@ -513,6 +510,16 @@ public class View extends Application implements ViewIF {
 		spade.setPickOnBounds(true);
 		ImageView diamond = new ImageView(new Image("/images/suitDiamond.png",90,90,true,true));
 		diamond.setPickOnBounds(true);
+		
+		heart.fitHeightProperty().bind(Bindings.divide(suitContainer.heightProperty(),3.0));
+		club.fitHeightProperty().bind(Bindings.divide(suitContainer.heightProperty(),3.0));
+		diamond.fitHeightProperty().bind(Bindings.divide(suitContainer.heightProperty(),3.0));
+		spade.fitHeightProperty().bind(Bindings.divide(suitContainer.heightProperty(),3.0));
+		
+		heart.fitWidthProperty().bind(Bindings.divide(suitContainer.widthProperty(),3.0));
+		club.fitWidthProperty().bind(Bindings.divide(suitContainer.widthProperty(),3.0));
+		diamond.fitWidthProperty().bind(Bindings.divide(suitContainer.widthProperty(),3.0));
+		spade.fitWidthProperty().bind(Bindings.divide(suitContainer.widthProperty(),3.0));
 		
 		heart.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
@@ -551,11 +558,17 @@ public class View extends Application implements ViewIF {
 		suitGrid.add(spade, 1, 0);
 		suitGrid.add(diamond, 1, 1);
 		
-		AnchorPane.setTopAnchor(suitContainer, 50.0);
-		AnchorPane.setRightAnchor(suitContainer, 100.0);
+		List <Node> suitGridchilds = suitGrid.getChildren();
+		for(Node n : suitGridchilds) {
+			GridPane.setVgrow(n, Priority.ALWAYS);
+			GridPane.setHgrow(n, Priority.ALWAYS);
+			GridPane.setHalignment(n, HPos.CENTER);
+		}
+				
 		suitContainer.setStyle(borderForVbox);
 		suitContainer.getChildren().addAll(suitText,suitGrid);
-		
+		suitContainer.prefWidthProperty().bind(Bindings.divide(mainScene.widthProperty(), 4.0));
+		highOrLowView.setRight(suitContainer);
 		
 		HBox labeledSeparator = new HBox();
 		Label winTxt = new Label("Voitto");
@@ -568,7 +581,6 @@ public class View extends Application implements ViewIF {
 		labeledSeparator.setAlignment(Pos.CENTER);
 		
 		VBox backAndWinContainer = new VBox(4.0);
-		//gambleWin = new Text("1.00");
 		gambleWin.setFont(Font.font(16));
 		backAndWinContainer.setAlignment(Pos.TOP_CENTER);
 		Button back = new Button("");
@@ -577,9 +589,8 @@ public class View extends Application implements ViewIF {
 		back.setFont(Font.font(16));
 		backAndWinContainer.setPrefHeight(95.0);
 		backAndWinContainer.setPrefWidth(img.getWidth());
-		AnchorPane.setLeftAnchor(backAndWinContainer, 345.0);
-		AnchorPane.setBottomAnchor(backAndWinContainer, 0.0);
 		backAndWinContainer.getChildren().addAll(labeledSeparator, gambleWin, back);
+		highOrLowView.setBottom(backAndWinContainer);
 		
 		back.setOnAction(e -> {
 			pokerGameView.getChildren().remove(highOrLowView);
@@ -596,8 +607,6 @@ public class View extends Application implements ViewIF {
 		high.setOnAction(e -> {
 			controller.setHighOrLow("high");
 		});
-		
-		highOrLowView.getChildren().addAll(highOrLowCard, highLowContainer,suitContainer,infoTextPane,backAndWinContainer);
 		
 		return highOrLowView;
 	}
@@ -804,7 +813,7 @@ public class View extends Application implements ViewIF {
 		});
 		
 		gamble.setOnAction(e -> {
-			AnchorPane hl = highOrLowBuilder(pokerGameView);
+			BorderPane hl = highOrLowBuilder(pokerGameView);
 			AnchorPane.setBottomAnchor(hl, 0.0);
 			AnchorPane.setTopAnchor(hl, 0.0);
 			AnchorPane.setLeftAnchor(hl, 0.0);
