@@ -333,7 +333,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		if(winValue > 0) {
 			controller.setScore(StringUtils.capitalise(rb.getString("YouWon")) + " " + Double.toString(winValue) + "0");
 		} else {
-			controller.setScore("");
+			controller.setScore(rb.getString("NoWin"));
 		}
 		
 		} else {

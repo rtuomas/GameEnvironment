@@ -648,6 +648,8 @@ public class View extends Application implements ViewIF {
 			Boolean value = true;
 			controller.setCashout(value);
 			playButton.setDisable(false);
+			// enabling toolbar in case of cashout
+			blockToolBar(false);
 		});
 		stateObs.addPropertyChangeListener(payoutObs);
 		
@@ -769,6 +771,7 @@ public class View extends Application implements ViewIF {
 				wintable, cardPane, topLeftImg, payout, notificationPane);
 		
 		playButton.setOnAction(e -> {
+	
 			for(ImageView v : cardViews) {
 				v.setOpacity(1);
 			}
@@ -780,7 +783,7 @@ public class View extends Application implements ViewIF {
 				plus.setVisible(false);
 				minus.setVisible(false);
 				//disabling some toolbar functionality so player has to finish the game before doing anything else
-				blockToolBar(true); 
+				blockToolBar(true);
 				//making playbutton show Deal
 				notification.textProperty().bind(RESOURCE_FACTORY.getStringBinding("StartGameInfo2"));
 				//timeout for play button for 1 second (change time if needed)
@@ -790,8 +793,6 @@ public class View extends Application implements ViewIF {
 				setSwappedCards();
 				plus.setVisible(true);
 				minus.setVisible(true);
-				//enabling previously blocked toolbar functionality
-				blockToolBar(false);
 				//making playbutton show Play
 				playButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayButton1"));
 			}
@@ -1488,6 +1489,8 @@ public class View extends Application implements ViewIF {
 			for(ImageView v : cardViews) {
 				v.setOpacity(0.5);
 			}
+			// enabling tool bar in case of loss
+			blockToolBar(false);
 			setTimeoutForButton(playButton,1000);
 		} else {
 			cardPane.setStyle("-fx-border-color: #00FF25;" + " -fx-border-width: 5px;");
