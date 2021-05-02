@@ -14,6 +14,9 @@ import controller.ControllerIF;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.DoubleBinding;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -56,6 +59,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -105,8 +109,8 @@ public class View extends Application implements ViewIF {
 	private Scene mainScene;
 	
 	//PokerGameView variables
-	private Text pokerGameCredits;
-	private Text pokerGameBet;
+	private Label pokerGameCredits;
+	private Label pokerGameBet;
 	private GridPane cardPane;
 	private ArrayList<Integer> cardsToSwapIndexes = new ArrayList<Integer>();
 	private boolean gameOn = false;
@@ -114,7 +118,7 @@ public class View extends Application implements ViewIF {
 	private StackPane [] imageStacks = new StackPane [5];
 	private ImageView [] cardViews = new ImageView [5];
 	private ImageView [] lockViews = new ImageView [5];
-	private List <Text> winTableTexts = new ArrayList<Text>();
+	private List <Label> winTableTexts = new ArrayList<Label>();
 	private ImageView highOrLowCard;
 	private GSObservable stateObs;
 	private Text gambleWin;
@@ -239,7 +243,6 @@ public class View extends Application implements ViewIF {
 			primaryStage.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("primaryStageTitle"));
 
 			BorderPane mainMenu = mainMenuBuilder();
-			AnchorPane pokerGame = pokerGameBuilder();
 			BorderPane settings = settingsBuilder();
 			BorderPane stats = statsBuilder();
 			HBox navBar = navBarBuilder();
@@ -250,6 +253,8 @@ public class View extends Application implements ViewIF {
 			mainView.setCenter(mainMenu);
 			mainView.setBottom(adBar);
 			mainScene = new Scene(mainView);
+			
+			AnchorPane pokerGame = pokerGameBuilder();
 
 			primaryStage.getIcons().add(new Image("/images/cards_icon.png"));
 			primaryStage.setMinWidth(900);
@@ -598,6 +603,7 @@ public class View extends Application implements ViewIF {
 	 * @return AnchorPane type layout for the poker game
 	 */
 	private AnchorPane pokerGameBuilder() {
+		// initialaizing cards to swap
 		Collections.addAll(cardsToSwapIndexes,0,1,2,3,4);
 		stateObs = new GSObservable();
 		gambleWin = new Text("1.00");
@@ -606,70 +612,79 @@ public class View extends Application implements ViewIF {
 		notification = new Label("");
 		notification.textProperty().bind(RESOURCE_FACTORY.getStringBinding("StartGameInfo1"));
 		notification.setFont(Font.font(24));
-		BorderPane notificationPane = new BorderPane();
-		
-		notificationPane.setCenter(notification);
-		AnchorPane.setBottomAnchor(notificationPane,70.0);
-		AnchorPane.setRightAnchor(notificationPane,0.0);
-		AnchorPane.setLeftAnchor(notificationPane,0.0);
 	
 		// Top left corner image
 		ImageView topLeftImg = new ImageView(new Image("/images/pokergame_top_left.png", 110, 125.4 , true, true));
 		AnchorPane.setLeftAnchor(topLeftImg, 13.0);
 		AnchorPane.setTopAnchor(topLeftImg, 5.0);
 
-		// gamble button placement
+		// gamble button
 		Button gamble = new Button ("");
 		gamble.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GambleButton"));
 		GSObserverBtn gambleObs = new GSObserverBtn(gamble);
-		gamble.setPrefHeight(58.0);
-		gamble.setPrefWidth(98.0);
-		AnchorPane.setBottomAnchor(gamble, 11.39);
-		AnchorPane.setRightAnchor(gamble, 135.0);
+		gamble.setPrefSize(105.0,58.0);
 		stateObs.addPropertyChangeListener(gambleObs);
 		
-		// play button placement
+		// play button
 		playButton = new Button("");
 		playButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayButton1"));
-		playButton.setPrefHeight(58.0);
-		playButton.setPrefWidth(98.0);
-		AnchorPane.setBottomAnchor(playButton, 11.39);
-		AnchorPane.setRightAnchor(playButton, 14.59);
+		playButton.setPrefSize(105.0,58.0);
 		
-		// payout button placement
+		// payout button
 		Button payout = new Button("");
 		payout.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PayOutButton"));
 		GSObserverBtn payoutObs = new GSObserverBtn(payout);
-		payout.setPrefHeight(58.0);
-		payout.setPrefWidth(98.0);
-		AnchorPane.setBottomAnchor(payout, 11.39);
-		AnchorPane.setRightAnchor(payout, 256.0);
+		payout.setPrefSize(105.0,58.0);
 		payout.setOnAction(e -> {
 			Boolean value = true;
 			controller.setCashout(value);
 			playButton.setDisable(false);
-			// enabling toolbar in case of cashout
+			// enabling toolbar in case of payout
 			blockToolBar(false);
 		});
 		stateObs.addPropertyChangeListener(payoutObs);
 		
-		// bet increment button placement
+		// bet increment button
 		Button plus = new Button("+");
 		plus.setPrefSize(30, 30);
-		AnchorPane.setBottomAnchor(plus, 24.4);
-		AnchorPane.setLeftAnchor(plus, 460.0);
 		plus.setOnAction(e -> {
 			setPokerGameBet(controller.getBetIncrement());
 		});
 			
-		// bet decrement button placement
+		// bet decrement button
 		Button minus = new Button("-");
 		minus.setPrefSize(30, 30);
-		AnchorPane.setBottomAnchor(minus, 24.4);
-		AnchorPane.setLeftAnchor(minus, 330.0);
 		minus.setOnAction(e -> {
 			setPokerGameBet(controller.getBetDecrement());
 		});
+		
+		pokerGameBet = new Label();
+		pokerGameBet.setFont(Font.font(16));
+		
+		pokerGameCredits = new Label();
+		pokerGameCredits.setFont(Font.font(16));
+		
+		// lower pane container, contains game actions & credits label
+		HBox lowerPaneContainer = new HBox();
+		HBox notificationContainer = new HBox();
+		// hbox for bet label to allow buttons to be closer to the bet label
+		HBox betContainer = new HBox(10.0);
+		betContainer.getChildren().addAll(minus,pokerGameBet,plus);
+		betContainer.setAlignment(Pos.CENTER);
+		notificationContainer.getChildren().add(notification);
+		notificationContainer.setAlignment(Pos.CENTER);
+		lowerPaneContainer.setAlignment(Pos.CENTER);
+		// lower pane container spacing property binded to main scene width, so spacing grows when resizing
+		lowerPaneContainer.spacingProperty().bind(Bindings.divide(mainScene.widthProperty(), 15.0));
+		lowerPaneContainer.getChildren().addAll(pokerGameCredits,betContainer,payout,gamble,playButton);
+		
+		
+		AnchorPane.setBottomAnchor(notificationContainer, 65.0);
+		AnchorPane.setRightAnchor(notificationContainer, 0.0);
+		AnchorPane.setLeftAnchor(notificationContainer, 0.0);
+		AnchorPane.setRightAnchor(lowerPaneContainer, 0.0);
+		AnchorPane.setBottomAnchor(lowerPaneContainer, 0.0);
+		AnchorPane.setLeftAnchor(lowerPaneContainer, 0.0);
 		
 		// Gridpane for wintable
 		GridPane wintable = new GridPane();
@@ -684,23 +699,24 @@ public class View extends Application implements ViewIF {
 		
 		for(int i = 0; i < 2; i++) {
 			ColumnConstraints column = new ColumnConstraints();
-			column.setPrefWidth(135.0);
+			column.setPrefWidth(165.0);
 			wintable.getColumnConstraints().add(column);
 		}
 		
-		// Texts for wintable
-		Text acepair = new Text();
-		Text pair = new Text();
-		Text threeofkind = new Text();
-		Text straight = new Text();
-		Text flush = new Text();
-		Text fullhouse = new Text();
-		Text fourofkind = new Text();
-		Text straightflush = new Text();
+		// Labels for wintable
+		Label acepair = new Label();
+		Label pair = new Label();
+		Label threeofkind = new Label();
+		Label straight = new Label();
+		Label flush = new Label();
+		Label fullhouse = new Label();
+		Label fourofkind = new Label();
+		Label straightflush = new Label();
 		Collections.addAll(winTableTexts, acepair, pair, threeofkind, straight, flush, fullhouse, fourofkind, straightflush);
-		for(Text t : winTableTexts) {
-			t.setFont(Font.font(16));
-			wintable.setMargin(t, new Insets(5,5,5,5));
+		for(Label l : winTableTexts) {
+			l.setFont(Font.font(16));
+			GridPane.setHalignment(l, HPos.CENTER);
+			wintable.setMargin(l, new Insets(5,5,5,5));
 		}
 		
 		wintable.add(acepair, 0, 3);
@@ -712,17 +728,9 @@ public class View extends Application implements ViewIF {
 		wintable.add(fourofkind, 0, 0);
 		wintable.add(straightflush, 1, 0);
 		
-		// credits & bet placements
-		pokerGameCredits = new Text();
-		pokerGameCredits.setFont(Font.font(16));
-		pokerGameBet = new Text();
-		pokerGameBet.setFont(Font.font(16));
+		// initialaizing credits & bet
 		setPokerGamePlayerCredits();
-		AnchorPane.setBottomAnchor(pokerGameCredits, 30.0);
-		AnchorPane.setLeftAnchor(pokerGameCredits, 36.0);
 		setPokerGameBet(controller.getBet());
-		AnchorPane.setBottomAnchor(pokerGameBet, 30.0);
-		AnchorPane.setLeftAnchor(pokerGameBet, 370.0);
 		
 		// Gridpane for card images
 		cardPane = new GridPane ();
@@ -767,11 +775,13 @@ public class View extends Application implements ViewIF {
 		}
 		
 		//Sets the whole AnchorPane with elements
-		AnchorPane pokerGameView = new AnchorPane(playButton, gamble, plus, minus, pokerGameCredits, pokerGameBet,
-				wintable, cardPane, topLeftImg, payout, notificationPane);
+		AnchorPane pokerGameView = new AnchorPane(lowerPaneContainer,
+				wintable, cardPane, topLeftImg, notificationContainer);
 		
+		// play button on action, starts the game and if game is on, swaps selected cards
 		playButton.setOnAction(e -> {
-	
+			
+			// opacity & border reset
 			for(ImageView v : cardViews) {
 				v.setOpacity(1);
 			}
@@ -790,6 +800,7 @@ public class View extends Application implements ViewIF {
 				setTimeoutForButton(playButton, 1000); 
 				
 			} else {
+				// sends cards to swap to engine
 				setSwappedCards();
 				plus.setVisible(true);
 				minus.setVisible(true);
@@ -799,6 +810,7 @@ public class View extends Application implements ViewIF {
 			gameOn = !gameOn;
 		});
 		
+		// gamble button on action, hides pokergameview and displays highOrLowBuilder
 		gamble.setOnAction(e -> {
 			BorderPane hl = highOrLowBuilder(pokerGameView);
 			AnchorPane.setBottomAnchor(hl, 0.0);
@@ -1437,12 +1449,13 @@ public class View extends Application implements ViewIF {
 	
 	@Override
 	public void setPokerGamePlayerCredits () {
-		pokerGameCredits.setText("Saldo: " + df.format(this.player.getCredits()));
+		pokerGameCredits.textProperty().bind(RESOURCE_FACTORY.getStringBinding("CreditLabel").concat(df.format(this.player.getCredits())));
 	}
 	
 	@Override
 	public void setPokerGameBet (double bet) {
-		pokerGameBet.setText("Panos: " + df.format(bet));
+		pokerGameBet.textProperty().bind(RESOURCE_FACTORY.getStringBinding("BetLabel").concat(df.format(bet)));
+		//pokerGameBet.setText("Panos: " + df.format(bet));
 		updateWinTable(bet);
 	}
 	
@@ -1451,15 +1464,14 @@ public class View extends Application implements ViewIF {
 	 * @param bet double current bet amount.
 	 */
 	private void updateWinTable (double bet) {
-		//Tänne set textit kokonaisuudessaan plus kerroin ja betti
-		winTableTexts.get(0).setText("Ässä pari " + df.format(roundToTwoDecimals(bet * HandValue.ACE_PAIR.getMultiplier())));
-		winTableTexts.get(1).setText("Kaksi paria " + df.format(roundToTwoDecimals(bet * HandValue.TWO_PAIRS.getMultiplier())));
-		winTableTexts.get(2).setText("Kolmoset: " + df.format(roundToTwoDecimals(bet * HandValue.THREE_OF_A_KIND.getMultiplier())));
-		winTableTexts.get(3).setText("Suora " +  df.format(roundToTwoDecimals(bet * HandValue.STRAIGHT.getMultiplier())));
-		winTableTexts.get(4).setText("Väri: " + df.format(roundToTwoDecimals(bet * HandValue.FLUSH.getMultiplier())));
-		winTableTexts.get(5).setText("Täyskäsi: " + df.format(roundToTwoDecimals(bet * HandValue.FULL_HOUSE.getMultiplier())));
-		winTableTexts.get(6).setText("Neloset: " + df.format(roundToTwoDecimals(bet * HandValue.FOUR_OF_A_KIND.getMultiplier())));
-		winTableTexts.get(7).setText("Värisuora: " + df.format(roundToTwoDecimals(bet * HandValue.STRAIGHT_FLUSH.getMultiplier())));
+		winTableTexts.get(0).textProperty().bind(RESOURCE_FACTORY.getStringBinding("AcePairWin").concat(" " + df.format(roundToTwoDecimals(bet * HandValue.ACE_PAIR.getMultiplier()))));
+		winTableTexts.get(1).textProperty().bind(RESOURCE_FACTORY.getStringBinding("TwoPairsWin").concat(" " + df.format(roundToTwoDecimals(bet * HandValue.TWO_PAIRS.getMultiplier()))));
+		winTableTexts.get(2).textProperty().bind(RESOURCE_FACTORY.getStringBinding("ThreeOfKindWin").concat(" " + df.format(roundToTwoDecimals(bet * HandValue.THREE_OF_A_KIND.getMultiplier()))));
+		winTableTexts.get(3).textProperty().bind(RESOURCE_FACTORY.getStringBinding("StraightWin").concat(" " + df.format(roundToTwoDecimals(bet * HandValue.STRAIGHT.getMultiplier()))));
+		winTableTexts.get(4).textProperty().bind(RESOURCE_FACTORY.getStringBinding("FlushWin").concat(" " + df.format(roundToTwoDecimals(bet * HandValue.FLUSH.getMultiplier()))));
+		winTableTexts.get(5).textProperty().bind(RESOURCE_FACTORY.getStringBinding("FullHouseWin").concat(" " + df.format(roundToTwoDecimals(bet * HandValue.FULL_HOUSE.getMultiplier()))));
+		winTableTexts.get(6).textProperty().bind(RESOURCE_FACTORY.getStringBinding("FourOfKindWin").concat(" " + df.format(roundToTwoDecimals(bet * HandValue.FOUR_OF_A_KIND.getMultiplier()))));
+		winTableTexts.get(7).textProperty().bind(RESOURCE_FACTORY.getStringBinding("StraightFlushWin").concat(" " + df.format(roundToTwoDecimals(bet * HandValue.STRAIGHT_FLUSH.getMultiplier()))));
 	}
 	/**
 	 * Helper for rounding two decimal places
