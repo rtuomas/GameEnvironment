@@ -20,17 +20,24 @@ import view.ViewIF;
 
 /**
  * The Controller which connects the GUI and chosen game engine together using MVC model.
- * @author ---
- * @version 1.5 09.03.2021
+ * @author Aki K, Tuomas R, Jere L, Ville R, Tatu N
+ * @version 1.6 04.05.2021
  */
 public class Controller implements ControllerIF {
 	
+	/** Current game engine class*/
 	private ModelIF model;
+	/** Current Graphical User Interface*/
 	private ViewIF view;
+	/** Current Data Access Object which is responsible for the handling of database CRUD methods*/
 	private DAOIF dao;
+	/** Statistics class which takes the statistics from player and playedgame*/
 	private Statistics stats;
+	/** Connection for the Chat server*/
 	private EchoClient clientConnection;
+	/** Socket handler for the chat connection*/
 	private ClientSocketHandler handler;
+	/** Boolean variable which tells if game is currently running, true means yes*/
 	private boolean gameStarted;
 	
 	/**
@@ -72,26 +79,31 @@ public class Controller implements ControllerIF {
 		Platform.runLater(()->view.setCurrentPlayer(model.getCurrentPlayer()));
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public double getBetIncrement() {
 		return PokerGameEngine.increaseBet();
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public double getBetDecrement() {
 		return PokerGameEngine.decreaseBet();
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public double getBet() {
 		return PokerGameEngine.getBet();
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public void setScore(String score) {
 		Platform.runLater(()->view.setScore(score));
 	}
-
+	
+	/**	{@inheritDoc} */
 	@Override
 	public void showCards(Card[] cards) {
 		ArrayList<String> imgpaths = new ArrayList<String>();
@@ -200,7 +212,8 @@ public class Controller implements ControllerIF {
 		}
 		return null;
 	}
-
+	
+	/**	{@inheritDoc} */
 	@Override
 	public void changePlayerInfo() {
 		Platform.runLater(()-> {
@@ -238,7 +251,8 @@ public class Controller implements ControllerIF {
 	public void setGameState(String state) {
 		view.setGameState(state);
 	}
-
+	
+	/**	{@inheritDoc} */
 	@Override
 	public void sendMessage(String msg) {
 		if (clientConnection != null) {
@@ -247,7 +261,8 @@ public class Controller implements ControllerIF {
 			displayMessage("Viestiä ei voitu lähettää");
 		}
 	}
-
+	
+	/**	{@inheritDoc} */
 	@Override
 	public void initChatConnection() {
 		if (clientConnection == null) { //singleton connection, could make class singleton but uses controller as parameter
@@ -271,12 +286,7 @@ public class Controller implements ControllerIF {
 		
 	}
 	
-	//unused at this time
-	@Override
-	public void closeChatConnection() {
-		//handler.stopRun();
-	}
-	
+	/**	{@inheritDoc} */
 	@Override
 	public void displayMessage(String message) {
 		view.displayMessage(message);

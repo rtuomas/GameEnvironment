@@ -2,8 +2,10 @@ package model;
 
 /**
  * Testing class
- * @author ----
- * @version 7.2 18.02.2021
+ * 
+ * Here game functionality and database testing and minor database modifications can be done.
+ * @author Aki K, Tuomas R, Jere L, Ville R, Tatu N
+ * @version 7.3 04.05.2021
  */
 public class TextMain {
 

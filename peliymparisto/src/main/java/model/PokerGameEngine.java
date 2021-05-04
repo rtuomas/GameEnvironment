@@ -10,8 +10,8 @@ import controller.ControllerIF;
 
 /**
  * The game engine for the poker game. It connects all the different classes needed to run the poker game.
- * @author ---
- * @version 1.3 11.03.2021
+ * @author Aki K, Tuomas R, Jere L, Ville R, Tatu N
+ * @version 1.3 04.05.2021
  */
 public class PokerGameEngine extends Thread implements ModelIF {
 	
@@ -19,18 +19,25 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	private ControllerIF controller;
 	/** Interface with a connection to DAO */
 	private DAOIF dao;
+	/** Variable for the Deck class */
 	private Deck deck;
+	/** Variable for the Hand class */
 	private Hand hand;
 	private ArrayList<Integer> indexes;
 	private static Double[] betTable = {0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
-	//Players bet (starting with 1.00)
+	/** User's set bet (starting with 1.00) */
 	private static double bet = betTable[6];
+	/** Not logged in user's initial credits */
 	private static double initialCredits = 100;
-
+	
 	//Player variables
+	/** Player 1 is the current user in a single player game*/
 	private Player player1;
+	/** Player 2 is the AI in a single player game */
 	private Player player2;
+	
 	//Game variables
+	/** gametype of this game as a String */
 	private String gameType = "poker";
 	private Boolean cashOut;
 	private String highOrLow;
@@ -39,6 +46,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	
 	/**
 	 * Constructor for the poker game engine.
+	 * 
 	 * Controller and DAO are not needed for CLI to operate!
 	 * @param controller is the class which started running the poker game
 	 */
@@ -159,7 +167,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	}
 	
 	/**
-	 * increases current bet amount
+	 * Increases current bet amount
 	 * @return current bet amount
 	 */
 	public static double increaseBet() {
@@ -170,7 +178,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	}
 	
 	/**
-	 * decreases current bet amount
+	 * Decreases current bet amount
 	 * @return current bet amount
 	 */
 	public static double decreaseBet() {
@@ -246,6 +254,8 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		notifyAll();
 	}
 	
+	/**	{@inheritDoc} */
+	@Override
 	public Player getCurrentPlayer() {
 		return this.player1;
 	}

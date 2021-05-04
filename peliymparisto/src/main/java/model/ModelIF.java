@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 /**
  * The interface for game engines. The Controller is connected to this interface so it can call different game engines when needed.
- * @author ---
- * @version 1.0 26.01.2021
+ * @author Aki K, Tuomas R, Jere L, Ville R, Tatu N
+ * @version 1.1 04.05.2021
  */
 public interface ModelIF {
 	
@@ -48,8 +48,11 @@ public interface ModelIF {
 	 * @param dao
 	 */
 	public void setDatabaseConnection(DAOIF dao);
-
-	public Player getCurrentPlayer(); //make non interface
+	/**
+	 * Returns the current player to controller
+	 * @return current player from game engine
+	 */
+	public Player getCurrentPlayer();
 	public void setCashout(Boolean decision);
 	public void setHighOrLow(String value);
 }
