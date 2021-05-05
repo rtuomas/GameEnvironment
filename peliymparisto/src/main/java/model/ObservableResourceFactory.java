@@ -7,7 +7,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 public class ObservableResourceFactory {
-	
 	private ObjectProperty<ResourceBundle> resources = new SimpleObjectProperty<>();
 	private static ObservableResourceFactory INSTANCE;
 	
