@@ -6,8 +6,8 @@ import model.Player;
 
 /**
  * The interface for the GUI. The Controller handles GUI related traffic through this interface.
- * @author ---
- * @version 1.3 03.03.2021
+ * @author Aki K, Tuomas R, Jere L, Ville R, Tatu N
+ * @version 1.3 04.05.2021
  */
 public interface ViewIF {
 	
@@ -132,8 +132,12 @@ public interface ViewIF {
 	 * @param bet double bet amount
 	 */
 	public void setPokerGameBet(double bet);
-	void notifyCreditReset();
+	public void notifyCreditReset();
 	public void setHighOrLowCard(String card);
 	public void setGameState(String state);
-	void displayMessage(String message);
+	/**
+	 * Appends a new text to the chat window
+	 * @param message
+	 */
+	public void displayMessage(String message);
 }

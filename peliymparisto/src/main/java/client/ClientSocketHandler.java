@@ -14,6 +14,10 @@ public class ClientSocketHandler implements Runnable {
     private Socket socket;
     private ObjectInputStream infromServer;
     private ObjectOutputStream outToServer;
+    /**
+     * Boolean to check if chat connection can be closed
+     * Currently always false, meaning chat connection will persist as long as the program is running
+     */
     private volatile boolean exit = false;
 
     public ClientSocketHandler(Socket socket, EchoClient client) throws IOException{
@@ -44,12 +48,5 @@ public class ClientSocketHandler implements Runnable {
             e.printStackTrace();
         }
     }
-    
-    /*
-    public void stopRun() {
-    	exit = true;
-    	System.out.println("Stopped?");
-    }
-    */
     
 }

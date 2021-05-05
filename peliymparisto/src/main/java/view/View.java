@@ -83,8 +83,8 @@ import model.PlayerRanking;
 
 /**
  * The Graphical User Interface built with JavaFX
- * @author ---
- * @version 2.1 28.04.2021
+ * @author Aki K, Tuomas R, Jere L, Ville R, Tatu N
+ * @version 2.2 04.05.2021
  */
 public class View extends Application implements ViewIF {
 	
@@ -200,8 +200,11 @@ public class View extends Application implements ViewIF {
 	private TextArea dropDownMessages;
 	/** This Button opens the custom chat window*/
 	private MenuButton chatButton;
-	/** This Label displays how many players are online in the application at a given time*/
-	private Label playerCount; //FUNCTIONALITY NOT YET IMPLEMENTED!!!
+	/**
+	* This Label displays how many players are online in the application at a given time
+	* 04.05.2021, functionality of this counter is not yet implemented
+	*/
+	private Label playerCount;
 	
 	private Locale locale;
 	
@@ -213,7 +216,7 @@ public class View extends Application implements ViewIF {
 	}
 	
 	/**
-	 * Setting starting values
+	 * Setting starting values.
 	 */
 	@Override
 	public void init(){
@@ -245,7 +248,9 @@ public class View extends Application implements ViewIF {
 			BorderPane mainMenu = mainMenuBuilder();
 			BorderPane settings = settingsBuilder();
 			BorderPane stats = statsBuilder();
+			//upper navigation bar that is always visible
 			HBox navBar = navBarBuilder();
+			//lower navigation bar that is always visible and is mostly used to showcase ads and chat
 			HBox adBar = adBarBuilder();
 			
 			BorderPane mainView = new BorderPane();
@@ -275,8 +280,10 @@ public class View extends Application implements ViewIF {
 	}
 
 	/**
-	 * Contains the GUI for main menu
-	 * @return BorderPane type layout for the main menu
+	 * Contains the GUI for main menu.
+	 * 
+	 * Main menu allows user to navigate to different views through buttons.
+	 * @return BorderPane type layout for the main menu.
 	 */
 	private BorderPane mainMenuBuilder() {
 		Image aceCards = new Image("/images/aces.png", 350, 210, false, false);
@@ -295,32 +302,35 @@ public class View extends Application implements ViewIF {
 		nameAndPicture.getChildren().addAll(aceView, name);
 		mainMenuView.setTop(nameAndPicture);
 		
-		VBox napit = new VBox();
-		napit.setAlignment(Pos.CENTER);
-		napit.setPadding(new Insets(10, 10, 10, 10));
-		napit.setSpacing(10);
-		napit.setPrefWidth(100);
+		//Buttons to navigate to different view
+		VBox navButtons = new VBox();
+		navButtons.setAlignment(Pos.CENTER);
+		navButtons.setPadding(new Insets(10, 10, 10, 10));
+		navButtons.setSpacing(10);
+		navButtons.setPrefWidth(100);
 		enterPokerGame = new Button("");
 		enterPokerGame.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PokerButton"));
-		enterPokerGame.setMinWidth(napit.getPrefWidth());
+		enterPokerGame.setMinWidth(navButtons.getPrefWidth());
 		enterSettings = new Button("");
 		enterSettings.textProperty().bind(RESOURCE_FACTORY.getStringBinding("SettingsButton"));
-		enterSettings.setMinWidth(napit.getPrefWidth());
+		enterSettings.setMinWidth(navButtons.getPrefWidth());
 		enterStats = new Button("");
 		enterStats.textProperty().bind(RESOURCE_FACTORY.getStringBinding("StatisticsButton"));
-		enterStats.setMinWidth(napit.getPrefWidth());
+		enterStats.setMinWidth(navButtons.getPrefWidth());
 		exitProgram = new Button("");
 		exitProgram.textProperty().bind(RESOURCE_FACTORY.getStringBinding("ExitButton"));
-		exitProgram.setMinWidth(napit.getPrefWidth());
+		exitProgram.setMinWidth(navButtons.getPrefWidth());
 		
-		napit.getChildren().addAll(enterPokerGame, enterSettings, enterStats, exitProgram);
-		mainMenuView.setCenter(napit);
+		navButtons.getChildren().addAll(enterPokerGame, enterSettings, enterStats, exitProgram);
+		mainMenuView.setCenter(navButtons);
 
 		return mainMenuView;
 	}
 	
 	/**
-	 * Contains the navigation toolbar in the top of the program view
+	 * Contains the navigation toolbar in the top of the program view.
+	 * 
+	 * Always visible to the user, though parts of will get temporarily disabled depending the state of the currently running game.
 	 * @return HBox type assortment of buttons and labels for the toolbar
 	 */
 	private HBox navBarBuilder() {
@@ -393,6 +403,8 @@ public class View extends Application implements ViewIF {
 	
 	/**
 	 * This creates the lower toolbar where ads, chatwindowButton and playerCount(Online) is found
+	 * 
+	 * Always visible to the user
 	 * @return HBox type of toolbar presentation
 	 */
 	private HBox adBarBuilder() {
@@ -847,6 +859,7 @@ public class View extends Application implements ViewIF {
 	
 	/**
 	 * This method disables a chosen button for a given time
+	 * 
 	 * Its function is to prevent user for doing multiple clicks accidentally
 	 * @param button is the button that will be disabled for the duration of the delay
 	 * @param delay is the time for delay in milliseconds
@@ -875,6 +888,8 @@ public class View extends Application implements ViewIF {
 	
 	/**
 	 * Contains the GUI for settings
+	 * 
+	 * Settings allow user to switch the language and theme
 	 * @return BorderPane type layout for the settings
 	 */
 	private BorderPane settingsBuilder() {
@@ -1061,12 +1076,19 @@ public class View extends Application implements ViewIF {
 	
 	/**
 	 * This shows a window prompting the user to input their information for registration
+	 * 
+	 * Registration window asks for first name, last name, profile name, email, password and retyping of password
+	 * 
+	 * Registration window also has a checkbox for credit transfering, which if chosen,
+	 * will allow users to transfer their accumulated credits from the unregistered profile to their new one,
+	 * if their accumulated credits are over 100.
 	 * @param primaryStage this variable is used to link the new stage to the primaryStage
 	 */
 	private void showRegisterDialog(Stage primaryStage) {
 		Stage rDialog = new Stage();
 		rDialog.setMinWidth(450);
 		rDialog.setMinHeight(350);
+		//this windows tasks have to be either completed or the window needs to be closed before doing anything else
 		rDialog.initModality(Modality.APPLICATION_MODAL);
 		rDialog.initOwner(primaryStage);
 		rDialog.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("RegisterDialogTitle"));
@@ -1143,6 +1165,9 @@ public class View extends Application implements ViewIF {
 	
 	/**
 	 * This shows a window showing users their information and lets them change password and user name
+	 * 
+	 * The window shows players name, registration date, email, profile name and password replaced by asterisks.
+	 * After changing password and user name, a save button needs to be pressed before information is updated to database
 	 * @param primaryStage this variable is used to link the new stage to the primaryStage
 	 */
 	private void showPlayerInfoDialog(Stage primaryStage) {
@@ -1160,11 +1185,14 @@ public class View extends Application implements ViewIF {
 		GridPane pIGridPane = new GridPane();
 		HBox pIButtons = new HBox();
 		
+		//Information from the database
 		Label playerWholeName = new Label(this.player.getFirstName() + " " + this.player.getLastName());
 		Label playerJoinDate = new Label(String.valueOf(this.player.getCreatedOn()));
 		Label playerEmail = new Label(this.player.getEmail());
 		Label playerProfileName = new Label(this.player.getProfileName());
 		Label playerPassword = new Label(this.player.getPassword());
+		
+		//buttons to edit profile name and password, and also save or cancel changes
 		editProfileNameButton = new Button();
 		editProfileNameButton.setGraphic(new ImageView(edit));
 		editPasswordButton = new Button();
@@ -1174,6 +1202,7 @@ public class View extends Application implements ViewIF {
 		cancelPlayerInfoButton = new Button("Peruuta");
 		cancelPlayerInfoButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoCancelButton"));
 		
+		//Placeholder texts which explains to user what they need to input
 		Label playerInfoInfo = new Label("");
 		playerInfoInfo.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoInfo"));
 		Label playerWholeNameInfo = new Label("");
@@ -1357,10 +1386,11 @@ public class View extends Application implements ViewIF {
 	
 	/**
 	 * This method updates all the information in the toolbar to match any changes on the player
+	 * 
+	 * This method is called from the setCurrentPlayer method, or setDefaultPlayerMethod
 	 */
 	private void updateToolBar() {
 		this.creditView.setText(String.valueOf(df.format(player.getCredits())));
-		//this.playerMenu.setText(this.player.getProfileName());
 		this.emailInput.setText("");
 		this.passwordInput.setText("");
 		if (player.getId() == 1001) { //Checking if the set user is the default player, setting elements in the toolbar accordingly
@@ -1666,7 +1696,8 @@ public class View extends Application implements ViewIF {
 	
 	/**
 	 * Shows user password reset dialog
-	 * NO FUNCTIONALITY YET
+	 * 
+	 * This dialog has no functionality added yet
 	 */
 	private void showPasswordReset() {
 		TextInputDialog dialog = new TextInputDialog();
@@ -1679,7 +1710,8 @@ public class View extends Application implements ViewIF {
 	
 	/**
 	 * Shows user information about the program
-	 * NOT MUCH HERE YET
+	 * 
+	 * This dialog needs to have more information added
 	 */
 	private void showProgramInfo() {
 		Alert alert = new Alert(AlertType.INFORMATION);
@@ -1770,10 +1802,11 @@ public class View extends Application implements ViewIF {
 	}
 	
 	@Override
-	public void setGameState (String state) {
+	public void setGameState(String state) {
 		stateObs.setGameState(state);
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public void displayMessage(String message) {
 		dropDownMessages.appendText(message + "\n");
@@ -1781,6 +1814,9 @@ public class View extends Application implements ViewIF {
 	
 	/**
 	 * Creates the chatwindow for users to send messages to each other trhough the chat server
+	 * 
+	 * Chat tries to connect to the chat server in Educloud, if it fails user is prompted
+	 * User can attempt to re-establish connection by pressing refresh button
 	 * @return custom chatPane
 	 */
 	private Node createChat() {
@@ -1802,7 +1838,8 @@ public class View extends Application implements ViewIF {
 		    public void handle(KeyEvent ke) {
 		        if (ke.getCode().equals(KeyCode.ENTER)) {
 		        	if (!message.getText().isEmpty()) {
-		        		controller.sendMessage(player.getProfileName() + ": " +  message.getText()); //player profile name and message from textfield
+		        		//player profile name and message from textfield
+		        		controller.sendMessage(player.getProfileName() + ": " +  message.getText()); 
 						message.setText("");
 		        	}
 		        }
@@ -1812,11 +1849,13 @@ public class View extends Application implements ViewIF {
 		Button sendButton = new Button("Lähetä");
 		sendButton.setOnAction(e -> {
 			if (!message.getText().isEmpty()) {
-				controller.sendMessage(player.getProfileName() + ": " +  message.getText()); //player profile name and message from textfield
+				//player profile name and message from textfield
+				controller.sendMessage(player.getProfileName() + ": " +  message.getText()); 
 				message.setText("");
 			}
 		});
 		
+		//Button for re-trying to connect to chat server
 		Button refreshButton = new Button();
 		refreshButton.setGraphic(new ImageView(refresh));
 		refreshButton.setOnAction(e -> controller.initChatConnection());
@@ -1830,8 +1869,9 @@ public class View extends Application implements ViewIF {
 		BorderPane chatPane = new BorderPane();
 		chatPane.setCenter(dropDownMessages);
 		chatPane.setBottom(inputField);
-
-		controller.initChatConnection(); //after this controller will check if connection allready exists
+		
+		//after this controller will check if connection allready exists
+		controller.initChatConnection(); 
 		
 		return chatPane;
 	}

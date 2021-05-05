@@ -9,41 +9,27 @@ import model.Player;
 
 /**
  * The interface for the Controller. All necessary methods for the functionality of the MVC model are found here.
- * @author ---
- * @version 1.3 03.03.2021
+ * @author Aki K, Tuomas R, Jere L, Ville R, Tatu N
+ * @version 1.4 04.05.2021
  */
 public interface ControllerIF {
-	
-	//methods that transmit info from View to Model -->
 	
 	/**
 	 * Method that starts running the poker game through input from GUI
 	 */
 	public void startPokerGame();
-	
-	//methods that transmit info from Model to View -->
-	
 	/**
 	 * Sends score to view
 	 * @param score string hand score
 	 */
 	public void setScore(String score);
-	
 	/**
 	 * Sends dealed cards to view.
 	 * @param cards Card [] dealed cards
 	 */
 	public void showCards(Card [] cards);
-	/**
-	 * Sends credits to view.
-	 */
-	//public void setCredits();
 	public void setSwappedCardIndexes (ArrayList<Integer> indexes);
-	
-	//hybrid methods -->
-	
 	LineChart<String, Number> getLineChart(int timestamp);
-
 	ArrayList<Player> getRanking();
 	/**
 	 * Sets the default player as Tester when program starts
@@ -91,19 +77,23 @@ public interface ControllerIF {
 	 * If saving to database fails, shows an error message in View
 	 */
 	public void changePlayerInfo();
-	
-	/** Sends client message to the server 
-	 * @param string */
+	/**
+	 * Sends client message to the server 
+	 * @param string
+	 */
 	public void sendMessage(String string);
-
 	public void notifyCreditReset();
   	public void setCashout(Boolean decision);
   	public void setHighOrLow(String value);
   	public void setHighOrLowCard(String card);
   	public void setGameState(String state);
-
+  	/**
+  	 * Attempts to connect to chat server
+  	 */
 	public void initChatConnection();
+	/**
+	 * Appends a new chat message to the chat window in View
+	 * @param message
+	 */
 	public void displayMessage(String message);
-
-	public void closeChatConnection();
 }
