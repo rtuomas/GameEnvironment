@@ -14,9 +14,6 @@ import controller.ControllerIF;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.DoubleBinding;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -991,19 +988,16 @@ public class View extends Application implements ViewIF {
 		BorderPane statsView = new BorderPane();
 		
 		TabPane tabPane = new TabPane();
-		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-		
-		//playButton = new Button("");
-		//playButton.textProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayButton1"));
+		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE); //Unavailable when not logged in
 		
 		creditDevelopment = new Tab("");
 		creditDevelopment.textProperty().bind(RESOURCE_FACTORY.getStringBinding("TabBalance"));
 		ImageView growth = new ImageView(new Image("/images/growthtab.png", 25, 22, false, false));
 		creditDevelopment.setGraphic(growth);
 		combobox = new ComboBox();
-		combobox.getItems().add("KAIKKI");
-		combobox.getItems().add("Viimeiset 10");
-		combobox.getItems().add("Viimeiset 50");
+		combobox.getItems().add("500");
+		combobox.getItems().add("50");
+		combobox.getItems().add("10");
 		combobox.getSelectionModel().select(0);
 		combobox.getSelectionModel().selectedItemProperty().addListener( (options, oldValue, newValue) -> {
 	           fillStatistics((String) newValue);
@@ -1544,20 +1538,20 @@ public class View extends Application implements ViewIF {
 	}
 
 	/**
-	 * This method fills all tabs with data from database.
+	 * This method fills all tabs with data from database using pull methods.
 	 * @param count Value from combobox.
 	 */
 	private void fillStatistics(String count) {
 		if(this.player.getId()!=1001) {
 			switch(count) {
-			case "KAIKKI":
-				lineChart = controller.getLineChart(1000);
+			case "500":
+				lineChart = controller.getLineChart(500);
 				break;
-			case "Viimeiset 10":
-				lineChart = controller.getLineChart(10);
-				break;
-			case "Viimeiset 50":
+			case "50":
 				lineChart = controller.getLineChart(50);
+				break;
+			case "10":
+				lineChart = controller.getLineChart(10);
 				break;
 			}
 			

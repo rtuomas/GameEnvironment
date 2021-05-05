@@ -15,12 +15,12 @@ public class PlayedGameTableView {
 	private Date playedOn;
 	private String winloss;
 
-	public PlayedGameTableView(int id, double creditAfter, double creditChange, Date playedOn, String winloss) {
+	public PlayedGameTableView(int id, double creditAfter, double creditChange, Date playedOn, String winloss2) {
 		this.id = id;
 		this.creditAfter = creditAfter;
 		this.creditChange = creditChange;
 		this.playedOn = playedOn;
-		this.winloss = winloss;
+		this.winloss = winloss2;
 		
 	}
 
