@@ -21,6 +21,7 @@ public class Statistics {
 	private int playerId;
 	/*Only one dao is made*/
 	private DAOIF dao;
+	private ObservableResourceFactory obf = ObservableResourceFactory.getInstance();
 	
 	public Statistics(DAOIF dao) {
 		this.dao = dao;
@@ -37,12 +38,15 @@ public class Statistics {
         final NumberAxis yAxis = new NumberAxis();
         
         
-        xAxis.setLabel("Päivämäärä");
+        //xAxis.setLabel("Päivämäärä");
+        xAxis.labelProperty().bind(obf.getStringBinding("TabBalanceDate"));
         final LineChart<String,Number> lineChart = 
                 new LineChart<String,Number>(xAxis,yAxis); //creating the chart
-        lineChart.setTitle("Saldoni");
+        //lineChart.setTitle("Saldoni");
+        lineChart.titleProperty().bind(obf.getStringBinding("TabBalanceMyBalance"));
         XYChart.Series series = new XYChart.Series();
-        series.setName("Yllä näet saldosi historiallisen kehityksen");
+        //series.setName("Yllä näet saldosi historiallisen kehityksen");
+        series.nameProperty().bind(obf.getStringBinding("TabBalanceText"));
         for(int i=0;i<creditsList[0].size();i++) {
         	series.getData().add(new XYChart.Data(creditsList[0].get(i), creditsList[1].get(i)));
         }

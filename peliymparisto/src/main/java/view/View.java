@@ -235,7 +235,7 @@ public class View extends Application implements ViewIF {
 			        System.exit(0);
 			    }
 			});
-			ds.setDecimalSeparator('.');
+			ds.setDecimalSeparator(',');
 			df.setDecimalFormatSymbols(ds);
 			
 			locale = new Locale("fi", "FI");
@@ -1583,9 +1583,9 @@ public class View extends Application implements ViewIF {
 	@Override
 	public void showRegistrationErrorEmptyFields() {
 		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Virhe");
-		alert.setHeaderText("Virhe - vaaditut tiedot puuttuvat");
-		alert.setContentText("Varmista että etunimi, sukunimi, sähköposti, salasana ja salasanan vahvistus on syötetty.");
+		alert.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("LogInErrorTitle"));
+		alert.headerTextProperty().bind(RESOURCE_FACTORY.getStringBinding("RegEmptyFieldsErrorHeader"));
+		alert.contentTextProperty().bind(RESOURCE_FACTORY.getStringBinding("RegEmptyFieldsErrorContent"));
 		alert.showAndWait();
 	}
 
@@ -1593,9 +1593,9 @@ public class View extends Application implements ViewIF {
 	@Override
 	public void showRegistrationErrorPasswordsNotMatch() {
 		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Virhe");
-		alert.setHeaderText("Virhe - salasanat eivät täsmää");
-		alert.setContentText("Varmista että syöttämäsi salasanat vastaavat toisiaan.");
+		alert.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("LogInErrorTitle"));
+		alert.headerTextProperty().bind(RESOURCE_FACTORY.getStringBinding("RegPwNoMatchErrorHeader"));
+		alert.contentTextProperty().bind(RESOURCE_FACTORY.getStringBinding("RegPwNoMatchErrorContent"));
 		alert.showAndWait();
 	}
 
@@ -1603,11 +1603,9 @@ public class View extends Application implements ViewIF {
 	@Override
 	public void showRegistrationErrorEmailAlreadyExists() {
 		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Virhe");
-		alert.setHeaderText("Virhe - sähköpostiosoite on jo käytössä");
-		alert.setContentText("Tähän sähköpostiosoitteeseen liitetty tili on jo olemassa.\n\n"
-				+ "Kirjaudu sisään tai luo uudet tunnukset käyttäen toista sähköpostiosoitetta.\n"
-				+ "Jos et muista salasanaasi, ota yhteyttä tukeen.");
+		alert.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("LogInErrorTitle"));
+		alert.headerTextProperty().bind(RESOURCE_FACTORY.getStringBinding("RegEmailExistsErrorHeader"));
+		alert.contentTextProperty().bind(RESOURCE_FACTORY.getStringBinding("RegEmailExistsErrorContent"));
 		alert.showAndWait();
 	}
 	
@@ -1615,9 +1613,9 @@ public class View extends Application implements ViewIF {
 	@Override
 	public void showRegistrationErrorDatabase() {
 		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Virhe");
-		alert.setHeaderText("Virhe - Tilin luonti ei onnistunut");
-		alert.setContentText("Jokin meni pieleen, kokeile hetken kuluttua uudelleen.");
+		alert.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("LogInErrorTitle"));
+		alert.headerTextProperty().bind(RESOURCE_FACTORY.getStringBinding("RegDatabaseErrorHeader"));
+		alert.contentTextProperty().bind(RESOURCE_FACTORY.getStringBinding("RegDatabaseErrorContent"));
 		alert.showAndWait();
 	}
 	
@@ -1627,9 +1625,9 @@ public class View extends Application implements ViewIF {
 		Stage stage = (Stage)cancelRegisterButton.getScene().getWindow();
 		stage.close();
 		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("Rekisteröityminen");
-		alert.setHeaderText("Tilin luominen onnistui!");
-		alert.setContentText("Sinut on kirjattu sisään ja voit jatkaa pelaamista uusilla tunnuksilla");
+		alert.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("RegSuccessTitle"));
+		alert.headerTextProperty().bind(RESOURCE_FACTORY.getStringBinding("RegSuccessHeader"));
+		alert.contentTextProperty().bind(RESOURCE_FACTORY.getStringBinding("RegSuccessContent"));
 		alert.showAndWait();
 	}
 	
@@ -1637,9 +1635,9 @@ public class View extends Application implements ViewIF {
 	@Override
 	public void showPlayerInfoChangeErrorDatabase() {
 		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Virhe");
-		alert.setHeaderText("Virhe - Pelaajatietojen päivitys ei onnistunut");
-		alert.setContentText("Jokin meni pieleen, kokeile hetken kuluttua uudelleen.");
+		alert.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("LogInErrorTitle"));
+		alert.headerTextProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoChangeDbErrorHeader"));
+		alert.contentTextProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoChangeDbErrorContent"));
 		alert.showAndWait();
 	}
 	
@@ -1649,9 +1647,9 @@ public class View extends Application implements ViewIF {
 		Stage stage = (Stage)cancelPlayerInfoButton.getScene().getWindow();
 		stage.close();
 		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("Pelaajatietojen muuttaminen");
-		alert.setHeaderText("Pelaajatietojen muokkaus onnistui!");
-		alert.setContentText("Jos vaihdoit salasanasi, muista käyttää uutta salasanaa seuraavalla kirjautumiskerralla");
+		alert.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoChangeSuccessTitle"));
+		alert.headerTextProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoChangeSuccessHeader"));
+		alert.contentTextProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoChangeSuccessContent"));
 		alert.showAndWait();
 	}
 	
@@ -1660,9 +1658,9 @@ public class View extends Application implements ViewIF {
 	 */
 	private void showPlayerInfoErrorEmptyFields() {
 		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Virhe");
-		alert.setHeaderText("Virhe - vaaditut tiedot puuttuvat");
-		alert.setContentText("Varmista että pelaajanimi ja salasana eivät ole tyhjiä");
+		alert.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("LogInErrorTitle"));
+		alert.headerTextProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoEmptyFieldsErrorHeader"));
+		alert.contentTextProperty().bind(RESOURCE_FACTORY.getStringBinding("PlayerInfoEmptyFieldsErrorContent"));
 		alert.showAndWait();
 	}
 	
@@ -1672,9 +1670,9 @@ public class View extends Application implements ViewIF {
 	 */
 	private void showPasswordReset() {
 		TextInputDialog dialog = new TextInputDialog();
-		dialog.setTitle("Salasanan palauttaminen");
-		dialog.setHeaderText("Unohditko salasanasi?\nNoh voi voi, tämä ikkuna ei tee vielä mitään");
-		dialog.setContentText("Syötä tilin sähköpostiosoite :");
+		dialog.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("PasswordResetTitle"));
+		dialog.headerTextProperty().bind(RESOURCE_FACTORY.getStringBinding("PasswordResetHeader"));
+		dialog.contentTextProperty().bind(RESOURCE_FACTORY.getStringBinding("PasswordResetContent"));
 		Optional<String> result = dialog.showAndWait();
 		result.ifPresent(email -> System.out.println("Email inputted: " + email)); //to catch the result
 	}
@@ -1685,9 +1683,9 @@ public class View extends Application implements ViewIF {
 	 */
 	private void showProgramInfo() {
 		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("Tietoa ohjelmasta");
-		alert.setHeaderText("Peliymäristö info");
-		alert.setContentText(":)");
+		alert.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("ProgramInfoTitle"));
+		alert.headerTextProperty().bind(RESOURCE_FACTORY.getStringBinding("ProgramInfoHeader"));
+		alert.contentTextProperty().bind(RESOURCE_FACTORY.getStringBinding("ProgramInfoContent"));
 		alert.showAndWait();
 	}
 
@@ -1745,23 +1743,6 @@ public class View extends Application implements ViewIF {
 		return this.creditTransferRegisterInput.isSelected();
 	}
 	
-	/**
-	 * In pokergame sets up notification and position based on String length
-	 * @param text String notification text
-	 */
-	/*
-	private void setNotification(String text) {
-//		if(text.length() < 13) {
-//		  notification.setLayoutX(370);
-//		} else if(text.length() >= 13 && text.length() < 30) {
-//			notification.setLayoutX(310);	
-//		} else {
-//			notification.setLayoutX(200);
-//		}
-		notification.setText(text);
-	}
-	*/
-	
 	private void setGambleWin(String txt) {
 		if(txt.length() == 0) {
 			txt = "0.00";
@@ -1774,9 +1755,9 @@ public class View extends Application implements ViewIF {
 	public void notifyCreditReset(){
     Platform.runLater(() -> {
       Alert alert = new Alert(AlertType.INFORMATION);
-      alert.setTitle("Hävisit pelin!!!");
-      alert.setHeaderText("Saldo palautettu, hävisit liikaa");
-      alert.setContentText("Opettele pelaamaan");
+      alert.titleProperty().bind(RESOURCE_FACTORY.getStringBinding("CreditResetTitle"));
+      alert.headerTextProperty().bind(RESOURCE_FACTORY.getStringBinding("CreditResetHeader"));
+      alert.contentTextProperty().bind(RESOURCE_FACTORY.getStringBinding("CreditResetContent"));
       alert.showAndWait();
     });
 	}
