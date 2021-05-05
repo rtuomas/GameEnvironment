@@ -2,7 +2,7 @@ package model;
 /**
  * Enum to determine hand values.
  * @author Tatu Nordström
- *
+ * @version 1.0 5.5.2021
  */
 public enum HandValue {
 	ACE_PAIR(2.0),
@@ -24,7 +24,7 @@ public enum HandValue {
 		return this.multiplier;
 	}
 	/**
-	 * Constructor. 
+	 * Default constructor. 
 	 * @param multiplier determines how valuable hand is.
 	 */
 	private HandValue (double multiplier) {

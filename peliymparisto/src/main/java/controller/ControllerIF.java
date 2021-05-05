@@ -28,6 +28,10 @@ public interface ControllerIF {
 	 * @param cards Card [] dealed cards
 	 */
 	public void showCards(Card [] cards);
+	/**
+	 * Transfers indexes of the cards that are going to get swapped to model.
+	 * @param indexes of the cards
+	 */
 	public void setSwappedCardIndexes (ArrayList<Integer> indexes);
 	LineChart<String, Number> getLineChart(int timestamp);
 	ArrayList<Player> getRanking();
@@ -83,9 +87,25 @@ public interface ControllerIF {
 	 */
 	public void sendMessage(String string);
 	public void notifyCreditReset();
+	/**
+	 * Sends decision about the cashout to model.
+	 * @param decision Boolean user cashout decision
+	 */
   	public void setCashout(Boolean decision);
+  	/**
+  	 * Sends the user guess about the high or low to model from view.
+  	 * @param value String user guess
+  	 */
   	public void setHighOrLow(String value);
+  	/**
+  	 * Sends the drawn high or low card to view from model.
+  	 * @param card String drawn card
+  	 */
   	public void setHighOrLowCard(String card);
+  	/**
+  	 * Sends changed game state from model to view.
+  	 * @param state String current game state
+  	 */
   	public void setGameState(String state);
   	/**
   	 * Attempts to connect to chat server

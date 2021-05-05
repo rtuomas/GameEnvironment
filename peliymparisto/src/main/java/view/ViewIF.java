@@ -19,16 +19,20 @@ public interface ViewIF {
 	 */
 	public Player getPlayer();
 	/**
-	 * Shows the cards in view.
+	 * Shows the cards in view and makes images clickable.
 	 * @param cards ArrayList<String> dealed cards.
 	 */
 	public void setCards(ArrayList<String> cards);
 	/**
-	 * Display game score in view.
+	 * Display game score in view. If hand is win, creates green border around cards.
+	 * Sets the win also in gamble section without letters,
+	 * and creates win notifcation for user. In case of loss, lowering opacity of the cards.
 	 * @param score string game score.
 	 */
 	public void setScore(String score);
-	
+	/**
+	 * Sends card indexeses that are going to get swapped to model.
+	 */
 	public void setSwappedCards();
 	/**
 	 * Sets the default Player when application starts
@@ -119,21 +123,25 @@ public interface ViewIF {
 	 * Shows error message if there was an error with updating the player information to database
 	 */
 	public void showPlayerInfoChangeErrorDatabase();
-	
-	//private void setNotification(String text); ??
-	
 	/**
 	 * Updates poker game player credits text.
 	 */
 	public void setPokerGamePlayerCredits();
-	
 	/**
 	 * Updates poker game bet text. Calls updateWintale so wintable gets updated bet.
 	 * @param bet double bet amount
 	 */
 	public void setPokerGameBet(double bet);
 	public void notifyCreditReset();
+	/**
+	 * Sets card image in gamble section.
+	 * @param card String card to be displayed.
+	 */
 	public void setHighOrLowCard(String card);
+	/**
+	 * Sets the game state.
+	 * @param state String game state.
+	 */
 	public void setGameState(String state);
 	/**
 	 * Appends a new text to the chat window

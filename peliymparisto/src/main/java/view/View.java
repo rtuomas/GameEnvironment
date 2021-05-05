@@ -14,6 +14,8 @@ import controller.ControllerIF;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -105,22 +107,38 @@ public class View extends Application implements ViewIF {
 	private TableView tableViewRanks, tableViewGames;
 	private Scene mainScene;
 	
-	//PokerGameView variables
+	//poker game variables & components
+	/** Credits in poker game view*/
 	private Label pokerGameCredits;
+	/** Poker game bet*/
 	private Label pokerGameBet;
+	/** GridPane for cards in pokergame*/
 	private GridPane cardPane;
+	/** List for card switching*/
 	private ArrayList<Integer> cardsToSwapIndexes = new ArrayList<Integer>();
+	/** Helper boolean for view to know if game is on*/
 	private boolean gameOn = false;
+	/** Notification in poker game*/
 	private Label notification; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	/** Stack pane for images in card view, allows to stack images*/
 	private StackPane [] imageStacks = new StackPane [5];
+	/** ImageViews for cards in poker game*/
 	private ImageView [] cardViews = new ImageView [5];
+	/** ImageViews for locks which are displayed when player decides to lock card*/
 	private ImageView [] lockViews = new ImageView [5];
+	/** Win table text list*/
 	private List <Label> winTableTexts = new ArrayList<Label>();
+	/** ImageView in gamble section*/
 	private ImageView highOrLowCard;
+	/** GameState observable*/
 	private GSObservable stateObs;
-	private Text gambleWin;
+	/** Gamble win label*/
+	private Label gambleWin;
+	// -- these might change ---
 	private final DecimalFormat df = new DecimalFormat("0.00");
 	private final DecimalFormatSymbols ds = new DecimalFormatSymbols();
+	// ----------------------------
+	/** Play button of poker game*/
 	private Button playButton;
 
 	//navBar components
@@ -442,23 +460,29 @@ public class View extends Application implements ViewIF {
 		return adBar;
 	}
 
-	
+	/**
+	 * Contains GUI for gamble section, where player can gamble his win.
+	 * @param pokerGameView AnchorPane view of the pokergame, hided during gambling.
+	 * @return BorderPane GUI of gamble section.
+	 */
 	private BorderPane highOrLowBuilder (AnchorPane pokerGameView) {
 		BorderPane highOrLowView = new BorderPane();
 		
+		// Top instruction of the view
 		Text instruction = new Text("");
 		instruction.textProperty().bind(RESOURCE_FACTORY.getStringBinding("GambleWinningsInfo"));
 		instruction.setFont(Font.font(24));
 		highOrLowView.setTop(instruction);
 		BorderPane.setAlignment(instruction, Pos.TOP_CENTER);
 		
+		// Gamble card
 		Image img = new Image("/images/green_back.png",500,300,true,true);
 		highOrLowCard = new ImageView(img);
 		highOrLowView.setCenter(highOrLowCard);
 		highOrLowCard.fitWidthProperty().bind(Bindings.divide(mainScene.widthProperty(), 4.0));
 		highOrLowCard.fitHeightProperty().bind(Bindings.divide(mainScene.widthProperty(), 2.8));
 		
-		
+		// High or low container
 		VBox highLowContainer = new VBox();
 		Text highLowText = new Text("");
 		
@@ -485,7 +509,8 @@ public class View extends Application implements ViewIF {
 		highOrLowView.setLeft(highLowContainer);
 		highLowContainer.prefWidthProperty().bind(Bindings.divide(mainScene.widthProperty(), 4.0));
 		highLowContainer.spacingProperty().bind(Bindings.divide(highLowContainer.heightProperty(), 5.25));
-	
+		
+		//Suit container
 		VBox suitContainer = new VBox(25.0);
 		Text suitText = new Text("");
 		suitText.textProperty().bind(RESOURCE_FACTORY.getStringBinding("ChooseSuitInfo"));
@@ -517,6 +542,7 @@ public class View extends Application implements ViewIF {
 		diamond.fitWidthProperty().bind(Bindings.divide(suitContainer.widthProperty(),3.0));
 		spade.fitWidthProperty().bind(Bindings.divide(suitContainer.widthProperty(),3.0));
 		
+		// sends information to model that heart is selected
 		heart.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
@@ -525,6 +551,7 @@ public class View extends Application implements ViewIF {
 			}	
 		});
 		
+		// sends information to model that club is selected
 		club.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
@@ -533,6 +560,7 @@ public class View extends Application implements ViewIF {
 			}	
 		});
 		
+		// sends information to model that spade is selected
 		spade.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
@@ -541,6 +569,7 @@ public class View extends Application implements ViewIF {
 			}	
 		});
 		
+		// sends information to model that diamond is selected
 		diamond.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
@@ -566,8 +595,10 @@ public class View extends Application implements ViewIF {
 		suitContainer.prefWidthProperty().bind(Bindings.divide(mainScene.widthProperty(), 4.0));
 		highOrLowView.setRight(suitContainer);
 		
+		// Win text
 		HBox labeledSeparator = new HBox();
-		Label winTxt = new Label("Voitto");
+		Label winTxt = new Label("");
+		winTxt.textProperty().bind(RESOURCE_FACTORY.getStringBinding("Win"));
 		winTxt.setFont(Font.font(16));
 		Separator leftSeparator = new Separator();
 		Separator rightSeparator = new Separator();
@@ -576,6 +607,7 @@ public class View extends Application implements ViewIF {
 		labeledSeparator.getChildren().add(rightSeparator);
 		labeledSeparator.setAlignment(Pos.CENTER);
 		
+		// Container for back and win
 		VBox backAndWinContainer = new VBox(4.0);
 		gambleWin.setFont(Font.font(16));
 		backAndWinContainer.setAlignment(Pos.TOP_CENTER);
@@ -588,6 +620,7 @@ public class View extends Application implements ViewIF {
 		backAndWinContainer.getChildren().addAll(labeledSeparator, gambleWin, back);
 		highOrLowView.setBottom(backAndWinContainer);
 		
+		// Back button displays this view and returns to poker game view
 		back.setOnAction(e -> {
 			pokerGameView.getChildren().remove(highOrLowView);
 			ObservableList<Node> childs = pokerGameView.getChildren();
@@ -596,10 +629,12 @@ public class View extends Application implements ViewIF {
 			}
 		});
 		
+		// sends information to model that low is selected
 		low.setOnAction(e -> {
 			controller.setHighOrLow("low");
 		});
 		
+		// sends information to model that high is selected
 		high.setOnAction(e -> {
 			controller.setHighOrLow("high");
 		});
@@ -615,7 +650,7 @@ public class View extends Application implements ViewIF {
 		// initialaizing cards to swap
 		Collections.addAll(cardsToSwapIndexes,0,1,2,3,4);
 		stateObs = new GSObservable();
-		gambleWin = new Text("1.00");
+		gambleWin = new Label("1.00");
 		
 		//Notification text under cards
 		notification = new Label("");
@@ -1447,6 +1482,7 @@ public class View extends Application implements ViewIF {
 	/**
 	 * Custom onClick handler for card image containers. Handles events where card is clicked, places
 	 * lock image to container when clicked first time and removes it if repeated.
+	 * If image is locked, adds image index to cardsToSwapIndexes list.
 	 * @param img ImageView image of the card
 	 * @param index int card index, helps to determine which card is clicked.
 	 * @param pane StackPane card image container.
@@ -1471,15 +1507,16 @@ public class View extends Application implements ViewIF {
 	    });
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public void setPokerGamePlayerCredits () {
 		pokerGameCredits.textProperty().bind(RESOURCE_FACTORY.getStringBinding("CreditLabel").concat(df.format(this.player.getCredits())));
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public void setPokerGameBet (double bet) {
 		pokerGameBet.textProperty().bind(RESOURCE_FACTORY.getStringBinding("BetLabel").concat(df.format(bet)));
-		//pokerGameBet.setText("Panos: " + df.format(bet));
 		updateWinTable(bet);
 	}
 	
@@ -1497,6 +1534,7 @@ public class View extends Application implements ViewIF {
 		winTableTexts.get(6).textProperty().bind(RESOURCE_FACTORY.getStringBinding("FourOfKindWin").concat(" " + df.format(roundToTwoDecimals(bet * HandValue.FOUR_OF_A_KIND.getMultiplier()))));
 		winTableTexts.get(7).textProperty().bind(RESOURCE_FACTORY.getStringBinding("StraightFlushWin").concat(" " + df.format(roundToTwoDecimals(bet * HandValue.STRAIGHT_FLUSH.getMultiplier()))));
 	}
+	
 	/**
 	 * Helper for rounding two decimal places
 	 * @param a double value to round
@@ -1506,6 +1544,7 @@ public class View extends Application implements ViewIF {
 		return Math.round(a * 100.0) / 100.0; 
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public void setCards(ArrayList<String> cards) {
 		Platform.runLater(() -> {
@@ -1519,6 +1558,7 @@ public class View extends Application implements ViewIF {
 		});
 	}
 
+	/**	{@inheritDoc} */
 	@Override
 	public void setScore(String score) {
 		if(score == RESOURCE_FACTORY.getResources().getString("NoWin")) {
@@ -1560,14 +1600,14 @@ public class View extends Application implements ViewIF {
 			playedGames = controller.getPlayedGames();
 			
 			tableViewGames.getItems().clear();
-			String winloss;
+			StringProperty winloss = new SimpleStringProperty();
 			for(int i=playedGames.size()-1; i>=0;i--) {
 				if(playedGames.get(i).getWinner()==this.player.getId()) {
-					winloss="VOITTO";
+					winloss.bind(RESOURCE_FACTORY.getStringBinding("Win"));
 				} else {
-					winloss="HÄVIÖ";
+					winloss.bind(RESOURCE_FACTORY.getStringBinding("Loss"));
 				}
-				tableViewGames.getItems().add(new PlayedGameTableView(i+1, playedGames.get(i).getCreditAfterPlayer1(),playedGames.get(i).getCreditChange(), playedGames.get(i).getPlayedOn(), winloss));
+				tableViewGames.getItems().add(new PlayedGameTableView(i+1, playedGames.get(i).getCreditAfterPlayer1(),playedGames.get(i).getCreditChange(), playedGames.get(i).getPlayedOn(), winloss.getValue()));
 			}
 		}
 		
@@ -1585,7 +1625,8 @@ public class View extends Application implements ViewIF {
 		creditDevelopment.setContent(pane);
         ranking.setContent(tableViewRanks);		
 	}
-
+	
+	/**	{@inheritDoc} */
 	@Override
 	public void setSwappedCards() {
 		controller.setSwappedCardIndexes(cardsToSwapIndexes);
@@ -1769,6 +1810,10 @@ public class View extends Application implements ViewIF {
 		return this.creditTransferRegisterInput.isSelected();
 	}
 	
+	/**
+	 * Sets gamble win text. In case of win = 0, enables play button.
+	 * @param txt String text to be displayed.
+	 */
 	private void setGambleWin(String txt) {
 		if(txt.length() == 0) {
 			txt = "0.00";
@@ -1787,7 +1832,8 @@ public class View extends Application implements ViewIF {
       alert.showAndWait();
     });
 	}
-
+	
+	/**	{@inheritDoc} */
 	@Override
 	public void setHighOrLowCard(String card) {
 		Image initialImg = highOrLowCard.getImage();
@@ -1795,6 +1841,7 @@ public class View extends Application implements ViewIF {
 				, initialImg.getRequestedHeight(), true, true));
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public void setGameState(String state) {
 		stateObs.setGameState(state);

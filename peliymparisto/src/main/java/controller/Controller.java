@@ -113,6 +113,7 @@ public class Controller implements ControllerIF {
 		view.setCards(imgpaths);
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public void setSwappedCardIndexes (ArrayList<Integer> indexes) {
 		model.setCardsToSwapIndexes(indexes);
@@ -232,21 +233,25 @@ public class Controller implements ControllerIF {
 	  view.notifyCreditReset();
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public void setCashout(Boolean decision) {
 		model.setCashout(decision);
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public void setHighOrLow(String value) {
 		model.setHighOrLow(value);
 	}
 
+	/**	{@inheritDoc} */
 	@Override
 	public void setHighOrLowCard(String card) {
 		view.setHighOrLowCard(card);
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public void setGameState(String state) {
 		view.setGameState(state);
