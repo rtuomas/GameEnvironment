@@ -12,8 +12,14 @@ The software connects to a MySQL database made with MariaDB. The database is loc
 
 PuTTY: shell.metropolia.fi, port 22
 SSH --> Tunnels: 
+
+For database:
 sourceport: "localhost:2206",
 destination: "10.114.32.61:3306"
+
+For chat:
+sourceport: "localhost:4998",
+destination: "10.114.32.61:4999"
 
 ********************************************
 
