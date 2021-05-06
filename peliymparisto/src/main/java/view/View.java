@@ -2,6 +2,7 @@ package view;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -134,10 +135,6 @@ public class View extends Application implements ViewIF {
 	private GSObservable stateObs;
 	/** Gamble win label*/
 	private Label gambleWin;
-	// -- these might change ---
-	private final DecimalFormat df = new DecimalFormat("0.00");
-	private final DecimalFormatSymbols ds = new DecimalFormatSymbols();
-	// ----------------------------
 	/** Play button of poker game*/
 	private Button playButton;
 
@@ -220,9 +217,13 @@ public class View extends Application implements ViewIF {
 	* 04.05.2021, functionality of this counter is not yet implemented
 	*/
 	private Label playerCount;
-	
+	/** Locale variable for languages*/
 	private Locale locale;
-	
+	/** Decimal format for numbers*/
+	private final DecimalFormat df = new DecimalFormat("0.00");
+	/** Decimal format symbols for correct decimal format */
+	private final DecimalFormatSymbols ds = new DecimalFormatSymbols();
+	/** Resource factory for language switching */
 	private static final ObservableResourceFactory RESOURCE_FACTORY = ObservableResourceFactory.getInstance();
 	
 
@@ -983,14 +984,22 @@ public class View extends Application implements ViewIF {
                     
                     if(s.equals("English")) { //these are from locale properties
                     	locale = new Locale("en","US");
+                    	ds.setDecimalSeparator('.');
+                    	df.setDecimalFormatSymbols(ds);
             			RESOURCE_FACTORY.setResources(ResourceBundle.getBundle("properties/TextResources", locale));
                     } else if (s.equals("Suomi")) {
                     	locale = new Locale("fi", "FI");
                     	RESOURCE_FACTORY.setResources(ResourceBundle.getBundle("properties/TextResources", locale));
+                    	ds.setDecimalSeparator(',');
+                    	df.setDecimalFormatSymbols(ds);
                     } else {
                     	//other languages
                     }
-                } 
+                    //reload components containing decimal numbers
+                    setPokerGameBet(controller.getBet());
+                    setPokerGamePlayerCredits();
+                    updateToolBar();
+                 } 
             } 
         }); 
 		
@@ -1574,7 +1583,7 @@ public class View extends Application implements ViewIF {
 		playButton.setDisable(true);
 		notification.textProperty().unbind();
 		notification.setText(score);
-		setGambleWin(score.replaceAll("[^\\d.]", ""));
+		setGambleWin(score.replaceAll("[^\\d.,]+", ""));
 	}
 
 	/**
@@ -1607,7 +1616,9 @@ public class View extends Application implements ViewIF {
 				} else {
 					winloss.bind(RESOURCE_FACTORY.getStringBinding("Loss"));
 				}
-				tableViewGames.getItems().add(new PlayedGameTableView(i+1, playedGames.get(i).getCreditAfterPlayer1(),playedGames.get(i).getCreditChange(), playedGames.get(i).getPlayedOn(), winloss.getValue()));
+				String creditAfter = df.format(playedGames.get(i).getCreditAfterPlayer1());
+				String creditChange = df.format(playedGames.get(i).getCreditChange());
+				tableViewGames.getItems().add(new PlayedGameTableView(i+1,creditAfter, creditChange, playedGames.get(i).getPlayedOn(), winloss.getValue()));
 			}
 		}
 		
@@ -1615,7 +1626,8 @@ public class View extends Application implements ViewIF {
 		ranks = controller.getRanking();
 		tableViewRanks.getItems().clear();
 		for(int i = 0;i<ranks.size();i++) {
-			tableViewRanks.getItems().add(new PlayerRanking(i+1,ranks.get(i).getProfileName(), ranks.get(i).getCredits()));
+			String credits = df.format(ranks.get(i).getCredits());
+			tableViewRanks.getItems().add(new PlayerRanking(i+1,ranks.get(i).getProfileName(), credits));
 		}
 		
 		BorderPane pane = new BorderPane();
@@ -1816,7 +1828,8 @@ public class View extends Application implements ViewIF {
 	 */
 	private void setGambleWin(String txt) {
 		if(txt.length() == 0) {
-			txt = "0.00";
+			double d = 0;
+			txt = df.format(d);
 			playButton.setDisable(false);
 		}
 		gambleWin.setText(txt);
@@ -1915,6 +1928,11 @@ public class View extends Application implements ViewIF {
 		controller.initChatConnection(); 
 		
 		return chatPane;
+	}
+	
+	/**	{@inheritDoc} */
+	public DecimalFormat getDecimalFormat() {
+		return df;
 	}
 	
 }

@@ -6,7 +6,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 /**
- * Singleton resource factory for languange switching. 
+ * Singleton resource factory for languange switching.
+ * Code from https://stackoverflow.com/questions/32464974/javafx-change-application-language-on-the-run
  * @author Tatu Nordström
  * @version 1.0 5.5.2021
  */
@@ -50,7 +51,7 @@ public class ObservableResourceFactory {
 	
 	/**
 	 * Sets ObjectProperty resource bundle.
-	 * @param resources to be setted
+	 * @param resources to be set
 	 */
 	public final void setResources(ResourceBundle resources) {
 		resourcesProperty().set(resources);

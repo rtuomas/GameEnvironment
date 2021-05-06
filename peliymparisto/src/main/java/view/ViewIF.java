@@ -1,5 +1,6 @@
 package view;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import model.Player;
@@ -148,4 +149,9 @@ public interface ViewIF {
 	 * @param message
 	 */
 	public void displayMessage(String message);
+	/**
+	 * Returns decimal format of current language
+	 * @return DecimalFormat current decimal format
+	 */
+	public DecimalFormat getDecimalFormat();
 }

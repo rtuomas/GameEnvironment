@@ -1,5 +1,6 @@
 package model;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -23,7 +24,9 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	private Deck deck;
 	/** Variable for the Hand class */
 	private Hand hand;
+	/** List for card indexes */
 	private ArrayList<Integer> indexes;
+	/** Bet table of the game */
 	private static Double[] betTable = {0.1, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
 	/** User's set bet (starting with 1.00) */
 	private static double bet = betTable[6];
@@ -39,10 +42,16 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	//Game variables
 	/** gametype of this game as a String */
 	private String gameType = "poker";
+	/** Boolean object for cashout decision, using object so thread can wait while Boolean null */
 	private Boolean cashOut;
+	/** String value for gambling */
 	private String highOrLow;
+	/** Resource factory instance */
 	private static final ObservableResourceFactory RESOURCE_FACTORY = ObservableResourceFactory.getInstance();
+	/** Resource bundle for languages */
 	private ResourceBundle rb;
+	/** Decimal format for numbers */
+	private DecimalFormat df;
 	
 	/**
 	 * Constructor for the poker game engine.
@@ -60,6 +69,8 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	 * This method uses Threads to run multiple events in the GUI simultaneously
 	 */
 	public void run() {
+		// decimal format from view
+		df = controller.getDecimalFormat();
 		//game functionality
 		deck = new Deck ();
 		deck.shuffle();
@@ -72,7 +83,6 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		swapCards();
 		setScore();
 		endGame(); //called when the game ends
-		//setScore(); //shows the result in View
 	}
 	
 	/**
@@ -95,6 +105,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		this.dao = dao;
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public synchronized void setCashout (Boolean decision) {
 		this.cashOut = decision;
@@ -105,7 +116,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	 * This method is ran at the end of the game to save the played game into database and update credit amounts to players.
 	 */
 	public synchronized void endGame() {
-	
+		// waits for user cashout decision
 		if(hand.wins()) {
 		while(cashOut == null) {
 			try {
@@ -120,6 +131,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 	    Player winner;
 	    Player loser;
 	    
+	    // starts gamble feature if user chooses to gamble
 	    double creditChange = hand.worth() * bet;
 	    if(cashOut != null) {
 	    	if(!cashOut) {
@@ -152,6 +164,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		controller.setGameState("start");
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public void dealCards () {
 		this.hand = new Hand(deck);
@@ -188,6 +201,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		return getBet();
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public void setScore () {
 		HandValue score = this.hand.getScore();
@@ -224,7 +238,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		}
 		
 		if(score.getMultiplier() != 0) {
-			controller.setScore(s + ", " + rb.getString("YouWon") + " " + score.getMultiplier() * bet + "0");
+			controller.setScore(s + ", " + rb.getString("YouWon") + " " + df.format(score.getMultiplier() * bet));
 			controller.setGameState("win");
 		} else {
 			controller.setScore(s);
@@ -246,9 +260,8 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		controller.showCards(hand.swapCards(this.indexes));
 	}
 	
-	/**
-	 * Sets up ArrayList which cards are going to get swapped.
-	 */
+	/**	{@inheritDoc} */
+	@Override
 	public synchronized void setCardsToSwapIndexes(ArrayList<Integer> indexes) {
 		this.indexes = new ArrayList<>(indexes);
 		notifyAll();
@@ -260,12 +273,22 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		return this.player1;
 	}
 	
+	/**	{@inheritDoc} */
 	@Override
 	public synchronized void setHighOrLow (String value) {
 		this.highOrLow = value;
 		notifyAll();
 	}
 	
+	/**
+	 * Gamble feature logic. Gets called from endGame, if users chooses to gamble.
+	 * Waits for user guess, then draws new card which decides win or loss.
+	 * If gamble is loss, returns 0 to endGame and endGame will continue.
+	 * If player wins gamble, method waits for cashout decision, plays new round of gamble if
+	 * player decides to gamble again, or sends winning value back to endGame.
+	 * @param amount double starting gamble amount
+	 * @return double amount of credits left after gambling
+	 */
 	public synchronized double playHighOrLow (double amount) {
 		boolean keepOn = true;
 		double winValue = amount;
@@ -341,7 +364,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		
 		controller.setHighOrLowCard(c.toString());
 		if(winValue > 0) {
-			controller.setScore(StringUtils.capitalise(rb.getString("YouWon")) + " " + Double.toString(winValue) + "0");
+			controller.setScore(StringUtils.capitalise(rb.getString("YouWon")) + " " + df.format(winValue));
 		} else {
 			controller.setScore(rb.getString("NoWin"));
 		}

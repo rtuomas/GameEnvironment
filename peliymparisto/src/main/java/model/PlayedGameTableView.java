@@ -11,11 +11,11 @@ import java.util.Date;
 public class PlayedGameTableView {
 	
 	private int id;
-	private double creditAfter, creditChange;
+	private String creditAfter, creditChange;
 	private Date playedOn;
 	private String winloss;
 
-	public PlayedGameTableView(int id, double creditAfter, double creditChange, Date playedOn, String winloss2) {
+	public PlayedGameTableView(int id, String creditAfter, String creditChange, Date playedOn, String winloss2) {
 		this.id = id;
 		this.creditAfter = creditAfter;
 		this.creditChange = creditChange;
@@ -32,11 +32,11 @@ public class PlayedGameTableView {
 		this.id = id;
 	}
 
-	public double getCreditAfter() {
+	public String getCreditAfter() {
 		return creditAfter;
 	}
 
-	public void setCreditAfter(double creditAfter) {
+	public void setCreditAfter(String creditAfter) {
 		this.creditAfter = creditAfter;
 	}
 
@@ -56,11 +56,11 @@ public class PlayedGameTableView {
 		this.winloss = winloss;
 	}
 
-	public double getCreditChange() {
+	public String getCreditChange() {
 		return creditChange;
 	}
 
-	public void setCreditChange(double creditChange) {
+	public void setCreditChange(String creditChange) {
 		this.creditChange = creditChange;
 	}
 

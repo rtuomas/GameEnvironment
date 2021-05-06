@@ -10,9 +10,9 @@ public class PlayerRanking {
 	
 	private int rank;
 	private String profileName;
-	private double credits;
+	private String credits;
 	
-	public PlayerRanking(int rank, String profileName, double credits) {
+	public PlayerRanking(int rank, String profileName, String credits) {
 		this.rank = rank;
 		this.profileName = profileName;
 		this.credits = credits;
@@ -26,11 +26,11 @@ public class PlayerRanking {
 		this.rank = rank;
 	}
 
-	public double getCredits() {
+	public String getCredits() {
 		return credits;
 	}
 
-	public void setCredits(double credits) {
+	public void setCredits(String credits) {
 		this.credits = credits;
 	}
 

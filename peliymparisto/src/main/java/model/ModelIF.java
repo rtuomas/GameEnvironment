@@ -12,7 +12,7 @@ public interface ModelIF {
 	//The common methods for all game engines -->
 	
 	/**
-	 * Deals cards in model.
+	 * Deals cards in model and sends cards to controller.
 	 */
 	public void dealCards();
 
@@ -53,6 +53,14 @@ public interface ModelIF {
 	 * @return current player from game engine
 	 */
 	public Player getCurrentPlayer();
+	/**
+	 * Sets the cashout decision of pokergame.
+	 * @param decision Boolean decision of user
+	 */
 	public void setCashout(Boolean decision);
+	/**
+	 * Sets the high or low value which user has decided in view.
+	 * @param value String user high/low/suit guess
+	 */
 	public void setHighOrLow(String value);
 }

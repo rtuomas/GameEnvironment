@@ -1,5 +1,6 @@
 package controller;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import javafx.scene.chart.LineChart;
@@ -116,4 +117,10 @@ public interface ControllerIF {
 	 * @param message
 	 */
 	public void displayMessage(String message);
+	/** 
+	 * Returns decimal format of current language
+	 * @return DecimalFormat current decimal format
+	 */
+	public DecimalFormat getDecimalFormat();
+	
 }

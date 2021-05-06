@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.net.SocketException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import client.ClientSocketHandler;
@@ -295,5 +296,11 @@ public class Controller implements ControllerIF {
 	@Override
 	public void displayMessage(String message) {
 		view.displayMessage(message);
+	}
+	
+	/**	{@inheritDoc} */
+	@Override
+	public DecimalFormat getDecimalFormat() {
+		return view.getDecimalFormat();
 	}
 }

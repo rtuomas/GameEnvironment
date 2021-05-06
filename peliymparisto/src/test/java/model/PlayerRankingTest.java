@@ -11,7 +11,7 @@ class PlayerRankingTest {
 	
 	@BeforeEach
 	public void setUp () {
-		ranking = new PlayerRanking(1,"a",1.0);
+		ranking = new PlayerRanking(1,"a","1.0");
 	}
 	
 	
@@ -34,9 +34,9 @@ class PlayerRankingTest {
 		
 	@Test
 	public void testCredits() {
-		double setup = 3.5;
+		String setup = "3.5";
 		ranking.setCredits(setup);
-		double result = ranking.getCredits();
+		String result = ranking.getCredits();
 		assertEquals(setup, result, "Credits setter or getter not working");
 	}
 	
