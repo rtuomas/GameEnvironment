@@ -60,7 +60,7 @@ SQL commands for generating a copy of the database used can be found in this rep
 
 ********************************************
 
-Source code for Chat server can be found in this repository. Replace the socket parameters for your own in EchoClient.java and EchoServer.java files (found in peliymparisto/src/main/java/client  and chat_server/server folders). To compile the server code: 
+Source code for Chat server can be found in this repository. Replace the socket parameters for your own in EchoClient.java and EchoServer.java files (found in peliymparisto/src/main/java/client  and chat_server/server folders). To compile and run the server: 
 1. Navigate to the root folder of the server repository.
 2. Type "javac ./server/RunServer.java" and repeat to all existing files to create .class files.
 3. Type "java server/RunServer" to run the server.
