@@ -4,6 +4,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class LanguageResources {
+	
 	private Locale locale;
 	private ResourceBundle rb;
 
