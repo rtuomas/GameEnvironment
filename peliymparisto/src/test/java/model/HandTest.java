@@ -4,6 +4,8 @@ package model;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.Test;
 
 
@@ -171,5 +173,20 @@ class HandTest {
 		assertTrue(hand.isFullHouse());
 		assertEquals(18.0, hand.getScore().getMultiplier(), "Multiplier wrong");
 	}
+	
+	@Test
+	void testSwapCards() {
+		ArrayList<Integer> indexes = new ArrayList<Integer>();
+		indexes.add(0);
+		indexes.add(1);
+		deck = new Deck();
+		hand = new Hand(deck);
+		hand.swapCards(indexes);
+		Card[] CardedHand = hand.getHand();
+		assertEquals(6, CardedHand[0].getValue(), "swapped card at index 0 wrong");
+		assertEquals(7, CardedHand[1].getValue(), "swapped card at index 1 wrong");
+		
+	}
+
 
 }
