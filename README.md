@@ -60,6 +60,13 @@ SQL commands for generating a copy of the database used can be found in this rep
 
 ********************************************
 
+Source code for Chat server can be found in this repository. Replace the socket parameters for your own in EchoClient.java and EchoServer.java files (found in peliymparisto/src/main/java/client  and chat_server/server folders). To compile the server code: 
+1. Navigate to the root folder of the server repository.
+2. Type "javac ./server/RunServer.java" and repeat to all existing files to create .class files.
+3. Type "java server/RunServer" to run the server.
+
+********************************************
+
 Jenkins is used for integration and testing. Jenkins can be accessed here: http://10.114.32.61:8080/ (Metropolia VPN and credentials required)
 
 To easy install:
