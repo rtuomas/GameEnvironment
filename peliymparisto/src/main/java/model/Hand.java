@@ -8,7 +8,7 @@ import java.util.Comparator;
  * The Hand class gets the cards from the deck and works as the 
  * main component for the game, showing the user their cards.
  * @author Ville Riepponen
- * @version 1.0 5.5.2021
+ * @version 1.0 7.5.2021
  */
 
 public class Hand{
