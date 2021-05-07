@@ -74,7 +74,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.HandValue;
-import model.LanguageResources;
 import model.ObservableResourceFactory;
 import model.PlayedGame;
 import model.PlayedGameTableView;

@@ -238,7 +238,7 @@ public class PokerGameEngine extends Thread implements ModelIF {
 		}
 		
 		if(score.getMultiplier() != 0) {
-			controller.setScore(s + ", " + rb.getString("YouWon") + " " + df.format(score.getMultiplier() * bet));
+			controller.setScore(s + " - " + rb.getString("YouWon") + " " + df.format(score.getMultiplier() * bet));
 			controller.setGameState("win");
 		} else {
 			controller.setScore(s);
