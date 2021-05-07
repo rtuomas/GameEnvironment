@@ -12,8 +12,14 @@ The software connects to a MySQL database made with MariaDB. The database is loc
 
 PuTTY: shell.metropolia.fi, port 22
 SSH --> Tunnels: 
+
+For database:
 sourceport: "localhost:2206",
 destination: "10.114.32.61:3306"
+
+For chat:
+sourceport: "localhost:4998",
+destination: "10.114.32.61:4999"
 
 ********************************************
 
@@ -57,6 +63,13 @@ Maven Dependencies (Project must be maven project)
 ********************************************
 
 SQL commands for generating a copy of the database used can be found in this repository. It is named SQL_commands.sql.
+
+********************************************
+
+Source code for Chat server can be found in this repository. Replace the socket parameters for your own in EchoClient.java and EchoServer.java files (found in peliymparisto/src/main/java/client  and chat_server/server folders). To compile and run the server: 
+1. Navigate to the root folder of the server repository.
+2. Type "javac ./server/RunServer.java" and repeat to all existing files to create .class files.
+3. Type "java server/RunServer" to run the server.
 
 ********************************************
 
